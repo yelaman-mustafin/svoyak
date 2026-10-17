@@ -3,10 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Своя игра — прототип</title>
+<meta name="theme-color" content="#121760">
+<title>Своя игра</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-database-compat.js"></script>
 <style>
 :root{
   --page:#E6E8F3; --ink:#181A38; --muted:#5A5F86; --line:#C8CBE0;
@@ -284,29 +287,59 @@ input[type=range]{width:100%;accent-color:var(--buzz)}
 .fin-toggle{display:flex;align-items:center;gap:8px;font-weight:800}
 .fin-toggle input{width:20px;height:20px;accent-color:var(--gold)}
 @media (max-width:520px){ .ed-two{grid-template-columns:1fr} .ed-theme{width:120px} .ed-cell{width:58px} }
+
+/* ---- live version ---- */
+[hidden]{display:none!important}
+.wrap{max-width:1280px}
+#pshell{max-width:460px;margin:0 auto}
+#pshell .screen{min-height:calc(100vh - 64px);min-height:calc(100dvh - 64px);border-radius:28px;border:1px solid var(--line);box-shadow:0 20px 50px -30px rgba(0,0,0,.4)}
+body[data-mode="host"] .wrap{max-width:1280px}
+.ph-body{min-height:0}
+.qtext{font-weight:700;font-size:17px;line-height:1.4}
+.buzzer.locked{background:radial-gradient(circle at 38% 32%,#C9CBD8 0%,#9EA1B8 60%,#7D8099 100%);box-shadow:0 12px 0 #5F6280;font-size:20px}
+.buzzer{touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.on-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;vertical-align:middle}
+.on-dot.off{background:#8A8DA8}
+.rv.off{opacity:.45}
+.pl{font:inherit;color:inherit;text-align:left;cursor:pointer}
+.pl:hover{border-color:rgba(255,255,255,.3)}
+.banner{background:var(--gold);color:var(--board);font-weight:800;font-size:14px;padding:10px 16px}
+.qrbox{width:192px;height:192px;background:#fff;border-radius:10px;padding:6px;flex:none;display:flex;align-items:center;justify-content:center}
+.qrbox img,.qrbox canvas{width:180px;height:180px;display:block}
+.code{flex-wrap:wrap}
+.joined div{align-items:center}
+.pl-name{display:flex;align-items:center}
+.entry.resume{background:rgba(255,201,60,.18);border-color:var(--gold)}
+.entry:disabled{opacity:.6;cursor:default}
+@media (max-width:520px){
+  .wrap{padding:0}
+  #pshell .screen{min-height:100vh;min-height:100dvh;border-radius:0;border:0;box-shadow:none}
+  body[data-mode="host"] .wrap{padding:10px}
+  .qrbox{width:150px;height:150px}.qrbox img,.qrbox canvas{width:138px;height:138px}
+}
 </style>
 </head>
-<body>
+<body data-mode="home">
 <div class="wrap">
-  <header class="top">
-    <h1>Своя игра</h1>
-    <p>Прототип: слева общий экран с табло, библиотекой вопросов и пультом ведущего, справа телефон игрока. Вы играете против двух ботов и одновременно ведёте игру.</p>
-  </header>
-
-  <div class="tabs" role="tablist">
-    <button role="tab" id="tab-tv" aria-selected="true" data-v="tv">Экран ведущего</button>
-    <button role="tab" id="tab-ph" aria-selected="false" data-v="phone">Телефон игрока<span class="dot" id="dot"></span></button>
-  </div>
-
-  <main class="stage" id="stage" data-view="tv">
-    <section class="tv" id="tv" aria-label="Общий экран"></section>
-    <aside class="phone-col"><div class="phone"><div class="screen" id="phone" aria-label="Телефон игрока" aria-live="polite"></div></div></aside>
-  </main>
-
-  <p class="notes"><b>Как пользоваться:</b> на телефоне справа выберите, как вы заходите. «Провести игру» открывает настройку комнаты на общем экране, где можно сменить пакет вопросов, загрузить свои и выбрать доступ к комнате. «Войти по коду» (1234 или 5173) и «Открытые игры» показывают путь игрока: там ведущего изображает демо, и ответы проверяются автоматически. Паки и настройки сохраняются в этом браузере.</p>
+  <section class="tv" id="tv" aria-label="Экран ведущего" hidden></section>
+  <div id="pshell"><div class="screen" id="phone" aria-live="polite"></div></div>
 </div>
-
 <script>
+/* =====================================================================
+   НАСТРОЙКА: вставьте сюда firebaseConfig из консоли Firebase
+   (Project settings → General → Your apps → Web app → SDK setup → Config).
+   Обязательно должно быть поле databaseURL.
+   ===================================================================== */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC48M3GCCJT40fBT9x0disJDthxbaMPZIs",
+  authDomain: "svoyak-2618b.firebaseapp.com",
+  databaseURL: "https://svoyak-2618b-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "svoyak-2618b",
+  storageBucket: "svoyak-2618b.firebasestorage.app",
+  messagingSenderId: "641230292802",
+  appId: "1:641230292802:web:aa4c988ceef701c98b6adb"
+};
+
 /* ================= data ================= */
 const P5 = [100,200,300,400,500];
 function mk(name, rows){ return {name, questions: rows.map((r,i)=>({cost:r[3]||P5[i], text:r[0], answer:r[1], type:r[2]||"normal"}))}; }
@@ -329,7 +362,6 @@ const CATALOG = [
     mk("Музыка",[["Сколько струн у классической гитары?","6"],["Сколько линий в нотном стане?","5"],["Сколько клавиш у стандартного фортепиано?","88"],["Кто написал «Лунную сонату»?","Бетховен"]])
   ]}], final:null}
 ];
-const ROOM = "4821";
 const TYPES = {normal:"Обычный", cat:"Кот в мешке", auction:"Аукцион", norisk:"Без риска"};
 const TMARK = {cat:"кот", auction:"аук", norisk:"б/р"};
 
@@ -341,12 +373,6 @@ let CFG = Object.assign({}, CFG_DEFAULTS, load("svoya.cfg",{}));
 let CFG_HOST = null;
 let ME_NAME = load("svoya.name", "");
 const meName = () => ME_NAME.trim() || "Вы";
-const ROOMS = [
-  {code:"5173", name:"Пятничный квиз", host:"Арман", pack:"demo", players:2, max:6, status:"wait", open:true, cfg:{picker:"player", window:7000}},
-  {code:"6602", name:"География без гугла", host:"Дана", pack:"geo", players:3, max:4, status:"wait", open:true, cfg:{picker:"player", window:10000, minus:false}},
-  {code:"7310", name:"Цифры и факты", host:"Ерлан", pack:"num", players:6, max:6, status:"play", open:true, cfg:{}},
-  {code:"1234", name:"Квиз у Самата", host:"Самат", pack:"demo", players:2, max:5, status:"wait", open:false, cfg:{picker:"player"}}
-];
 let MINE = load("svoya.packs", []);
 let PACK_ID = load("svoya.pack", "demo");
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -555,333 +581,6 @@ const SAMPLE = `# Космос
 Финал: Города
 Столица Казахстана до 1997 года? = Алматы`;
 
-/* ================= game state ================= */
-let S;
-function fresh(extra){
-  if(S) clearTimers();
-  S = Object.assign({
-    players:[{id:"me",name:"Вы",score:0,bot:false},{id:"ai",name:"Айгерим",score:0,bot:true},{id:"da",name:"Данияр",score:0,bot:true}],
-    chooser:"me", used:new Set(), round:0, phase:"setup", view:"setup", libTab:"mine", joined:["me"], botSay:null,
-    cur:null, responder:null, tried:new Set(), openAt:0, readStart:0, readMs:0, lockUntil:0, reaction:null, msg:"", msgOk:null,
-    auc:null, fin:null, early:false, timers:[], draft:null, edRound:0, edSel:null, upMsg:null, upBusy:false,
-    app:"game", mode:"host", homeView:"main", joinErr:"", room:null
-  }, extra||{});
-  S.players[0].name = meName();
-}
-function goHome(){
-  if(CFG_HOST){ CFG=CFG_HOST; CFG_HOST=null; }
-  PACK=clone(findPack(PACK_ID));
-  fresh({app:"home", phase:"home"}); setView("phone"); render();
-}
-function hostStart(){
-  if(CFG_HOST){ CFG=CFG_HOST; CFG_HOST=null; }
-  PACK=clone(findPack(PACK_ID));
-  fresh({}); setView("tv"); render();
-  later(()=>{ S.joined.push("ai"); render(); }, 900);
-  later(()=>{ S.joined.push("da"); render(); }, 2100);
-}
-function joinRoom(room){
-  if(!CFG_HOST) CFG_HOST=CFG;
-  CFG=Object.assign({}, CFG_DEFAULTS, room.cfg);
-  PACK=clone(findPack(room.pack));
-  fresh({mode:"player", phase:"lobby", room}); setView("phone"); render();
-  later(()=>{ S.joined.push("ai"); render(); }, 1000);
-  later(()=>{ S.joined.push("da"); render(); }, 2200);
-  later(startGame, 4800);
-}
-function reset(){ if(S && S.mode==="player") goHome(); else hostStart(); }
-function normA(x){ return String(x||"").toLowerCase().replace(/ё/g,"е").replace(/[«»"'.,!?()\-–—:;]/g," ").replace(/\s+/g," ").trim(); }
-function matchAnswer(said, ans){
-  const s=normA(said); if(!s) return false;
-  const vs=[normA(ans), ...String(ans||"").split(/[,;\/]|\sили\s/i).map(normA)].filter(Boolean);
-  return vs.some(v=> s===v || (s.length>=3 && s.includes(v)) || (s.length>=4 && v.includes(s) && s.length>=v.length*.6));
-}
-function afterAnswer(){
-  if(S.mode!=="player") return;
-  if(S.responder!=="me") later(()=>judge(Math.random()<.6), 2000);
-}
-const P = id => S.players.find(p=>p.id===id);
-const R = () => PACK.rounds[S.round];
-const fmt = n => (n<0?"−":"")+Math.abs(n).toLocaleString("ru-RU");
-function later(fn,ms){ S.timers.push(setTimeout(fn,ms)); }
-function clearTimers(){ S.timers.forEach(clearTimeout); S.timers=[]; }
-const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const maxCols = r => Math.max(1,...r.themes.map(t=>t.questions.length));
-const roundTotal = () => R().themes.reduce((a,t)=>a+t.questions.length,0);
-
-function startGame(){
-  if(!(S.phase==="setup"||S.phase==="lobby") || S.joined.length<2) return;
-  if(validate(PACK).some(x=>x.lvl==="err")) return;
-  S.players = S.players.filter(p=>S.joined.includes(p.id));
-  clearTimers(); S.round=0; S.used=new Set(); S.phase="board"; S.view="game"; S.chooser="me"; render();
-}
-
-/* ---------- flow ---------- */
-function pick(ti,qi){
-  const key=ti+"-"+qi, th=R().themes[ti], item=th&&th.questions[qi];
-  if(S.phase!=="board" || !item || S.used.has(key)) return;
-  clearTimers(); S.used.add(key);
-  let sp=item.type||"normal";
-  if(sp==="cat" && !CFG.cat) sp="normal";
-  if(sp==="auction" && !CFG.auction) sp="normal";
-  S.botSay=null; S.msg="";
-  S.cur={ti,qi,theme:th.name,cost:item.cost,q:item.text,a:item.answer,sp,direct:false,noPenalty:false};
-  S.tried=new Set(); S.responder=null; S.reaction=null;
-  if(sp==="cat"){
-    S.phase="cat"; render();
-    if(P(S.chooser).bot){ const others=S.players.filter(p=>p.id!==S.chooser); later(()=>catGive(Math.random()<.6&&S.chooser!=="me"?"me":others[Math.floor(Math.random()*others.length)].id),1700); }
-    return;
-  }
-  if(sp==="auction"){ startAuction(); return; }
-  if(sp==="norisk"){ S.cur.direct=true; S.cur.noPenalty=true; S.responder=S.chooser; S.phase="answer"; render(); afterAnswer(); return; }
-  startReading();
-}
-function startReading(){
-  S.phase="reading"; S.readStart=performance.now();
-  S.readMs=Math.min(3600, 1200 + S.cur.q.length*22); render(); later(openBuzz, S.readMs);
-}
-function openBuzz(){
-  S.phase="open"; S.openAt=performance.now(); render();
-  S.players.filter(p=>p.bot && !S.tried.has(p.id)).forEach(p=>{ if(Math.random()<.7) later(()=>buzz(p.id), 700+Math.random()*3400); });
-  later(()=>{ if(S.phase==="open") reveal("Никто не ответил", null); }, CFG.window);
-}
-function buzz(id){
-  const now=performance.now();
-  if(S.phase==="reading" && id==="me" && CFG.early){ S.lockUntil=now+500; S.early=true; render(); setTimeout(()=>{ S.early=false; render(); },400); return; }
-  if(S.phase!=="open" || S.tried.has(id)) return;
-  if(id==="me" && now<S.lockUntil) return;
-  clearTimers(); S.responder=id; S.reaction=(now-S.openAt)/1000; S.phase="answer"; render(); afterAnswer();
-}
-function judge(ok){
-  if(S.phase!=="answer") return;
-  const p=P(S.responder), c=S.cur.cost;
-  const said = (p.id==="me" && S.said) ? ` «${S.said}»` : ""; S.said="";
-  if(ok){ p.score+=c; S.chooser=p.id; reveal(p.name+said+": верно, +"+fmt(c), true); return; }
-  const fine=(CFG.minus && !S.cur.noPenalty)?c:0; p.score-=fine; S.tried.add(p.id);
-  const tail=fine?", −"+fmt(fine):"";
-  if(S.cur.direct || S.tried.size===S.players.length){ reveal(p.name+said+": неверно"+tail, false); return; }
-  S.msg=p.name+" ошибся"+tail; S.responder=null; openBuzz();
-}
-function reveal(msg, ok){ clearTimers(); S.phase="reveal"; S.msg=msg; S.msgOk=ok; render(); later(toBoard, 2600); }
-function toBoard(){
-  clearTimers(); S.msg="";
-  if(S.used.size>=roundTotal()){ endRound(); return; }
-  S.phase="board"; render();
-  if(P(S.chooser).bot) later(botPick, 1900);
-}
-function endRound(){
-  clearTimers();
-  if(S.round < PACK.rounds.length-1){
-    S.round++; S.used=new Set(); S.phase="board"; S.botSay=null; render();
-    if(P(S.chooser).bot) later(botPick, 1900);
-  } else startFinal();
-}
-function freeCells(){ const f=[]; R().themes.forEach((t,ti)=>t.questions.forEach((_,qi)=>{ if(!S.used.has(ti+"-"+qi)) f.push([ti,qi]); })); return f; }
-function botPick(){
-  const free=freeCells(); if(!free.length) return;
-  const [ti,qi]=free[Math.floor(Math.random()*free.length)];
-  if(CFG.picker==="player") pick(ti,qi); else { S.botSay=[ti,qi]; render(); }
-}
-function catGive(id){ if(S.phase!=="cat") return; clearTimers(); S.responder=id; S.cur.direct=true; S.phase="answer"; S.reaction=null; render(); afterAnswer(); }
-
-function startAuction(){
-  const i=S.players.findIndex(p=>p.id===S.chooser);
-  const order=[...S.players.slice(i+1),...S.players.slice(0,i)].map(p=>p.id);
-  S.auc={bid:S.cur.cost, leader:S.chooser, queue:order, log:[P(S.chooser).name+" открывает торги: "+fmt(S.cur.cost)]};
-  S.phase="auction"; render(); nextAuc();
-}
-function canRaise(id){ return P(id).score >= S.auc.bid+100; }
-function nextAuc(){
-  if(!S.auc.queue.length){ S.responder=S.auc.leader; S.cur.cost=S.auc.bid; S.cur.direct=true; S.reaction=null; later(()=>{ S.phase="answer"; render(); afterAnswer(); },900); render(); return; }
-  const id=S.auc.queue[0]; render();
-  if(P(id).bot) later(()=>aucAct(id, canRaise(id)&&Math.random()<.45?"raise":"pass"),1200);
-}
-function aucAct(id, act){
-  if(S.phase!=="auction" || S.auc.queue[0]!==id) return;
-  clearTimers(); S.auc.queue.shift(); const p=P(id);
-  if(act==="pass") S.auc.log.push(p.name+": пас");
-  else{ const bid=act==="all"?Math.max(p.score,S.auc.bid+100):S.auc.bid+100; S.auc.queue.push(S.auc.leader); S.auc.leader=id; S.auc.bid=bid; S.auc.log.push(p.name+(act==="all"?": ва-банк, ":": ")+fmt(bid)); }
-  nextAuc();
-}
-function startFinal(){
-  clearTimers();
-  if(!CFG.final || !PACK.final){ S.phase="end"; S.fin=null; render(); return; }
-  const inFinal=S.players.filter(p=>p.score>0).map(p=>p.id);
-  if(!inFinal.length){ S.phase="end"; S.fin=null; render(); return; }
-  S.fin={ids:inFinal,bets:{},answers:{},verdict:{}}; S.phase="final-bet"; render();
-  inFinal.filter(id=>P(id).bot).forEach(id=>later(()=>{ const p=P(id); S.fin.bets[id]=Math.max(100,Math.round(p.score*(.3+Math.random()*.7)/100)*100); checkBets(); render(); },1200+Math.random()*1800));
-}
-function checkBets(){
-  if(S.phase!=="final-bet") return;
-  if(S.fin.ids.every(id=>S.fin.bets[id]!=null)){
-    S.phase="final-answer"; render();
-    S.fin.ids.filter(id=>P(id).bot).forEach(id=>later(()=>{ S.fin.answers[id]=Math.random()<.65?PACK.final.answer:"Не знаю"; checkAnswers(); render(); },2500+Math.random()*2500));
-  }
-}
-function checkAnswers(){
-  if(S.phase==="final-answer" && S.fin.ids.every(id=>S.fin.answers[id]!=null)){
-    S.phase="final-judge"; render();
-    if(S.mode==="player") S.fin.ids.forEach((id,i)=>later(()=>finalJudge(id, matchAnswer(S.fin.answers[id], PACK.final.answer)), 1400*(i+1)));
-  }
-}
-function finalJudge(id, ok){
-  if(S.phase!=="final-judge" || S.fin.verdict[id]!=null) return;
-  S.fin.verdict[id]=ok; P(id).score += ok?S.fin.bets[id]:-S.fin.bets[id];
-  if(S.fin.ids.every(i=>S.fin.verdict[i]!=null)) S.phase="end";
-  render();
-}
-
-/* ================= render: TV ================= */
-function roundLabel(){
-  if(["final-bet","final-answer","final-judge"].includes(S.phase)) return "Финал";
-  if(S.phase==="end") return "Итоги";
-  return esc(R().name)+" · осталось "+(roundTotal()-S.used.size);
-}
-function renderTV(){
-  if(S.app==="home"){
-    document.getElementById("tv").innerHTML=`<div class="splash"><div class="big">Своя игра</div><p>Этот экран станет табло, когда вы проведёте игру. Игроки заходят со своих телефонов по коду или QR.</p><button class="sb gold" data-act="host">Провести игру</button></div>`;
-    return;
-  }
-  if(S.phase==="lobby") return renderLobby();
-  if(S.phase==="setup"){
-    if(S.view==="library") return renderLibrary();
-    if(S.view==="editor") return renderEditor();
-    return renderSetup();
-  }
-  const scores=S.players.map(p=>{
-    const cls=["pl"]; let tag="";
-    if(S.phase==="board" && S.chooser===p.id){ cls.push("choose"); tag="выбирает"; }
-    if(S.responder===p.id && S.phase==="answer"){ cls.push("resp"); tag="отвечает"; }
-    if(S.phase==="auction" && S.auc && S.auc.leader===p.id){ cls.push("choose"); tag="лидер торгов"; }
-    return `<div class="${cls.join(" ")}"><div class="nm"><span>${esc(p.name)}</span><em>${tag}</em></div><div class="sc ${p.score<0?"neg":""}">${fmt(p.score)}</div></div>`;
-  }).join("");
-  let main="", host=""; const c=S.cur;
-  switch(S.phase){
-    case "board":{
-      const N=maxCols(R());
-      main=`<div class="board" role="grid" style="grid-template-columns:minmax(110px,1.6fr) repeat(${N},minmax(52px,1fr))">`+R().themes.map((t,ti)=>
-        `<div class="theme">${esc(t.name)}</div>`+Array.from({length:N},(_,qi)=>{
-          const q=t.questions[qi]; if(!q) return `<button class="cell" disabled></button>`;
-          const used=S.used.has(ti+"-"+qi), said=S.botSay&&S.botSay[0]===ti&&S.botSay[1]===qi;
-          return `<button class="cell ${said?"said":""}" ${used||S.mode==="player"?"disabled":""} style="${!used&&S.mode==="player"?"cursor:default;color:var(--gold);background:var(--cell)":""}" data-pick="${ti}-${qi}" aria-label="${esc(t.name)} за ${q.cost}">${used?"":q.cost}</button>`;
-        }).join("")).join("")+`</div>`;
-      const ch=P(S.chooser); let line;
-      if(CFG.picker==="host"){
-        line = S.botSay ? `${esc(ch.name)}: «${esc(R().themes[S.botSay[0]].name)} за ${R().themes[S.botSay[0]].questions[S.botSay[1]].cost}». Откройте этот вопрос на табло`
-          : ch.bot ? `${esc(ch.name)} называет тему и стоимость…` : `Ваша очередь: назовите вопрос и откройте его на табло`;
-      } else line = ch.bot ? `${esc(ch.name)} выбирает вопрос на телефоне…` : (S.mode==="player"?`Ваш выбор: выберите вопрос на телефоне`:`Ваш выбор: на телефоне или на табло`);
-      host=`<span class="lbl">Пульт ведущего</span><span class="ans" style="color:#fff;font-weight:600">${line}</span>`;
-      break;
-    }
-    case "reading":{
-      const el=performance.now()-S.readStart;
-      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div><div class="text">${esc(c.q)}</div><div class="sub">Ведущий читает вопрос, кнопки заблокированы</div><div class="bar read" style="animation-duration:${S.readMs}ms;animation-delay:-${el}ms"></div></div>`;
-      host=hostAnswer(false); break;
-    }
-    case "open":{
-      const el=performance.now()-S.openAt;
-      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div><div class="text">${esc(c.q)}</div><div class="sub">${S.msg?esc(S.msg)+". ":""}Кнопки открыты</div><div class="bar" style="animation-duration:${CFG.window}ms;animation-delay:-${el}ms"></div></div>`;
-      host=hostAnswer(false); break;
-    }
-    case "answer":{
-      const r=P(S.responder);
-      const how = c.sp==="cat"?"Кот в мешке": c.sp==="auction"?"Аукцион": c.sp==="norisk"?"Вопрос без риска": (S.reaction!=null?`нажал первым за ${S.reaction.toFixed(2).replace(".",",")} с`:"");
-      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div><div class="text">${esc(c.q)}</div><div class="sub">Отвечает ${esc(r.name)}${how?" · "+how:""}</div></div>`;
-      host=hostAnswer(true); break;
-    }
-    case "reveal":
-      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div><div class="big">${esc(c.a)}</div><div class="sub">${esc(S.msg)}</div></div>`;
-      host= S.mode==="player" ? hostAnswer(false) : `<span class="lbl">Пульт ведущего</span><span class="ans"></span><div class="btns"><button class="hb neutral" data-act="next">Дальше</button></div>`; break;
-    case "cat":
-      main=`<div class="q"><div class="big">Кот в мешке</div><div class="sub">${esc(P(S.chooser).name)} ${P(S.chooser).bot?"выбирает, кому отдать вопрос":": отдайте вопрос сопернику с телефона"}. Тема «${esc(c.theme)}», ${c.cost}. Отвечают без кнопки.</div></div>`;
-      host=hostAnswer(false); break;
-    case "auction":{
-      const a=S.auc, turn=a.queue[0];
-      main=`<div class="q"><div class="big">Аукцион</div><div class="meta" style="margin-top:12px">${esc(c.theme)} · ставка ${fmt(a.bid)} · лидер ${esc(P(a.leader).name)}</div><div class="sub">${a.log.slice(-3).map(esc).join("<br>")}${turn?`<br><b>Ход: ${esc(P(turn).name)}</b>`:"<br><b>Торги закрыты</b>"}</div></div>`;
-      host=hostAnswer(false); break;
-    }
-    case "final-bet":
-      main=`<div class="q"><div class="meta">Финал</div><div class="big">${esc(PACK.final.theme)}</div><div class="sub">Игроки делают ставки втайне. Сделано: ${Object.keys(S.fin.bets).length} из ${S.fin.ids.length}</div></div>`;
-      host=`<span class="lbl">Пульт ведущего</span><span class="ans">В прототипе удаление тем пропущено</span>`; break;
-    case "final-answer":
-      main=`<div class="q"><div class="meta">Финал · ${esc(PACK.final.theme)}</div><div class="text">${esc(PACK.final.text)}</div><div class="sub">Ответы пишут на телефонах. Получено: ${Object.keys(S.fin.answers).length} из ${S.fin.ids.length}</div></div>`;
-      host= S.mode==="player" ? hostAnswer(false) : `<span class="lbl">Ответ</span><span class="ans">${esc(PACK.final.answer)}</span>`; break;
-    case "final-judge":
-      main=`<div class="q"><div class="meta">Финал · ${esc(PACK.final.theme)}</div><div class="text">${esc(PACK.final.text)}</div><div class="sub">Ведущий проверяет ответы</div></div>`;
-      if(S.mode==="player"){ host=`<div class="judge-list">`+S.fin.ids.map(id=>{ const v=S.fin.verdict[id]; return `<div class="judge-row"><span class="who">${esc(P(id).name)}</span><span class="said">«${esc(S.fin.answers[id]||"—")}»</span><span class="done">${v==null?"…":v?"✓":"✗"}</span></div>`; }).join("")+`</div>`; break; }
-      host=`<div class="judge-list"><div><span class="lbl">Правильный ответ:</span> <b style="color:var(--gold)">${esc(PACK.final.answer)}</b></div>`+S.fin.ids.map(id=>{
-        const v=S.fin.verdict[id];
-        return `<div class="judge-row"><span class="who">${esc(P(id).name)}</span><span class="said">«${esc(S.fin.answers[id]||"—")}» · ставка ${fmt(S.fin.bets[id])}</span>${v==null?`<button class="hb ok" data-fj="${id}:1">Верно</button><button class="hb bad" data-fj="${id}:0">Неверно</button>`:`<span class="done">${v?"✓":"✗"}</span>`}</div>`;
-      }).join("")+`</div>`; break;
-    case "end":{
-      const best=[...S.players].sort((a,b)=>b.score-a.score)[0];
-      main=`<div class="q"><div class="meta">Игра окончена</div><div class="big">${best.score>0?esc(best.name)+(best.id==="me"?" победили":" побеждает"):"Победителя нет"}</div><div class="sub">${S.players.map(p=>esc(p.name)+": "+fmt(p.score)).join(" · ")}</div></div>`;
-      host=`<span class="lbl">Пульт ведущего</span><span class="ans"></span><div class="btns"><button class="hb neutral" data-act="${S.mode==="host"?"restart":"home"}">${S.mode==="host"?"Сыграть заново":"На главную"}</button></div>`; break;
-    }
-  }
-  let skip="";
-  if(S.phase==="board" && S.mode==="host") skip = S.round<PACK.rounds.length-1 ? "Следующий раунд" : (CFG.final&&PACK.final ? "К финалу" : "Завершить игру");
-  document.getElementById("tv").innerHTML=
-    `<div class="tv-head"><span class="tv-title">${roundLabel()}</span><div style="display:flex;gap:8px">${skip?`<button class="ghost" data-act="skip">${skip}</button>`:""}${S.mode==="host"?`<button class="ghost" data-act="restart">Заново</button>`:""}<button class="ghost" data-act="home">Выйти</button></div></div>
-     <div class="scores">${scores}</div>${main}<div class="host">${host}</div>`;
-}
-function renderLobby(){
-  const r=S.room;
-  const names=S.players.filter(p=>S.joined.includes(p.id)).map(p=>`<div>${esc(p.name)}<span>${p.id==="me"?"вы":"в комнате"}</span></div>`).join("");
-  document.getElementById("tv").innerHTML=`
-    <div class="tv-head"><span class="tv-title">${esc(r.name)}</span><button class="ghost" data-act="home">Выйти</button></div>
-    <div class="splash"><span class="access-badge ${r.open?"pub":""}">${r.open?"Открытая комната":"Приватная комната"}</span>
-      <div class="big" style="font-size:clamp(28px,4vw,44px)">${esc(PACK.title)}</div>
-      <p>Ведущий: ${esc(r.host)}. ${stats(PACK)}.</p>
-      <div class="joined" style="width:min(100%,360px)">${names}</div>
-      <p>Ждём, когда ведущий начнёт игру…</p></div>`;
-}
-function hostAnswer(active){
-  if(S.mode==="player") return `<span class="lbl">Ведущий</span><span class="ans" style="color:#fff;font-weight:600">${esc(S.room.host)}${active?" слушает ответ":""}</span><span class="lbl">в демо ответы проверяются автоматически</span>`;
-  return `<span class="lbl">Ответ</span><span class="ans">${esc(S.cur.a)}</span><div class="btns"><button class="hb ok" data-act="ok" ${active?"":"disabled"}>Верно</button><button class="hb bad" data-act="bad" ${active?"":"disabled"}>Неверно</button></div>`;
-}
-function seg(key, opts){
-  return `<div class="seg" role="group">`+opts.map(([v,l])=>`<button data-cfg="${key}" data-val="${v}" aria-pressed="${String(CFG[key])===String(v)}">${l}</button>`).join("")+`</div>`;
-}
-function fakeQR(){
-  let r="", seed=4821; const rnd=()=>{ seed=(seed*9301+49297)%233280; return seed/233280; };
-  for(let y=0;y<21;y++)for(let x=0;x<21;x++){
-    const fin=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);
-    if(fin){ const dx=x>13?x-14:x, dy=y>13?y-14:y; if(dx===0||dx===6||dy===0||dy===6||(dx>1&&dx<5&&dy>1&&dy<5)) r+=`<rect x="${x}" y="${y}" width="1" height="1"/>`; }
-    else if(rnd()<.45) r+=`<rect x="${x}" y="${y}" width="1" height="1"/>`;
-  }
-  return `<svg viewBox="0 0 21 21" fill="#121760" aria-label="QR-код комнаты" role="img">${r}</svg>`;
-}
-function renderSetup(){
-  const all=[["me",meName()],["ai","Айгерим"],["da","Данияр"]];
-  const joined=all.filter(([id])=>S.joined.includes(id)).map(([id,n])=>`<div>${n}<span>${id==="me"?"вы":"подключился"}</span></div>`).join("")+(S.joined.length<3?`<div class="wait">Ждём игроков…</div>`:"");
-  const pickerNote = CFG.picker==="host" ? "Игрок называет тему и стоимость вслух, ведущий открывает вопрос. Телефон остаётся пультом. Подходит, когда все в одной комнате или в созвоне." : "Игрок выбирает вопрос сам на телефоне. Быстрее для онлайн-игры, но экран телефона перегружен.";
-  const errs=validate(PACK).filter(x=>x.lvl==="err").length;
-  document.getElementById("tv").innerHTML=`
-    <div class="tv-head"><span class="tv-title">Настройка комнаты</span><button class="ghost" data-act="home">← Выйти</button></div>
-    <div class="setup">
-      <div class="set-col">
-        <div class="opt"><div class="pack"><div><b>${esc(PACK.title)}</b><span>${stats(PACK)}</span></div><button class="sb gold" data-act="lib">Сменить</button></div>${errs?`<p style="color:#FFB3AE;opacity:1">В паке ${errs} ${plural(errs,"ошибка","ошибки","ошибок")}, откройте его в редакторе.</p>`:""}</div>
-        <div class="opt"><h3>Доступ к комнате</h3>${seg("access",[["private","Приватная"],["public","Открытая"]])}
-          <p>${CFG.access==="private"?"Войти можно только по коду, ссылке или QR, которые вы покажете. Комнаты нет в общем списке.":"Комната появится в «Открытых играх», и в неё сможет зайти любой, пока есть места."}</p>
-          ${CFG.access==="public"?`<input class="tin" data-cfgtext="roomName" value="${esc(CFG.roomName)}" maxlength="40" aria-label="Название комнаты" placeholder="Название комнаты"><div style="margin-top:10px">${seg("max",[[4,"до 4"],[6,"до 6"],[8,"до 8"]])}</div>`:""}</div>
-        <div class="opt"><h3>Кто выбирает вопросы</h3>${seg("picker",[["host","Ведущий"],["player","Игрок с телефона"]])}<p>${pickerNote}</p></div>
-        <div class="opt"><h3>Время на нажатие кнопки</h3>${seg("window",[[5000,"5 с"],[7000,"7 с"],[10000,"10 с"]])}</div>
-        <div class="opt"><h3>Неверный ответ</h3>${seg("minus",[[true,"Снимает очки"],[false,"Без штрафа"]])}<p>«Без штрафа» удобнее для новичков и вечеринок.</p></div>
-        <div class="opt"><h3>Нажатие до конца вопроса</h3>${seg("early",[[true,"Блок на 0,5 с"],[false,"Без блока"]])}</div>
-        <div class="opt"><h3>Спецвопросы и финал</h3><div class="chips">
-          <button data-tog="cat" aria-pressed="${CFG.cat}">Кот в мешке</button>
-          <button data-tog="auction" aria-pressed="${CFG.auction}">Аукцион</button>
-          <button data-tog="final" aria-pressed="${CFG.final}">Финал со ставками</button></div>${CFG.final&&!PACK.final?`<p>В этом паке нет финала.</p>`:""}</div>
-      </div>
-      <div class="lobby">
-        <div><span class="access-badge ${CFG.access==="public"?"pub":""}">${CFG.access==="public"?"Открытая · «"+esc(CFG.roomName||"Моя игра")+"» · до "+CFG.max+" игроков":"Приватная · вход только по коду"}</span></div>
-        <div class="code">${fakeQR()}<div><div class="k">Код комнаты</div><div class="v">${ROOM}</div><div class="k">Наведите камеру или откройте ссылку</div></div></div>
-        <div class="joined">${joined}</div>
-        <button class="start" data-act="start" ${S.joined.length<2||errs?"disabled":""}>Начать игру</button>
-      </div>
-    </div>`;
-}
 
 /* ---------- library ---------- */
 function packCard(p, mine){
@@ -998,145 +697,626 @@ function saveDraft(){
 }
 function choosePack(id){ PACK_ID=id; PACK=clone(findPack(id)); save("svoya.pack", id); }
 
-/* ================= render: phone ================= */
-function needsMe(){
-  if(S.app==="home") return false;
-  if(S.phase==="answer" && S.responder==="me" && S.mode==="player") return true;
-  if(S.phase==="open" && !S.tried.has("me")) return true;
-  if(S.phase==="board" && S.chooser==="me" && CFG.picker==="player") return true;
-  if(S.phase==="cat" && S.chooser==="me") return true;
-  if(S.phase==="auction" && S.auc.queue[0]==="me") return true;
-  if(S.phase==="final-bet" && S.fin.ids.includes("me") && S.fin.bets.me==null) return true;
-  if(S.phase==="final-answer" && S.fin.ids.includes("me") && S.fin.answers.me==null) return true;
-  return false;
+
+/* ================= utils ================= */
+const T=[]; function later(fn,ms){ T.push(setTimeout(fn,ms)); } function clearTimers(){ T.splice(0).forEach(clearTimeout); }
+const fmt = n => (n<0?"−":"")+Math.abs(n||0).toLocaleString("ru-RU");
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function seg(key, opts){ return `<div class="seg" role="group">`+opts.map(([v,l])=>`<button data-cfg="${key}" data-val="${v}" aria-pressed="${String(CFG[key])===String(v)}">${l}</button>`).join("")+`</div>`; }
+function joinURL(code){ return location.origin+location.pathname+"?room="+code; }
+
+/* ================= database ================= */
+let db=null, serverOffset=0;
+const CONF = window.FIREBASE_CONFIG_OVERRIDE || FIREBASE_CONFIG;
+const configured = !!(CONF && CONF.databaseURL);
+const TS = () => firebase.database.ServerValue.TIMESTAMP;
+const now = () => Date.now()+serverOffset;
+const ref = p => db.ref(p);
+function dbInit(){
+  if(!configured || typeof firebase==="undefined") return false;
+  try{
+    if(!firebase.apps || !firebase.apps.length) firebase.initializeApp(CONF);
+    db=firebase.database();
+    ref(".info/serverTimeOffset").on("value",s=>{ serverOffset=s.val()||0; });
+    return true;
+  }catch(e){ console.error(e); return false; }
 }
-function cfgSummary(){
-  return [["Вопросы",esc(PACK.title)],["Доступ",S.mode==="player"?(S.room.open?"открытая":"приватная"):(CFG.access==="public"?"открытая":"приватная")],["Выбор вопросов",CFG.picker==="host"?"ведущий":"игрок"],["На кнопку",CFG.window/1000+" с"],["Ошибка",CFG.minus?"минус очки":"без штрафа"],
-    ["Спецвопросы",[CFG.cat&&"кот",CFG.auction&&"аукцион"].filter(Boolean).join(", ")||"нет"],["Финал",CFG.final&&PACK.final?"есть":"нет"]]
-    .map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("");
+
+/* ================= app state ================= */
+const APP={mode:"home", homeView:"main", joinErr:"", busy:false, publicRooms:{}, pubRef:null, dbOk:false, prefill:""};
+let S={view:"setup", libTab:"mine", draft:null, edRound:0, edSel:null, upMsg:null, upBusy:false};
+let HOST=null, PL=null;
+
+/* ================= HOST ================= */
+const hRef = p => ref(`rooms/${HOST.code}/${p}`);
+const H = () => HOST.H;
+const hostName = () => ME_NAME.trim() || "Ведущий";
+function order(){ return Object.entries(HOST.players).sort((a,b)=>(a[1].joined||0)-(b[1].joined||0)).map(e=>e[0]); }
+function online(){ return order().filter(id=>HOST.players[id].online!==false); }
+function pname(id){ return (HOST.players[id]||{}).name||"Игрок"; }
+function addScore(id,d){ const p=HOST.players[id]; if(!p) return; p.score=(p.score||0)+d; hRef(`players/${id}/score`).set(p.score); }
+
+async function createRoom(){
+  APP.busy=true; render();
+  try{
+    let code;
+    for(let i=0;i<15;i++){ code=String(1000+Math.floor(Math.random()*9000)); const m=(await ref(`rooms/${code}/meta`).once("value")).val(); if(!m || m.closed) break; }
+    await ref(`rooms/${code}`).set({meta:{created:TS(), hostOnline:true, closed:false, name:CFG.roomName||"Моя игра", access:CFG.access, max:CFG.max, host:hostName()}});
+    HOST={code, players:{}, seen:{}, H:{phase:"lobby", round:0, used:{}, qn:0}};
+    attachHost(); APP.mode="host"; S.view="setup"; pushState();
+  }catch(e){ console.error(e); alert("Не удалось создать комнату. Проверьте интернет и настройки базы."); }
+  APP.busy=false; render();
 }
-function buzzerBlock(state){
-  const c=S.cur; let btn, status, hint, timer="";
-  if(state==="reading"){
-    status=`${esc(c.theme)} · ${c.cost}`; hint=CFG.early?"Дождитесь конца вопроса. Раннее нажатие блокирует кнопку на 0,5 с.":"Дождитесь конца вопроса.";
-    btn=`<button class="buzzer ${S.early?"early":""}" data-act="buzz" aria-label="Кнопка, пока заблокирована" style="background:radial-gradient(circle at 38% 32%,#C9CBD8 0%,#9EA1B8 60%,#7D8099 100%);box-shadow:0 12px 0 #5F6280;font-size:20px">${S.early?"Рано!":"Ждите"}</button>`;
-  } else if(S.tried.has("me")){ status="Вы уже отвечали на этот вопрос"; hint="Ждите, пока ответят другие."; btn=`<button class="buzzer" disabled>Ждите</button>`; }
-  else {
-    const el=performance.now()-S.openAt; status="Кнопки открыты"; hint=S.msg?esc(S.msg):"Знаете ответ? Жмите.";
-    btn=`<button class="buzzer live" data-act="buzz">Жми!</button>`;
-    timer=`<div class="timer"><i style="animation-duration:${CFG.window}ms;animation-delay:-${el}ms"></i></div>`;
+function attachHost(){
+  hRef("meta/hostOnline").set(true); hRef("meta/hostOnline").onDisconnect().set(false);
+  hRef("players").on("value", s=>{ HOST.players=Object.fromEntries(Object.entries(s.val()||{}).filter(([k,p])=>p&&p.name)); onPlayers(); });
+  hRef("input").on("child_added", s=>onInput(s.key,s.val()));
+  hRef("input").on("child_changed", s=>onInput(s.key,s.val()));
+}
+function detachHost(){ if(!HOST) return; hRef("players").off(); hRef("input").off(); if(HOST.buzzRef) HOST.buzzRef.off(); clearTimers(); }
+async function resumeHost(saved){
+  APP.busy=true; render();
+  try{
+    const m=(await ref(`rooms/${saved.code}/meta`).once("value")).val();
+    if(!m || m.closed){ save("svoya.hosting",null); alert("Эта комната уже закрыта."); APP.busy=false; render(); return; }
+    HOST={code:saved.code, players:{}, seen:{}, H:saved.H};
+    PACK_ID=saved.packId; PACK=clone(findPack(PACK_ID));
+    attachHost(); APP.mode="host"; S.view="setup";
+    if(["reading","open"].includes(HOST.H.phase)) openBuzz(); else pushState();
+  }catch(e){ alert("Не удалось подключиться"); }
+  APP.busy=false; render();
+}
+function closeRoom(){
+  if(!HOST) return;
+  if(!confirm("Закрыть комнату? Игроки увидят, что игра завершена.")) return;
+  hRef("meta").update({closed:true, hostOnline:false}); ref(`public/${HOST.code}`).remove();
+  detachHost(); HOST=null; save("svoya.hosting",null); goHome();
+}
+function saveHosting(){ if(HOST) save("svoya.hosting",{code:HOST.code, H:HOST.H, packId:PACK_ID}); }
+function syncPublic(){
+  if(!HOST) return; const r=ref(`public/${HOST.code}`);
+  if(CFG.access==="public" && H().phase!=="end"){
+    r.set({name:CFG.roomName||"Моя игра", host:hostName(), pack:PACK.title, count:online().length, max:CFG.max, status:H().phase==="lobby"?"wait":"play", ts:TS()});
+    r.onDisconnect().remove();
+  } else r.remove();
+}
+function syncMeta(){ if(HOST) hRef("meta").update({name:CFG.roomName||"Моя игра", access:CFG.access, max:CFG.max, host:hostName()}); }
+function boardOf(){
+  const h=H(), r=PACK.rounds[h.round]; if(!r) return null;
+  return r.themes.map((t,ti)=>({n:t.name, q:t.questions.map((q,qi)=>({c:q.cost, u:!!h.used[ti+"-"+qi]}))}));
+}
+function pushState(){
+  if(!HOST) return;
+  const h=H(), f=h.fin, ph=h.phase;
+  const st={
+    phase:ph, qn:h.qn||0, round:h.round||0,
+    roundName: ph!=="lobby" && PACK.rounds[h.round] ? PACK.rounds[h.round].name : "",
+    board: ph==="lobby" ? null : boardOf(),
+    chooser:h.chooser||null,
+    cur: h.cur ? {theme:h.cur.theme, cost:h.cur.cost, text:h.cur.text, sp:h.cur.sp, answer: ph==="reveal" ? h.cur.answer : null} : null,
+    responder:h.responder||null, tried:h.tried||{}, openAt:h.openAt||0, readMs:h.readMs||0, readAt:h.readAt||0,
+    reaction: h.reaction==null ? null : h.reaction, msg:h.msg||"", msgOk: h.msgOk==null?null:h.msgOk,
+    auc:h.auc||null,
+    fin: f ? {
+      theme: PACK.final.theme, ids:f.ids,
+      text: ["final-answer","final-judge","end"].includes(ph) ? PACK.final.text : null,
+      answer: ["final-judge","end"].includes(ph) ? PACK.final.answer : null,
+      betDone: Object.fromEntries(Object.keys(f.bets).map(k=>[k,true])),
+      ansDone: Object.fromEntries(Object.keys(f.answers).map(k=>[k,true])),
+      bets: ["final-judge","end"].includes(ph) ? f.bets : null,
+      answers: ["final-judge","end"].includes(ph) ? f.answers : null,
+      verdict: f.verdict
+    } : null,
+    cfg:{picker:CFG.picker, window:CFG.window, minus:CFG.minus, early:CFG.early, cat:CFG.cat, auction:CFG.auction, final:!!(CFG.final&&PACK.final), access:CFG.access},
+    pack:{title:PACK.title, stats:stats(PACK)},
+    host:hostName(), ts:TS()
+  };
+  hRef("state").set(JSON.parse(JSON.stringify(st)));
+  saveHosting(); syncPublic(); render();
+}
+function onPlayers(){
+  if(!HOST) return;
+  syncPublic();
+  const h=H();
+  if(h.phase==="final-bet" || h.phase==="final-answer"){ /* ignore */ }
+  if(APP.mode!=="host" || S.view==="library" || S.view==="editor") return;
+  if(h.phase==="lobby") updateLobby(); else render();
+}
+function onInput(pid, v){
+  if(!v || !HOST || HOST.seen[pid]===v.n) return; HOST.seen[pid]=v.n;
+  const h=H();
+  switch(v.kind){
+    case "pick": if(h.phase==="board" && CFG.picker==="player" && h.chooser===pid) pick(+v.ti,+v.qi); break;
+    case "cat": if(h.phase==="cat" && h.chooser===pid && v.to!==pid && HOST.players[v.to]) catGive(v.to); break;
+    case "auc": if(h.phase==="auction" && h.auc.queue[0]===pid) aucAct(pid, v.act); break;
+    case "bet": if(h.phase==="final-bet" && h.fin.ids.includes(pid) && h.fin.bets[pid]==null){ const max=Math.max(1,(HOST.players[pid]||{}).score||0); h.fin.bets[pid]=Math.max(1,Math.min(max,Math.round(+v.v||1))); checkBets(); } break;
+    case "fa": if(h.phase==="final-answer" && h.fin.ids.includes(pid) && h.fin.answers[pid]==null){ h.fin.answers[pid]=String(v.text||"").trim().slice(0,120)||"—"; checkAnswers(); } break;
   }
-  return `<div class="status">${status}</div><div class="hint">${hint}</div><div class="buzz-wrap">${btn}${timer}<span class="kbd">На компьютере работает пробел</span></div>`;
 }
+
+/* ---------- host game flow ---------- */
+function startGame(){
+  const ids=online(); if(!ids.length || validate(PACK).some(x=>x.lvl==="err")) return;
+  clearTimers();
+  order().forEach(id=>{ HOST.players[id].score=0; hRef(`players/${id}/score`).set(0); });
+  Object.assign(H(),{phase:"board", round:0, used:{}, chooser:ids[0], cur:null, responder:null, tried:{}, msg:"", auc:null, fin:null});
+  hRef("buzz").remove(); hRef("input").remove(); HOST.seen={};
+  S.view="game"; pushState();
+}
+function pick(ti,qi){
+  const h=H(), key=ti+"-"+qi, th=PACK.rounds[h.round].themes[ti], item=th&&th.questions[qi];
+  if(h.phase!=="board" || !item || h.used[key]) return;
+  clearTimers(); h.used[key]=true;
+  let sp=item.type||"normal";
+  if(sp==="cat"&&!CFG.cat) sp="normal"; if(sp==="auction"&&!CFG.auction) sp="normal";
+  if(!HOST.players[h.chooser]) h.chooser=online()[0]||null;
+  h.cur={ti,qi,theme:th.name,cost:item.cost,text:item.text,answer:item.answer,sp,direct:false,noPenalty:false};
+  h.tried={}; h.responder=null; h.reaction=null; h.msg="";
+  if(sp==="cat"){ h.phase="cat"; pushState(); return; }
+  if(sp==="auction"){ startAuction(); return; }
+  if(sp==="norisk" && h.chooser){ h.cur.direct=true; h.cur.noPenalty=true; h.responder=h.chooser; h.phase="answer"; pushState(); return; }
+  startReading();
+}
+function startReading(){
+  const h=H(); h.phase="reading"; h.readMs=Math.min(5000, 1500+(h.cur.text||"").length*30); h.readAt=now();
+  pushState(); later(openBuzz, h.readMs);
+}
+function openBuzz(){
+  const h=H(); clearTimers();
+  h.qn=(h.qn||0)+1; h.phase="open"; h.openAt=now(); h.buzzLock=false;
+  const qn=h.qn;
+  if(HOST.buzzRef) HOST.buzzRef.off();
+  HOST.buzzRef=hRef(`buzz/${qn}`);
+  HOST.buzzRef.on("child_added", ()=>{ const x=H(); if(x.phase!=="open"||x.qn!==qn||x.buzzLock) return; x.buzzLock=true; setTimeout(()=>resolveBuzz(qn),180); });
+  later(()=>{ const x=H(); if(x.phase==="open" && x.qn===qn && !x.buzzLock) reveal("Никто не ответил", null); }, CFG.window);
+  pushState();
+}
+async function resolveBuzz(qn){
+  const h=H(); if(h.phase!=="open" || h.qn!==qn) return;
+  const all=(await hRef(`buzz/${qn}`).once("value")).val()||{};
+  const cand=Object.entries(all).filter(([id,ts])=>!h.tried[id] && HOST.players[id] && typeof ts==="number").sort((a,b)=>a[1]-b[1]);
+  if(!cand.length){ h.buzzLock=false; return; }
+  clearTimers();
+  const [id,ts]=cand[0]; h.responder=id; h.reaction=Math.max(0,(ts-h.openAt)/1000); h.phase="answer"; pushState();
+}
+function judge(ok){
+  const h=H(); if(h.phase!=="answer") return;
+  const id=h.responder, c=h.cur.cost, nm=pname(id);
+  if(ok){ addScore(id,c); h.chooser=id; reveal(nm+": верно, +"+fmt(c), true); return; }
+  const fine=(CFG.minus && !h.cur.noPenalty)?c:0; if(fine) addScore(id,-fine); h.tried[id]=true;
+  const tail=fine?", −"+fmt(fine):"";
+  if(h.cur.direct || !online().some(x=>!h.tried[x])){ reveal(nm+": неверно"+tail, false); return; }
+  h.msg=nm+" ошибся"+tail; h.responder=null; openBuzz();
+}
+function reveal(msg, ok){ clearTimers(); const h=H(); h.phase="reveal"; h.msg=msg; h.msgOk=ok; h.responder=null; pushState(); later(toBoard, 5000); }
+function toBoard(){
+  clearTimers(); const h=H(); h.msg="";
+  const total=PACK.rounds[h.round].themes.reduce((a,t)=>a+t.questions.length,0);
+  if(Object.keys(h.used).length>=total){ endRound(); return; }
+  h.phase="board"; pushState();
+}
+function endRound(){
+  clearTimers(); const h=H();
+  if(h.round < PACK.rounds.length-1){
+    h.round++; h.used={}; h.phase="board";
+    const ids=online(); if(ids.length) h.chooser=ids.slice().sort((a,b)=>(HOST.players[a].score||0)-(HOST.players[b].score||0))[0];
+    pushState();
+  } else startFinal();
+}
+function catGive(to){ const h=H(); if(h.phase!=="cat") return; h.responder=to; h.cur.direct=true; h.phase="answer"; h.reaction=null; pushState(); }
+function startAuction(){
+  const h=H(), ids=online(); let i=ids.indexOf(h.chooser); if(i<0){ h.chooser=ids[0]; i=0; }
+  const q=[...ids.slice(i+1),...ids.slice(0,i)];
+  h.auc={bid:h.cur.cost, leader:h.chooser, queue:q, log:[pname(h.chooser)+" открывает торги: "+fmt(h.cur.cost)]};
+  h.phase="auction"; if(!q.length) aucFinish(); else pushState();
+}
+function aucAct(id, act){
+  const h=H(), a=h.auc; if(h.phase!=="auction" || a.queue[0]!==id) return;
+  const sc=(HOST.players[id]||{}).score||0;
+  if(act==="raise" && sc<a.bid+100) return;
+  if(act==="all" && sc<=a.bid) return;
+  a.queue.shift();
+  if(act==="pass") a.log.push(pname(id)+": пас");
+  else { const bid=act==="all"?sc:a.bid+100; a.queue.push(a.leader); a.leader=id; a.bid=bid; a.log.push(pname(id)+(act==="all"?": ва-банк, ":": ")+fmt(bid)); }
+  a.log=a.log.slice(-4);
+  if(!a.queue.length) aucFinish(); else pushState();
+}
+function aucFinish(){ const h=H(); h.responder=h.auc.leader; h.cur.cost=h.auc.bid; h.cur.direct=true; h.reaction=null; h.phase="answer"; pushState(); }
+function startFinal(){
+  clearTimers(); const h=H();
+  if(!CFG.final || !PACK.final){ h.phase="end"; pushState(); return; }
+  const ids=online().filter(id=>(HOST.players[id].score||0)>0);
+  if(!ids.length){ h.phase="end"; pushState(); return; }
+  h.fin={ids, bets:{}, answers:{}, verdict:{}}; h.phase="final-bet"; pushState();
+}
+function checkBets(force){
+  const h=H(); if(h.phase!=="final-bet") return;
+  if(force || h.fin.ids.every(id=>h.fin.bets[id]!=null)){ h.fin.ids.forEach(id=>{ if(h.fin.bets[id]==null) h.fin.bets[id]=1; }); h.phase="final-answer"; }
+  pushState();
+}
+function checkAnswers(force){
+  const h=H(); if(h.phase!=="final-answer") return;
+  if(force || h.fin.ids.every(id=>h.fin.answers[id]!=null)){ h.fin.ids.forEach(id=>{ if(h.fin.answers[id]==null) h.fin.answers[id]="—"; }); h.phase="final-judge"; }
+  pushState();
+}
+function finalJudge(id, ok){
+  const h=H(); if(h.phase!=="final-judge" || h.fin.verdict[id]!=null) return;
+  h.fin.verdict[id]=ok; addScore(id, ok?h.fin.bets[id]:-h.fin.bets[id]);
+  if(h.fin.ids.every(i=>h.fin.verdict[i]!=null)) h.phase="end";
+  pushState();
+}
+function backToLobby(){ clearTimers(); Object.assign(H(),{phase:"lobby", cur:null, responder:null, fin:null, auc:null, used:{}, round:0}); S.view="setup"; pushState(); }
+
+/* ================= PLAYER ================= */
+const pRef = p => ref(`rooms/${PL.code}/${p}`);
+async function joinRoom(code, name){
+  APP.busy=true; APP.joinErr=""; render();
+  try{
+    if(!/^\d{4}$/.test(code)) throw "Код состоит из 4 цифр";
+    const m=(await ref(`rooms/${code}/meta`).once("value")).val();
+    if(!m || m.closed) throw "Комната с таким кодом не найдена";
+    const key="svoya.pid."+code; let pid=load(key,null);
+    const ps=(await ref(`rooms/${code}/players`).once("value")).val()||{};
+    if(!(pid && ps[pid])){
+      const cnt=Object.values(ps).filter(p=>p.online!==false).length;
+      if(m.access==="public" && m.max && cnt>=m.max) throw "В комнате нет свободных мест";
+      pid=uid(); save(key,pid);
+      await ref(`rooms/${code}/players/${pid}`).set({name, score:0, online:true, joined:TS()});
+    } else await ref(`rooms/${code}/players/${pid}`).update({name, online:true});
+    PL={code, pid, name, state:null, players:{}, meta:m, lock:0, pressedQn:null, sent:{}, seenSelf:false, kicked:false};
+    pRef(`players/${pid}/online`).onDisconnect().set(false);
+    pRef("state").on("value", s=>{ const prev=PL&&PL.state; PL.state=s.val(); if(prev && PL.state && prev.qn!==PL.state.qn) PL.pressedQn=null; if(PL.state && PL.state.phase==="lobby") PL.sent={}; render(); });
+    pRef("players").on("value", s=>{ PL.players=Object.fromEntries(Object.entries(s.val()||{}).filter(([k,p])=>p&&p.name)); if(PL.players[pid]) PL.seenSelf=true; else if(PL.seenSelf && !PL.kicked){ PL.kicked=true; pRef(`players/${pid}/online`).onDisconnect().cancel(); } render(); });
+    pRef("meta").on("value", s=>{ PL.meta=s.val()||{}; render(); });
+    save("svoya.lastRoom", code);
+    APP.mode="player"; history.replaceState(null,"",location.pathname+"?room="+code);
+  }catch(e){ console.error(e); APP.joinErr = typeof e==="string" ? e : "Не удалось подключиться. Проверьте интернет."; }
+  APP.busy=false; render();
+}
+function leaveRoom(){
+  if(PL){ pRef("state").off(); pRef("players").off(); pRef("meta").off(); pRef(`players/${PL.pid}/online`).onDisconnect().cancel(); if(!PL.kicked && PL.players[PL.pid]) pRef(`players/${PL.pid}/online`).set(false); }
+  PL=null; save("svoya.lastRoom",null); history.replaceState(null,"",location.pathname); goHome();
+}
+function send(kind, data){ pRef(`input/${PL.pid}`).set(Object.assign({kind, n:Date.now()+"-"+Math.random().toString(36).slice(2,6)}, data||{})); }
+function plBuzz(){
+  const st=PL&&PL.state; if(!st) return; const t=Date.now();
+  if(st.phase==="reading"){ if(st.cfg.early){ PL.lock=t+500; PL.early=true; render(); setTimeout(()=>{ if(PL){ PL.early=false; render(); } },400); } return; }
+  if(st.phase!=="open" || (st.tried||{})[PL.pid] || PL.pressedQn===st.qn || t<PL.lock) return;
+  PL.pressedQn=st.qn; pRef(`buzz/${st.qn}/${PL.pid}`).set(TS());
+  if(navigator.vibrate) navigator.vibrate(40);
+  render();
+}
+
+/* ================= navigation ================= */
+function goHome(){
+  APP.mode="home"; APP.homeView=APP.prefill?"code":"main"; APP.joinErr="";
+  PACK=clone(findPack(PACK_ID)); render();
+}
+function setHomeView(v){
+  APP.homeView=v; APP.joinErr="";
+  if(APP.pubRef){ APP.pubRef.off(); APP.pubRef=null; }
+  if(v==="rooms" && APP.dbOk){ APP.pubRef=ref("public"); APP.pubRef.on("value", s=>{ APP.publicRooms=s.val()||{}; render(); }); }
+  render();
+}
+
+/* ================= render helpers ================= */
+function preserve(el, html){
+  const vals={}, act=document.activeElement, fid=act&&el.contains(act)?act.id:null;
+  el.querySelectorAll("input[id],textarea[id]").forEach(i=>{ if(i.type!=="range"||i.dataset.keep) vals[i.id]={v:i.value, s:i.selectionStart}; });
+  el.innerHTML=html;
+  Object.entries(vals).forEach(([id,o])=>{ const i=document.getElementById(id); if(i && i.dataset.fresh!=="1"){ i.value=o.v; } });
+  if(fid){ const i=document.getElementById(fid); if(i){ i.focus(); try{ if(vals[fid] && vals[fid].s!=null) i.setSelectionRange(vals[fid].s, vals[fid].s); }catch(e){} } }
+}
+function render(){
+  const tv=document.getElementById("tv"), ps=document.getElementById("pshell");
+  const hostMode = APP.mode==="host";
+  tv.hidden=!hostMode; ps.hidden=hostMode;
+  document.body.dataset.mode=APP.mode;
+  if(hostMode) renderHost(); else if(APP.mode==="player") renderPlayer(); else renderHome();
+}
+
+/* ================= render: home ================= */
 function renderHome(){
-  const v=S.homeView; let b="";
-  if(v==="main") b=`<div class="brand">Своя игра<small>Викторина с кнопками на телефонах</small></div>
-    <button class="entry main" data-act="host"><b>Провести игру</b><span>Вы ведущий: выбираете вопросы, показываете табло на экране и засчитываете ответы</span></button>
+  const el=document.getElementById("phone"); const v=APP.homeView; let b="";
+  if(!configured || !APP.dbOk){
+    b=`<div class="brand">Своя игра<small>Викторина с кнопками на телефонах</small></div>
+      <div class="card"><div class="status" style="font-size:16px">${configured?"Не удалось подключиться к базе":"Подключите базу данных"}</div>
+      <div class="hint" style="margin-top:6px">${configured?"Проверьте интернет и настройки Firebase в файле.":"Чтобы игроки могли заходить с разных телефонов, нужна бесплатная база Firebase. Вставьте её настройки в начало файла index.html (блок FIREBASE_CONFIG) и обновите страницу."}</div></div>`;
+    el.innerHTML=`<div class="ph-body" style="padding-top:28px"><div class="home">${b}</div></div>`; return;
+  }
+  if(v==="main"){
+    const hs=load("svoya.hosting",null), lr=load("svoya.lastRoom",null);
+    b=`<div class="brand">Своя игра<small>Викторина с кнопками на телефонах</small></div>
+    ${hs?`<button class="entry resume" data-act="resume-host"><b>Вернуться в свою комнату ${esc(hs.code)}</b><span>Вы ведущий этой игры</span></button>`:""}
+    ${lr&&!hs?`<button class="entry resume" data-act="rejoin"><b>Вернуться в комнату ${esc(lr)}</b><span>Счёт сохранится</span></button>`:""}
+    <button class="entry main" data-act="host" ${APP.busy?"disabled":""}><b>${APP.busy?"Создаём комнату…":"Провести игру"}</b><span>Вы ведущий: выбираете вопросы, показываете табло на экране и засчитываете ответы</span></button>
     <button class="entry" data-home="code"><b>Войти по коду</b><span>Ведущий покажет код или QR на своём экране</span></button>
     <button class="entry" data-home="rooms"><b>Открытые игры</b><span>Присоединиться к игре, которую ведёт кто-то другой</span></button>`;
+  }
   if(v==="code") b=`<button class="back" data-home="main">← Назад</button><div class="status">Войти по коду</div>
-    <input class="field codein" id="code" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off" aria-label="Код комнаты">
-    <input class="field" id="nm" placeholder="Как вас называть" value="${esc(ME_NAME)}" maxlength="20" aria-label="Ваше имя">
-    ${S.joinErr?`<div class="err-t">${esc(S.joinErr)}</div>`:""}
-    <button class="pbtn hot" data-act="join-code"><span>Войти</span><span></span></button>
-    <div class="hint">Для демо: 1234 (приватная комната) или 5173 (открытая).</div>`;
-  if(v==="rooms") b=`<button class="back" data-home="main">← Назад</button><div class="status">Открытые игры</div>
-    ${ROOMS.filter(r=>r.open).map(r=>{ const full=r.players>=r.max, play=r.status==="play";
+    <input class="field codein" id="code" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off" aria-label="Код комнаты" value="${esc(APP.prefill)}">
+    <input class="field" id="nm" placeholder="Как вас называть" value="${esc(ME_NAME)}" maxlength="20" aria-label="Ваше имя" autocomplete="nickname">
+    ${APP.joinErr?`<div class="err-t">${esc(APP.joinErr)}</div>`:""}
+    <button class="pbtn hot" data-act="join-code" ${APP.busy?"disabled":""}><span>${APP.busy?"Подключаемся…":"Войти"}</span><span></span></button>`;
+  if(v==="rooms"){
+    const t=now(), list=Object.entries(APP.publicRooms).filter(([c,r])=>r && (!r.ts || t-r.ts<6*3600e3)).sort((a,b)=>(a[1].status==="wait"?0:1)-(b[1].status==="wait"?0:1));
+    b=`<button class="back" data-home="main">← Назад</button><div class="status">Открытые игры</div>
+    <input class="field" id="nm" placeholder="Как вас называть" value="${esc(ME_NAME)}" maxlength="20" aria-label="Ваше имя" autocomplete="nickname">
+    ${APP.joinErr?`<div class="err-t">${esc(APP.joinErr)}</div>`:""}
+    ${list.length? list.map(([code,r])=>{ const full=r.count>=r.max, play=r.status==="play";
       return `<div class="room"><div class="r1"><b>${esc(r.name)}</b><span class="pill ${play?"play":"wait"}">${play?"идёт игра":"ждут игроков"}</span></div>
-        <div class="meta2">Ведёт ${esc(r.host)} · ${esc(findPack(r.pack).title)} · ${r.players} из ${r.max}</div>
-        <button class="pbtn ${play||full?"alt":""}" data-joinroom="${r.code}" ${play||full?"disabled":""}><span>${play?"Вход закрыт":full?"Мест нет":"Войти"}</span><span></span></button></div>`; }).join("")}`;
-  document.getElementById("phone").innerHTML=`<div class="ph-body" style="padding-top:28px">${`<div class="home">${b}</div>`}</div>`;
+        <div class="meta2">Ведёт ${esc(r.host)} · ${esc(r.pack)} · ${r.count||0} из ${r.max}</div>
+        <button class="pbtn ${full?"alt":""}" data-joinroom="${esc(code)}" ${full||APP.busy?"disabled":""}><span>${full?"Мест нет":play?"Войти в идущую игру":"Войти"}</span><span></span></button></div>`; }).join("")
+      : `<div class="card"><div class="hint">Сейчас открытых игр нет. Создайте свою: «Провести игру», доступ «Открытая».</div></div>`}`;
+  }
+  preserve(el, `<div class="ph-body" style="padding-top:28px"><div class="home">${b}</div></div>`);
 }
-function renderPhone(){
-  if(S.app==="home") return renderHome();
-  const me=P("me"); let body="";
-  switch(S.phase){
-    case "lobby":
-      body=`<div class="status">Вы в комнате «${esc(S.room.name)}»</div><div class="hint">Ведёт ${esc(S.room.host)}. Игра начнётся, когда ведущий нажмёт «Начать».</div><div class="card summary">${cfgSummary()}</div><button class="pbtn alt" data-act="home"><span>Выйти из комнаты</span><span></span></button>`; break;
-    case "setup":
-      body=`<div class="status">Вы в комнате ${ROOM}</div><div class="hint">${S.view==="setup"?"Ведущий настраивает игру. Игра начнётся автоматически.":"Ведущий выбирает вопросы."}</div><div class="card summary">${cfgSummary()}</div>`; break;
-    case "board":
-      if(S.chooser==="me" && CFG.picker==="host") body=`<div class="status">Ваш выбор</div><div class="hint">Назовите тему и стоимость вслух, ведущий откроет вопрос.</div><div class="buzz-wrap"><button class="buzzer" disabled>Ваш ход</button></div>`;
-      else if(S.chooser==="me"){
-        const N=maxCols(R());
-        body=`<div class="status">Ваш выбор</div><div class="mini" style="grid-template-columns:repeat(${N},1fr)">`+R().themes.map((t,ti)=>`<div class="t">${esc(t.name)}</div>`+Array.from({length:N},(_,qi)=>{ const q=t.questions[qi]; if(!q) return `<button disabled></button>`; const u=S.used.has(ti+"-"+qi); return `<button data-pick="${ti}-${qi}" ${u?"disabled":""} aria-label="${esc(t.name)} за ${q.cost}">${u?"":q.cost}</button>`; }).join("")).join("")+`</div>`;
-      } else body=`<div class="status">${S.botSay?esc(P(S.chooser).name)+": «"+esc(R().themes[S.botSay[0]].name)+" за "+R().themes[S.botSay[0]].questions[S.botSay[1]].cost+"»":esc(P(S.chooser).name)+" выбирает вопрос"}</div><div class="hint">Смотрите на общий экран.</div><div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
-      break;
-    case "reading": body=buzzerBlock("reading"); break;
-    case "open": body=buzzerBlock("open"); break;
-    case "answer":{
-      const r=S.responder;
-      if(r==="me" && S.mode==="player") body=`<div class="status">Ваш ответ</div><div class="hint">${esc(S.cur.theme)} · ${fmt(S.cur.cost)}${S.cur.sp==="norisk"?" · без риска":""}</div><div class="card"><div class="k">Вопрос</div><div style="font-weight:700">${esc(S.cur.q)}</div></div><input class="field" id="pa" placeholder="Напишите ответ" autocomplete="off" aria-label="Ваш ответ"><button class="pbtn hot" data-act="pa"><span>Ответить</span><span></span></button>`;
-      else if(r==="me") body=`<div class="status">Ваш ответ</div><div class="hint">${S.cur.sp==="norisk"?"Вопрос без риска: за ошибку очки не снимаются. ":""}Скажите ответ вслух, ведущий засчитает.</div><div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#5FE0A8 0%,var(--ok) 55%,#0C6B46 100%);box-shadow:0 2px 0 #0C6B46">Вы!</button>${S.reaction!=null?`<div class="card" style="width:100%;text-align:center"><div class="k">Время реакции</div><div class="v">${S.reaction.toFixed(2).replace(".",",")} с</div></div>`:""}</div>`;
-      else body=`<div class="status">Отвечает ${esc(P(r).name)}</div>${S.reaction!=null?`<div class="hint">Нажал за ${S.reaction.toFixed(2).replace(".",",")} с</div>`:""}<div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
+
+/* ================= render: host ================= */
+function renderHost(){
+  if(S.view==="library") return renderLibrary();
+  if(S.view==="editor") return renderEditor();
+  if(!HOST) return;
+  if(H().phase==="lobby") return renderSetup();
+  renderHostGame();
+}
+function cfgNoteHTML(){ return CFG.picker==="host" ? "Игрок называет тему и стоимость вслух, вы открываете вопрос на табло. Телефон остаётся пультом." : "Игрок выбирает вопрос сам на телефоне. Удобнее, когда играют удалённо."; }
+function renderSetup(){
+  const errs=validate(PACK).filter(x=>x.lvl==="err").length;
+  preserve(document.getElementById("tv"), `
+    <div class="tv-head"><span class="tv-title">Комната ${HOST.code} · настройка</span><button class="ghost" data-act="close-room">Закрыть комнату</button></div>
+    <div class="setup">
+      <div class="set-col">
+        <div class="opt"><div class="pack"><div><b>${esc(PACK.title)}</b><span>${stats(PACK)}</span></div><button class="sb gold" data-act="lib">Сменить вопросы</button></div>${errs?`<p style="color:#FFB3AE;opacity:1">В паке ${errs} ${plural(errs,"ошибка","ошибки","ошибок")}, откройте его в редакторе.</p>`:""}</div>
+        <div class="opt"><h3>Ведущий</h3><input class="tin" id="hostname" data-cfgname="1" value="${esc(ME_NAME)}" maxlength="20" placeholder="Ваше имя" aria-label="Имя ведущего"></div>
+        <div class="opt"><h3>Доступ к комнате</h3>${seg("access",[["private","Приватная"],["public","Открытая"]])}
+          <p>${CFG.access==="private"?"Войти можно только по коду, ссылке или QR. Комнаты нет в общем списке.":"Комната видна в «Открытых играх», зайти может любой, пока есть места."}</p>
+          ${CFG.access==="public"?`<input class="tin" id="roomname" data-cfgtext="roomName" value="${esc(CFG.roomName)}" maxlength="40" aria-label="Название комнаты" placeholder="Название комнаты"><div style="margin-top:10px">${seg("max",[[4,"до 4"],[6,"до 6"],[8,"до 8"],[12,"до 12"]])}</div>`:""}</div>
+        <div class="opt"><h3>Кто выбирает вопросы</h3>${seg("picker",[["host","Ведущий"],["player","Игрок с телефона"]])}<p>${cfgNoteHTML()}</p></div>
+        <div class="opt"><h3>Время на нажатие кнопки</h3>${seg("window",[[5000,"5 с"],[7000,"7 с"],[10000,"10 с"]])}</div>
+        <div class="opt"><h3>Неверный ответ</h3>${seg("minus",[[true,"Снимает очки"],[false,"Без штрафа"]])}</div>
+        <div class="opt"><h3>Нажатие до конца вопроса</h3>${seg("early",[[true,"Блок на 0,5 с"],[false,"Без блока"]])}</div>
+        <div class="opt"><h3>Спецвопросы и финал</h3><div class="chips">
+          <button data-tog="cat" aria-pressed="${CFG.cat}">Кот в мешке</button>
+          <button data-tog="auction" aria-pressed="${CFG.auction}">Аукцион</button>
+          <button data-tog="final" aria-pressed="${CFG.final}">Финал со ставками</button></div>${CFG.final&&!PACK.final?`<p>В этом паке нет финала.</p>`:""}</div>
+      </div>
+      <div class="lobby">
+        <div><span class="access-badge ${CFG.access==="public"?"pub":""}" id="acc-badge">${accBadge()}</span></div>
+        <div class="code"><div id="qr" class="qrbox" aria-label="QR-код для входа"></div><div><div class="k">Код комнаты</div><div class="v">${HOST.code}</div><button class="sb" data-act="copy-link" style="margin-top:6px">Скопировать ссылку</button></div></div>
+        <div class="k" style="font-size:13px;opacity:.75;word-break:break-all">${esc(joinURL(HOST.code))}</div>
+        <div class="joined" id="lobby-players"></div>
+        <button class="start" data-act="start" id="start-btn">Начать игру</button>
+      </div>
+    </div>`);
+  updateLobby(); drawQR();
+}
+function accBadge(){ return CFG.access==="public" ? "Открытая · «"+esc(CFG.roomName||"Моя игра")+"» · до "+CFG.max : "Приватная · вход только по коду"; }
+function updateLobby(){
+  const box=document.getElementById("lobby-players"); if(!box) return;
+  const ids=order();
+  box.innerHTML = ids.length ? ids.map(id=>{ const p=HOST.players[id], on=p.online!==false;
+    return `<div><span class="pl-name"><i class="on-dot ${on?"":"off"}"></i>${esc(p.name)}</span><button class="ed-x" data-kick="${id}" aria-label="Удалить игрока ${esc(p.name)}">×</button></div>`; }).join("")
+    : `<div class="wait">Ждём игроков: пусть отсканируют QR или введут код</div>`;
+  const btn=document.getElementById("start-btn"), errs=validate(PACK).some(x=>x.lvl==="err");
+  if(btn){ btn.disabled=!online().length||errs; btn.textContent=online().length?`Начать игру · ${online().length} ${plural(online().length,"игрок","игрока","игроков")}`:"Начать игру"; }
+}
+function drawQR(){
+  const box=document.getElementById("qr"); if(!box) return;
+  const url=joinURL(HOST.code);
+  if(HOST.qrFor===url && HOST.qrImg){ box.innerHTML=`<img src="${HOST.qrImg}" alt="">`; return; }
+  loadScript("https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js").then(()=>{
+    const b=document.getElementById("qr"); if(!b) return; b.innerHTML="";
+    new QRCode(b,{text:url,width:180,height:180,colorDark:"#121760",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
+    setTimeout(()=>{ const c=b.querySelector("canvas"); if(c){ HOST.qrImg=c.toDataURL(); HOST.qrFor=url; } },50);
+  }).catch(()=>{ box.innerHTML=`<div style="color:#121760;font-size:12px;padding:8px">QR не загрузился</div>`; });
+}
+function roundLabel(h){
+  if(["final-bet","final-answer","final-judge"].includes(h.phase)) return "Финал";
+  if(h.phase==="end") return "Итоги";
+  const r=PACK.rounds[h.round], total=r.themes.reduce((a,t)=>a+t.questions.length,0);
+  return esc(r.name)+" · осталось "+(total-Object.keys(h.used).length);
+}
+function renderHostGame(){
+  const h=H(), c=h.cur, ids=order();
+  const scores=ids.map(id=>{
+    const p=HOST.players[id], cls=["pl"]; let tag="";
+    if(h.phase==="board" && h.chooser===id){ cls.push("choose"); tag="выбирает"; }
+    if(h.responder===id && h.phase==="answer"){ cls.push("resp"); tag="отвечает"; }
+    if(h.phase==="auction" && h.auc && h.auc.leader===id){ cls.push("choose"); tag="лидер"; }
+    return `<button class="${cls.join(" ")}" data-score="${id}" title="Изменить счёт"><div class="nm"><span><i class="on-dot ${p.online!==false?"":"off"}"></i>${esc(p.name)}</span><em>${tag}</em></div><div class="sc ${(p.score||0)<0?"neg":""}">${fmt(p.score||0)}</div></button>`;
+  }).join("");
+  let main="", host="";
+  const ansStrip=(active,extra)=>`<span class="lbl">Ответ</span><span class="ans">${esc(c.answer)}</span><div class="btns">${extra||""}<button class="hb ok" data-act="ok" ${active?"":"disabled"}>Верно</button><button class="hb bad" data-act="bad" ${active?"":"disabled"}>Неверно</button></div>`;
+  switch(h.phase){
+    case "board":{
+      const R=PACK.rounds[h.round], N=Math.max(1,...R.themes.map(t=>t.questions.length));
+      main=`<div class="board" style="grid-template-columns:minmax(110px,1.6fr) repeat(${N},minmax(52px,1fr))">`+R.themes.map((t,ti)=>`<div class="theme">${esc(t.name)}</div>`+Array.from({length:N},(_,qi)=>{
+        const q=t.questions[qi]; if(!q) return `<button class="cell" disabled></button>`;
+        const used=h.used[ti+"-"+qi];
+        return `<button class="cell" ${used?"disabled":""} data-pick="${ti}-${qi}" aria-label="${esc(t.name)} за ${q.cost}">${used?"":q.cost}</button>`;
+      }).join("")).join("")+`</div>`;
+      const ch=h.chooser?pname(h.chooser):"—";
+      host=`<span class="lbl">Ход</span><span class="ans" style="color:#fff;font-weight:600">${CFG.picker==="host"?`${esc(ch)} называет вопрос, откройте его на табло`:`${esc(ch)} выбирает вопрос на телефоне (можно открыть и отсюда)`}</span><div class="btns"><button class="hb neutral" data-act="pass-turn">Передать ход</button></div>`;
       break;
     }
-    case "reveal": body=`<div class="status">${esc(S.msg)}</div><div class="card"><div class="k">Правильный ответ</div><div class="v" style="font-size:22px">${esc(S.cur.a)}</div></div>`; break;
+    case "reading":{
+      const el=Math.max(0,now()-h.readAt);
+      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div><div class="text">${esc(c.text)}</div><div class="sub">Прочитайте вопрос вслух, кнопки пока заблокированы</div><div class="bar read" style="animation-duration:${h.readMs}ms;animation-delay:-${el}ms"></div></div>`;
+      host=ansStrip(false,`<button class="hb neutral" data-act="open-now">Открыть кнопки</button>`); break;
+    }
+    case "open":{
+      const el=Math.max(0,now()-h.openAt);
+      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div><div class="text">${esc(c.text)}</div><div class="sub">${h.msg?esc(h.msg)+". ":""}Кнопки открыты</div><div class="bar" style="animation-duration:${CFG.window}ms;animation-delay:-${el}ms"></div></div>`;
+      host=ansStrip(false,`<button class="hb neutral" data-act="nobody">Никто</button>`); break;
+    }
+    case "answer":{
+      const how=c.sp==="cat"?"Кот в мешке":c.sp==="auction"?"Аукцион":c.sp==="norisk"?"Вопрос без риска":(h.reaction!=null?`нажал первым за ${h.reaction.toFixed(2).replace(".",",")} с`:"");
+      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div><div class="text">${esc(c.text)}</div><div class="sub">Отвечает ${esc(pname(h.responder))}${how?" · "+how:""}</div></div>`;
+      host=ansStrip(true); break;
+    }
+    case "reveal":
+      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div><div class="big">${esc(c.answer)}</div><div class="sub">${esc(h.msg)}</div></div>`;
+      host=`<span class="lbl">Пульт</span><span class="ans"></span><div class="btns"><button class="hb neutral" data-act="next">Дальше</button></div>`; break;
     case "cat":
-      if(S.chooser==="me") body=`<div class="status">Кот в мешке!</div><div class="hint">Отдайте вопрос сопернику. Тема «${esc(S.cur.theme)}», ${S.cur.cost}. Он ответит без кнопки.</div><div class="choices">`+S.players.filter(p=>p.id!=="me").map(p=>`<button class="pbtn" data-cat="${p.id}"><span>${esc(p.name)}</span><span>${fmt(p.score)}</span></button>`).join("")+`</div>`;
-      else body=`<div class="status">${esc(P(S.chooser).name)} выбирает, кому отдать кота в мешке</div><div class="hint">Возможно, вам.</div>`;
-      break;
+      main=`<div class="q"><div class="big">Кот в мешке</div><div class="sub">${esc(pname(h.chooser))} отдаёт вопрос сопернику с телефона. Тема «${esc(c.theme)}», ${c.cost}. Отвечают без кнопки.</div></div>`;
+      host=`<span class="lbl">Отдать за игрока</span><div class="btns" style="flex-wrap:wrap">${online().filter(x=>x!==h.chooser).map(x=>`<button class="hb neutral" data-catto="${x}">${esc(pname(x))}</button>`).join("")}</div>`; break;
     case "auction":{
-      const a=S.auc, my=a.queue[0]==="me";
-      body=`<div class="status">Аукцион</div><div class="card"><div class="k">Текущая ставка · ${esc(P(a.leader).name)}</div><div class="v">${fmt(a.bid)}</div></div>`;
-      if(my){ const r=canRaise("me"), all=me.score>a.bid;
-        body+=`<div class="hint">Ваш ход. У вас ${fmt(me.score)}.</div><div class="choices"><button class="pbtn" data-auc="raise" ${r?"":"disabled"}><span>Поднять</span><span>${fmt(a.bid+100)}</span></button><button class="pbtn hot" data-auc="all" ${all?"":"disabled"}><span>Ва-банк</span><span>${fmt(Math.max(me.score,a.bid+100))}</span></button><button class="pbtn alt" data-auc="pass"><span>Пас</span><span></span></button></div>`;
-        if(!r) body+=`<div class="hint">Поднять ставку можно, только если на счёте хватает очков.</div>`;
-      } else body+=`<div class="hint">${a.queue[0]?"Ходит "+esc(P(a.queue[0]).name):a.leader==="me"?"Вы выиграли торги":"Торги закрыты"}</div>`;
-      break;
+      const a=h.auc, turn=a.queue[0];
+      main=`<div class="q"><div class="big">Аукцион</div><div class="meta" style="margin-top:12px">${esc(c.theme)} · ставка ${fmt(a.bid)} · лидер ${esc(pname(a.leader))}</div><div class="sub">${a.log.map(esc).join("<br>")}${turn?`<br><b>Ход: ${esc(pname(turn))}</b>`:""}</div></div>`;
+      host=`<span class="lbl">Торги</span><span class="ans" style="color:#fff;font-weight:600">${turn?"Ходит "+esc(pname(turn)):""}</span><div class="btns"><button class="hb neutral" data-act="auc-skip">Пас за игрока</button><button class="hb neutral" data-act="auc-end">Завершить торги</button></div>`; break;
     }
     case "final-bet":
-      if(!S.fin.ids.includes("me")) body=`<div class="status">Вы не прошли в финал</div><div class="hint">В финал проходят игроки с положительным счётом.</div>`;
-      else if(S.fin.bets.me!=null) body=`<div class="status">Ставка принята</div><div class="card"><div class="k">Ваша ставка</div><div class="v">${fmt(S.fin.bets.me)}</div></div><div class="hint">Ждём остальных.</div>`;
-      else body=`<div class="status">Финал: «${esc(PACK.final.theme)}»</div><div class="hint">Сделайте ставку. Соперники её не увидят.</div><div class="card"><div class="k">Ставка</div><div class="v" id="betv">${fmt(Math.min(100,me.score))}</div></div><input type="range" id="bet" min="1" max="${me.score}" step="1" value="${Math.min(100,me.score)}" aria-label="Ставка"><button class="pbtn hot" data-act="bet"><span>Поставить</span><span></span></button>`;
-      break;
+      main=`<div class="q"><div class="meta">Финал</div><div class="big">${esc(PACK.final.theme)}</div><div class="sub">Игроки делают ставки на телефонах. Сделано: ${Object.keys(h.fin.bets).length} из ${h.fin.ids.length}</div></div>`;
+      host=`<span class="lbl">Финал</span><span class="ans" style="color:#fff;font-weight:600">${h.fin.ids.map(esc2=>esc(pname(esc2))).join(", ")}</span><div class="btns"><button class="hb neutral" data-act="force-bets">Не ждать</button></div>`; break;
     case "final-answer":
-      if(!S.fin.ids.includes("me")) body=`<div class="status">Идёт финал</div><div class="hint">Смотрите на общий экран.</div>`;
-      else if(S.fin.answers.me!=null) body=`<div class="status">Ответ отправлен</div><div class="card"><div class="k">Ваш ответ</div><div class="v" style="font-size:22px">${esc(S.fin.answers.me)}</div></div>`;
-      else body=`<div class="status">${esc(PACK.final.text)}</div><input class="field" id="fa" placeholder="Ваш ответ" autocomplete="off"><button class="pbtn hot" data-act="fa"><span>Отправить ответ</span><span></span></button>`;
-      break;
+      main=`<div class="q"><div class="meta">Финал · ${esc(PACK.final.theme)}</div><div class="text">${esc(PACK.final.text)}</div><div class="sub">Ответы пишут на телефонах. Получено: ${Object.keys(h.fin.answers).length} из ${h.fin.ids.length}</div></div>`;
+      host=`<span class="lbl">Ответ</span><span class="ans">${esc(PACK.final.answer)}</span><div class="btns"><button class="hb neutral" data-act="force-answers">Не ждать</button></div>`; break;
     case "final-judge":
-      body=`<div class="status">Ведущий проверяет ответы</div>`+(S.fin.ids.includes("me")&&S.fin.verdict.me!=null?`<span class="pill ${S.fin.verdict.me?"ok":"bad"}">${S.fin.verdict.me?"Верно, +":"Неверно, −"}${fmt(S.fin.bets.me)}</span>`:""); break;
+      main=`<div class="q"><div class="meta">Финал · ${esc(PACK.final.theme)}</div><div class="text">${esc(PACK.final.text)}</div><div class="sub">Проверьте ответы</div></div>`;
+      host=`<div class="judge-list"><div><span class="lbl">Правильный ответ:</span> <b style="color:var(--gold)">${esc(PACK.final.answer)}</b></div>`+h.fin.ids.map(id=>{ const v=h.fin.verdict[id];
+        return `<div class="judge-row"><span class="who">${esc(pname(id))}</span><span class="said">«${esc(h.fin.answers[id]||"—")}» · ставка ${fmt(h.fin.bets[id])}</span>${v==null?`<button class="hb ok" data-fj="${id}:1">Верно</button><button class="hb bad" data-fj="${id}:0">Неверно</button>`:`<span class="done">${v?"✓":"✗"}</span>`}</div>`; }).join("")+`</div>`; break;
     case "end":{
-      const place=[...S.players].sort((a,b)=>b.score-a.score).findIndex(p=>p.id==="me")+1;
-      body=`<div class="status">Игра окончена</div><div class="card"><div class="k">Ваше место</div><div class="v">${place} из ${S.players.length}</div></div><button class="pbtn" data-act="restart"><span>Сыграть заново</span><span></span></button>`; break;
+      const best=ids.slice().sort((a,b)=>(HOST.players[b].score||0)-(HOST.players[a].score||0))[0];
+      main=`<div class="q"><div class="meta">Игра окончена</div><div class="big">${best&&(HOST.players[best].score||0)>0?esc(pname(best))+" побеждает":"Победителя нет"}</div><div class="sub">${ids.map(id=>esc(pname(id))+": "+fmt(HOST.players[id].score||0)).join(" · ")}</div></div>`;
+      host=`<span class="lbl">Пульт</span><span class="ans"></span><div class="btns"><button class="hb neutral" data-act="lobby">Новая игра с теми же игроками</button></div>`; break;
     }
   }
-  const ranked=[...S.players].sort((a,b)=>b.score-a.score), place=ranked.findIndex(p=>p.id==="me")+1;
-  const rivals=S.players.filter(p=>p.id!=="me" && S.joined.includes(p.id)).map(p=>{
-    const act=(S.phase==="answer"&&S.responder===p.id)||(S.phase==="board"&&S.chooser===p.id)||(S.phase==="auction"&&S.auc&&S.auc.queue[0]===p.id);
-    const lead=ranked[0].id===p.id&&p.score>0;
-    return `<div class="rv ${act?"act":""}"><div class="n"><span>${esc(p.name)}</span>${lead?"<i>1-й</i>":""}</div><div class="s ${p.score<0?"neg":""}">${fmt(p.score)}</div></div>`;
-  }).join("");
-  document.getElementById("phone").innerHTML=`<div class="ph-top"><div class="me">${S.mode==="player"?esc(S.room.name):"Комната "+ROOM}${S.phase==="setup"||S.phase==="lobby"?"":" · "+place+"-е место"}<b>${esc(me.name)}</b></div><div class="sc">${fmt(me.score)}</div></div>${rivals?`<div class="ph-rivals" aria-label="Счёт соперников">${rivals}</div>`:""}<div class="ph-body">${body}</div>`;
-  const bet=document.getElementById("bet");
-  if(bet) bet.addEventListener("input",()=>{ document.getElementById("betv").textContent=fmt(+bet.value); });
+  let skip="";
+  if(h.phase==="board") skip = h.round<PACK.rounds.length-1 ? "Следующий раунд" : (CFG.final&&PACK.final?"К финалу":"Завершить игру");
+  document.getElementById("tv").innerHTML=`
+    <div class="tv-head"><span class="tv-title">${roundLabel(h)} · комната ${HOST.code}</span><div style="display:flex;gap:8px;flex-wrap:wrap">${skip?`<button class="ghost" data-act="skip">${skip}</button>`:""}<button class="ghost" data-act="lobby">В лобби</button><button class="ghost" data-act="close-room">Закрыть</button></div></div>
+    <div class="scores" style="grid-template-columns:repeat(${Math.min(Math.max(ids.length,1),6)},1fr)">${scores||`<div class="pl">Игроков нет</div>`}</div>${main}<div class="host">${host}</div>`;
 }
-function render(){ renderTV(); renderPhone(); document.getElementById("dot").classList.toggle("on", needsMe()); }
+
+/* ================= render: player ================= */
+function plSummary(st){
+  const c=st.cfg||{};
+  return [["Вопросы",esc((st.pack||{}).title)],["Ведущий",esc(st.host)],["Доступ",c.access==="public"?"открытая":"приватная"],["Выбор вопросов",c.picker==="host"?"ведущий":"игрок"],["На кнопку",(c.window||7000)/1000+" с"],["Ошибка",c.minus?"минус очки":"без штрафа"],["Финал",c.final?"есть":"нет"]]
+    .map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("");
+}
+const arr = x => Array.isArray(x) ? x : Object.keys(x||{}).sort((a,b)=>a-b).map(k=>x[k]);
+function renderPlayer(){
+  const el=document.getElementById("phone"); if(!PL) return;
+  const st=PL.state, me=PL.players[PL.pid]||{name:PL.name,score:0}, pn=id=>(PL.players[id]||{}).name||"Игрок";
+  let body="";
+  if(PL.kicked) body=`<div class="status">Ведущий удалил вас из комнаты</div><button class="pbtn" data-act="leave"><span>На главную</span><span></span></button>`;
+  else if(PL.meta && PL.meta.closed) body=`<div class="status">Ведущий закрыл комнату</div><div class="hint">Спасибо за игру!</div><button class="pbtn" data-act="leave"><span>На главную</span><span></span></button>`;
+  else if(!st) body=`<div class="status">Подключаемся…</div>`;
+  else {
+    const c=st.cur, tried=st.tried||{};
+    switch(st.phase){
+      case "lobby":
+        body=`<div class="status">Вы в комнате ${PL.code}</div><div class="hint">Игра начнётся, когда ведущий нажмёт «Начать».</div><div class="card summary">${plSummary(st)}</div>`; break;
+      case "board":
+        if(st.chooser===PL.pid && st.cfg.picker==="host") body=`<div class="status">Ваш выбор</div><div class="hint">Назовите тему и стоимость вслух, ведущий откроет вопрос.</div><div class="buzz-wrap"><button class="buzzer" disabled>Ваш ход</button></div>`;
+        else if(st.chooser===PL.pid){
+          const BD=arr(st.board), N=Math.max(1,...BD.map(t=>arr(t.q).length));
+          body=`<div class="status">Ваш выбор</div><div class="mini" style="grid-template-columns:repeat(${N},1fr)">`+BD.map((t,ti)=>`<div class="t">${esc(t.n)}</div>`+Array.from({length:N},(_,qi)=>{ const q=arr(t.q)[qi]; if(!q) return `<button disabled></button>`; return `<button data-ppick="${ti}-${qi}" ${q.u?"disabled":""} aria-label="${esc(t.n)} за ${q.c}">${q.u?"":q.c}</button>`; }).join("")).join("")+`</div>`;
+        } else body=`<div class="status">${esc(pn(st.chooser))} выбирает вопрос</div><div class="hint">${esc(st.roundName||"")}</div><div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
+        break;
+      case "reading":
+        body=`<div class="status">${esc(c.theme)} · ${c.cost}</div><div class="card qtext">${esc(c.text)}</div><div class="buzz-wrap"><button class="buzzer locked ${PL.early?"early":""}" data-act="buzz">${PL.early?"Рано!":"Ждите"}</button><span class="kbd">${st.cfg.early?"Раннее нажатие блокирует кнопку на 0,5 с":"Кнопка откроется после вопроса"}</span></div>`; break;
+      case "open":{
+        if(tried[PL.pid]) body=`<div class="status">Вы уже отвечали</div><div class="card qtext">${esc(c.text)}</div><div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
+        else if(PL.pressedQn===st.qn) body=`<div class="status">Нажато!</div><div class="hint">Ведущий определяет, кто был первым…</div><div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#FFD27A 0%,var(--gold) 55%,#A87A00 100%);box-shadow:0 2px 0 #A87A00">✓</button></div>`;
+        else { const elp=Math.max(0,now()-st.openAt);
+          body=`<div class="status">${st.msg?esc(st.msg):"Кнопки открыты"}</div><div class="card qtext">${esc(c.text)}</div><div class="buzz-wrap"><button class="buzzer live" data-act="buzz">Жми!</button><div class="timer"><i style="animation-duration:${st.cfg.window}ms;animation-delay:-${elp}ms"></i></div></div>`; }
+        break;
+      }
+      case "answer":
+        if(st.responder===PL.pid) body=`<div class="status">Ваш ответ!</div><div class="hint">${c.sp==="norisk"?"Вопрос без риска: за ошибку очки не снимаются. ":""}Говорите вслух, ведущий засчитает.</div><div class="card qtext">${esc(c.text)}</div><div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#5FE0A8 0%,var(--ok) 55%,#0C6B46 100%);box-shadow:0 2px 0 #0C6B46">Вы!</button>${st.reaction!=null?`<div class="kbd">Время реакции ${Number(st.reaction).toFixed(2).replace(".",",")} с</div>`:""}</div>`;
+        else body=`<div class="status">Отвечает ${esc(pn(st.responder))}</div>${st.reaction!=null?`<div class="hint">Нажал за ${Number(st.reaction).toFixed(2).replace(".",",")} с</div>`:""}<div class="card qtext">${esc(c.text)}</div>`;
+        break;
+      case "reveal":
+        body=`<div class="status">${esc(st.msg)}</div><div class="card"><div class="k">Правильный ответ</div><div class="v" style="font-size:22px">${esc(c.answer)}</div></div>`; break;
+      case "cat":
+        if(st.chooser===PL.pid) body=`<div class="status">Кот в мешке!</div><div class="hint">Отдайте вопрос сопернику. Тема «${esc(c.theme)}», ${c.cost}. Он ответит без кнопки.</div><div class="choices">`+Object.entries(PL.players).filter(([id,p])=>id!==PL.pid&&p.online!==false).map(([id,p])=>`<button class="pbtn" data-catto="${id}"><span>${esc(p.name)}</span><span>${fmt(p.score)}</span></button>`).join("")+`</div>`;
+        else body=`<div class="status">${esc(pn(st.chooser))} выбирает, кому отдать кота в мешке</div><div class="hint">Возможно, вам.</div>`;
+        break;
+      case "auction":{
+        const a=st.auc, aq=arr(a.queue), my=aq[0]===PL.pid, sc=me.score||0;
+        body=`<div class="status">Аукцион · ${esc(c.theme)}</div><div class="card"><div class="k">Ставка · ${esc(pn(a.leader))}</div><div class="v">${fmt(a.bid)}</div></div>`;
+        if(my){ const r=sc>=a.bid+100, all=sc>a.bid;
+          body+=`<div class="hint">Ваш ход. У вас ${fmt(sc)}.</div><div class="choices"><button class="pbtn" data-pauc="raise" ${r?"":"disabled"}><span>Поднять</span><span>${fmt(a.bid+100)}</span></button><button class="pbtn hot" data-pauc="all" ${all?"":"disabled"}><span>Ва-банк</span><span>${fmt(sc)}</span></button><button class="pbtn alt" data-pauc="pass"><span>Пас</span><span></span></button></div>`;
+        } else body+=`<div class="hint">${aq[0]?"Ходит "+esc(pn(aq[0])):"Торги закрыты"}</div>`;
+        break;
+      }
+      case "final-bet":{
+        const f=st.fin;
+        if(!arr(f.ids).includes(PL.pid)) body=`<div class="status">Вы не прошли в финал</div><div class="hint">В финал проходят игроки с положительным счётом.</div>`;
+        else if((f.betDone||{})[PL.pid] || PL.sent.bet) body=`<div class="status">Ставка принята</div><div class="hint">Ждём остальных.</div>`;
+        else { const mx=Math.max(1,me.score||0), v=Math.min(100,mx);
+          body=`<div class="status">Финал: «${esc(f.theme)}»</div><div class="hint">Сделайте ставку. Соперники её не увидят.</div><div class="card"><div class="k">Ставка</div><div class="v" id="betv">${fmt(v)}</div></div><input type="range" id="bet" data-keep="1" min="1" max="${mx}" step="1" value="${v}" aria-label="Ставка"><button class="pbtn hot" data-act="bet"><span>Поставить</span><span></span></button>`; }
+        break;
+      }
+      case "final-answer":{
+        const f=st.fin;
+        if(!arr(f.ids).includes(PL.pid)) body=`<div class="status">Идёт финал</div><div class="card qtext">${esc(f.text)}</div>`;
+        else if((f.ansDone||{})[PL.pid] || PL.sent.fa) body=`<div class="status">Ответ отправлен</div><div class="card qtext">${esc(f.text)}</div>`;
+        else body=`<div class="status">Финал: «${esc(f.theme)}»</div><div class="card qtext">${esc(f.text)}</div><input class="field" id="fa" placeholder="Ваш ответ" autocomplete="off" maxlength="120"><button class="pbtn hot" data-act="fa"><span>Отправить ответ</span><span></span></button>`;
+        break;
+      }
+      case "final-judge":{
+        const f=st.fin, v=(f.verdict||{})[PL.pid];
+        body=`<div class="status">Ведущий проверяет ответы</div><div class="card"><div class="k">Правильный ответ</div><div class="v" style="font-size:22px">${esc(f.answer)}</div></div>`+(v!=null&&f.bets?`<span class="pill ${v?"ok":"bad"}">${v?"Верно, +":"Неверно, −"}${fmt(f.bets[PL.pid])}</span>`:"");
+        break;
+      }
+      case "end":{
+        const ranked=Object.entries(PL.players).sort((a,b)=>(b[1].score||0)-(a[1].score||0)), place=ranked.findIndex(e=>e[0]===PL.pid)+1;
+        body=`<div class="status">Игра окончена</div><div class="card"><div class="k">Ваше место</div><div class="v">${place} из ${ranked.length}</div></div><div class="hint">Ведущий может начать новую игру в этой же комнате.</div>`; break;
+      }
+    }
+  }
+  const ranked=Object.entries(PL.players).sort((a,b)=>(b[1].score||0)-(a[1].score||0)), place=ranked.findIndex(e=>e[0]===PL.pid)+1;
+  const sp=st?st.phase:"";
+  const rivals=Object.entries(PL.players).filter(([id])=>id!==PL.pid).sort((a,b)=>(a[1].joined||0)-(b[1].joined||0)).map(([id,p])=>{
+    const act=st&&((sp==="answer"&&st.responder===id)||(sp==="board"&&st.chooser===id)||(sp==="auction"&&st.auc&&arr(st.auc.queue)[0]===id));
+    const lead=ranked[0]&&ranked[0][0]===id&&(p.score||0)>0;
+    return `<div class="rv ${act?"act":""} ${p.online===false?"off":""}"><div class="n"><span>${esc(p.name)}</span>${lead?"<i>1-й</i>":""}</div><div class="s ${(p.score||0)<0?"neg":""}">${fmt(p.score||0)}</div></div>`;
+  }).join("");
+  const banner = PL.meta && PL.meta.hostOnline===false && !PL.meta.closed ? `<div class="banner">Ведущий отключился. Ждём, когда он вернётся…</div>` : "";
+  preserve(el, `<div class="ph-top"><div class="me">Комната ${PL.code}${sp&&sp!=="lobby"?" · "+place+"-е место":""}<b>${esc(me.name)}</b></div><div class="sc">${fmt(me.score||0)}</div></div>${banner}${rivals?`<div class="ph-rivals">${rivals}</div>`:""}<div class="ph-body">${body}${PL.kicked||(PL.meta&&PL.meta.closed)?"":`<button class="back" data-act="leave" style="margin-top:auto">Выйти из комнаты</button>`}</div>`);
+  const bet=document.getElementById("bet");
+  if(bet){ document.getElementById("betv").textContent=fmt(+bet.value); bet.oninput=()=>{ document.getElementById("betv").textContent=fmt(+bet.value); }; }
+}
 
 /* ================= events ================= */
+function hostPackChanged(){ if(HOST && H().phase==="lobby") pushState(); }
 document.addEventListener("input", e=>{
-  if(e.target.dataset && e.target.dataset.cfgtext){ CFG[e.target.dataset.cfgtext]=e.target.value; save("svoya.cfg",CFG); const b=document.querySelector(".lobby .access-badge"); if(b) b.textContent="Открытая · «"+(CFG.roomName||"Моя игра")+"» · до "+CFG.max+" игроков"; return; }
-  if(e.target.id==="code"){ e.target.value=e.target.value.replace(/\D/g,"").slice(0,4); } if(e.target.dataset && e.target.dataset.ed!=null && S.draft) edInput(e.target); });
+  const t=e.target, ds=t.dataset||{};
+  if(ds.cfgtext){ CFG[ds.cfgtext]=t.value; save("svoya.cfg",CFG); const b=document.getElementById("acc-badge"); if(b) b.innerHTML=accBadge(); clearTimeout(window._sm); window._sm=setTimeout(()=>{ syncMeta(); syncPublic(); },500); return; }
+  if(ds.cfgname){ ME_NAME=t.value; save("svoya.name",ME_NAME); clearTimeout(window._sm); window._sm=setTimeout(()=>{ syncMeta(); pushState(); },600); return; }
+  if(t.id==="code"){ t.value=t.value.replace(/\D/g,"").slice(0,4); APP.prefill=t.value; }
+  if(t.id==="nm"){ ME_NAME=t.value; save("svoya.name",ME_NAME); }
+  if(ds.ed!=null && S.draft) edInput(t);
+});
 document.addEventListener("change", e=>{
   if(e.target.hasAttribute && e.target.hasAttribute("data-edfinal")){ S.draft.final = e.target.checked ? (S.draft._final||{theme:"",text:"",answer:""}) : (S.draft._final=S.draft.final, null); render(); }
 });
+document.addEventListener("pointerdown", e=>{ const t=e.target.closest('[data-act="buzz"]'); if(t && APP.mode==="player"){ e.preventDefault(); plBuzz(); } });
 document.addEventListener("click", e=>{
   const t=e.target.closest("button"); if(!t) return;
-  const ds=t.dataset;
-  if(ds.v){ setView(ds.v); return; }
-  if(ds.home){ S.homeView=ds.home; S.joinErr=""; render(); return; }
-  if(ds.joinroom){ joinRoom(ROOMS.find(r=>r.code===ds.joinroom)); return; }
-  if(ds.pick){ const [a,b]=ds.pick.split("-").map(Number); pick(a,b); return; }
-  if(ds.cat){ catGive(ds.cat); return; }
-  if(ds.auc){ aucAct("me", ds.auc); return; }
+  const ds=t.dataset, a=ds.act;
+  // home
+  if(ds.home){ setHomeView(ds.home); return; }
+  if(ds.joinroom){ const n=(document.getElementById("nm")||{}).value||""; if(!n.trim()){ APP.joinErr="Введите имя, чтобы войти"; render(); return; } joinRoom(ds.joinroom, n.trim()); return; }
+  // player
+  if(ds.ppick){ const [ti,qi]=ds.ppick.split("-"); send("pick",{ti,qi}); return; }
+  if(ds.pauc){ send("auc",{act:ds.pauc}); return; }
+  if(ds.catto){ if(APP.mode==="player") send("cat",{to:ds.catto}); else catGive(ds.catto); return; }
+  // host
+  if(ds.pick){ const [x,y]=ds.pick.split("-").map(Number); pick(x,y); return; }
   if(ds.fj){ const [id,v]=ds.fj.split(":"); finalJudge(id, v==="1"); return; }
-  if(ds.cfg){ const v=ds.val; CFG[ds.cfg]= v==="true"?true:v==="false"?false:isNaN(+v)?v:+v; save("svoya.cfg",CFG); render(); return; }
-  if(ds.tog){ CFG[ds.tog]=!CFG[ds.tog]; save("svoya.cfg",CFG); render(); return; }
+  if(ds.kick){ const p=HOST.players[ds.kick]; if(p && confirm(`Удалить ${p.name} из комнаты?`)) hRef(`players/${ds.kick}`).remove(); return; }
+  if(ds.score){ const p=HOST.players[ds.score]; if(!p) return; const v=prompt(`Счёт игрока ${p.name}`, p.score||0); if(v!=null && v.trim()!=="" && !isNaN(+v)){ p.score=Math.round(+v); hRef(`players/${ds.score}/score`).set(p.score); render(); } return; }
+  if(ds.cfg){ const v=ds.val; CFG[ds.cfg]= v==="true"?true:v==="false"?false:isNaN(+v)?v:+v; save("svoya.cfg",CFG); syncMeta(); pushState(); return; }
+  if(ds.tog){ CFG[ds.tog]=!CFG[ds.tog]; save("svoya.cfg",CFG); pushState(); return; }
+  // library / editor
   if(ds.lib){ S.libTab=ds.lib; S.upMsg=null; render(); return; }
-  if(ds.choose){ choosePack(ds.choose); S.view="setup"; render(); return; }
+  if(ds.choose){ choosePack(ds.choose); S.view="setup"; hostPackChanged(); render(); return; }
   if(ds.edit){ const src=findPack(ds.edit), mine=MINE.some(p=>p.id===ds.edit); const d=clone(src); if(!mine){ d.id=null; d.title=src.title+" (копия)"; d.author="Вы"; } openEditor(d); return; }
-  if(ds.del){ const p=MINE.find(x=>x.id===ds.del); if(p && confirm(`Удалить «${p.title}»?`)){ MINE=MINE.filter(x=>x.id!==ds.del); save("svoya.packs",MINE); if(PACK_ID===ds.del) choosePack("demo"); render(); } return; }
+  if(ds.del){ const p=MINE.find(x=>x.id===ds.del); if(p && confirm(`Удалить «${p.title}»?`)){ MINE=MINE.filter(x=>x.id!==ds.del); save("svoya.packs",MINE); if(PACK_ID===ds.del){ choosePack("demo"); hostPackChanged(); } render(); } return; }
   if(ds.edcell){ S.edSel=ds.edcell.split("-").map(Number); render(); return; }
   if(ds.edround){ S.edRound=+ds.edround; S.edSel=null; render(); return; }
   if(ds.edtype && S.edSel){ S.draft.rounds[S.edRound].themes[S.edSel[0]].questions[S.edSel[1]].type=ds.edtype; render(); return; }
@@ -1154,58 +1334,59 @@ document.addEventListener("click", e=>{
     S.draft.notes=[]; render(); return;
   }
   if(ds.issue!=null){ const x=validate(S.draft)[+ds.issue]; if(x){ S.edRound=x.r??S.edRound; S.edSel=x.qi!=null?[x.ti,x.qi]:null; render(); } return; }
-  const a=ds.act;
-  if(a==="buzz"){ if(e.detail===0) buzz("me"); }
-  else if(a==="ok") judge(true);
-  else if(a==="bad") judge(false);
-  else if(a==="next") toBoard();
-  else if(a==="skip"){ clearTimers(); endRound(); }
-  else if(a==="restart") reset();
-  else if(a==="home") goHome();
-  else if(a==="host") hostStart();
-  else if(a==="join-code") joinByCode();
-  else if(a==="pa") submitPA();
-  else if(a==="start") startGame();
-  else if(a==="lib"){ S.view="library"; S.libTab=MINE.length?"mine":"catalog"; render(); }
-  else if(a==="back-setup"){ S.view="setup"; render(); }
-  else if(a==="new") openEditor(Object.assign(blankPack(), {rounds:[{name:"Раунд 1",themes:[{name:"",questions:[{cost:100,text:"",answer:"",type:"normal"}]}]}]}));
-  else if(a==="sample"){ document.getElementById("paste").value=SAMPLE; }
-  else if(a==="parse"){ const v=document.getElementById("paste").value.trim(); if(!v){ S.upMsg={err:true,text:"Вставьте текст с вопросами"}; render(); return; } openEditor(parseText(v,"Вставленный пак")); }
-  else if(a==="ed-cancel"){ S.view="library"; S.draft=null; render(); }
-  else if(a==="ed-save"){ saveDraft(); S.view="library"; S.libTab="mine"; S.draft=null; render(); }
-  else if(a==="ed-play"){ const id=saveDraft(); choosePack(id); S.view="setup"; S.draft=null; render(); }
-  else if(a==="bet"){ S.fin.bets.me=+document.getElementById("bet").value; checkBets(); render(); }
-  else if(a==="fa") submitFinal();
+  if(!a) return;
+  switch(a){
+    case "host": if(APP.dbOk) createRoom(); break;
+    case "resume-host": resumeHost(load("svoya.hosting",null)); break;
+    case "rejoin": { const c=load("svoya.lastRoom",null); if(c) joinRoom(c, ME_NAME.trim()||"Игрок"); break; }
+    case "join-code": { const c=(document.getElementById("code").value||"").trim(), n=(document.getElementById("nm").value||"").trim(); if(!n){ APP.joinErr="Введите имя, чтобы войти"; render(); break; } ME_NAME=n; save("svoya.name",n); joinRoom(c,n); break; }
+    case "leave": if(!PL || PL.kicked || (PL.meta&&PL.meta.closed) || confirm("Выйти из комнаты? Вернуться можно по тому же коду, счёт сохранится.")) leaveRoom(); break;
+    case "buzz": if(e.detail===0) plBuzz(); break;
+    case "bet": { const v=+document.getElementById("bet").value; PL.sent.bet=true; send("bet",{v}); render(); break; }
+    case "fa": submitFA(); break;
+    case "ok": judge(true); break;
+    case "bad": judge(false); break;
+    case "next": toBoard(); break;
+    case "open-now": openBuzz(); break;
+    case "nobody": reveal("Никто не ответил", null); break;
+    case "skip": clearTimers(); endRound(); break;
+    case "pass-turn": { const ids=online(); if(ids.length){ const i=ids.indexOf(H().chooser); H().chooser=ids[(i+1)%ids.length]; pushState(); } break; }
+    case "auc-skip": { const q=H().auc&&H().auc.queue[0]; if(q) aucAct(q,"pass"); break; }
+    case "auc-end": aucFinish(); break;
+    case "force-bets": checkBets(true); break;
+    case "force-answers": checkAnswers(true); break;
+    case "lobby": if(H().phase==="end" || confirm("Вернуться в лобби? Текущая игра прервётся.")) backToLobby(); break;
+    case "close-room": closeRoom(); break;
+    case "start": startGame(); break;
+    case "copy-link": { const u=joinURL(HOST.code); (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{ t.textContent="Скопировано"; setTimeout(()=>{ t.textContent="Скопировать ссылку"; },1500); }).catch(()=>prompt("Ссылка для входа",u)); break; }
+    case "lib": S.view="library"; S.libTab=MINE.length?"mine":"catalog"; render(); break;
+    case "back-setup": S.view="setup"; render(); break;
+    case "new": openEditor(Object.assign(blankPack(), {rounds:[{name:"Раунд 1",themes:[{name:"",questions:[{cost:100,text:"",answer:"",type:"normal"}]}]}]})); break;
+    case "sample": document.getElementById("paste").value=SAMPLE; break;
+    case "parse": { const v=document.getElementById("paste").value.trim(); if(!v){ S.upMsg={err:true,text:"Вставьте текст с вопросами"}; render(); break; } openEditor(parseText(v,"Вставленный пак")); break; }
+    case "ed-cancel": S.view="library"; S.draft=null; render(); break;
+    case "ed-save": saveDraft(); S.view="library"; S.libTab="mine"; S.draft=null; hostPackChanged(); render(); break;
+    case "ed-play": { const id=saveDraft(); choosePack(id); S.view="setup"; S.draft=null; hostPackChanged(); render(); break; }
+  }
 });
-document.addEventListener("pointerdown", e=>{ const t=e.target.closest('[data-act="buzz"]'); if(t){ e.preventDefault(); buzz("me"); } });
-function joinByCode(){
-  const c=(document.getElementById("code").value||"").trim(), n=document.getElementById("nm").value||"";
-  ME_NAME=n; save("svoya.name", n);
-  if(c===ROOM){ S.joinErr="Это код вашей собственной комнаты. Чтобы её открыть, выберите «Провести игру»."; render(); return; }
-  const r=ROOMS.find(x=>x.code===c);
-  if(!r){ S.joinErr=c.length<4?"Код состоит из 4 цифр":"Комната с таким кодом не найдена"; render(); return; }
-  if(r.status==="play"){ S.joinErr="В этой комнате уже идёт игра"; render(); return; }
-  if(r.players>=r.max){ S.joinErr="В комнате нет свободных мест"; render(); return; }
-  joinRoom(r);
-}
-function submitPA(){
-  if(S.phase!=="answer"||S.responder!=="me") return;
-  const v=(document.getElementById("pa").value||"").trim(); if(!v) return;
-  S.said=v; judge(matchAnswer(v, S.cur.a));
-}
-function submitFinal(){ const f=document.getElementById("fa"); S.fin.answers.me=(f&&f.value.trim())||"—"; checkAnswers(); render(); }
+function submitFA(){ const f=document.getElementById("fa"); const v=(f&&f.value.trim())||""; if(!v) return; PL.sent.fa=true; send("fa",{text:v}); render(); }
 document.addEventListener("keydown", e=>{
-  if(e.target.id==="fa" && e.key==="Enter"){ submitFinal(); return; }
-  if(e.target.id==="pa" && e.key==="Enter"){ submitPA(); return; }
-  if((e.target.id==="code"||e.target.id==="nm") && e.key==="Enter"){ joinByCode(); return; }
-  if(e.code==="Space" && !["INPUT","TEXTAREA","BUTTON"].includes(e.target.tagName) && S.view==="game"){ e.preventDefault(); buzz("me"); }
+  const id=e.target.id;
+  if(id==="fa" && e.key==="Enter"){ submitFA(); return; }
+  if((id==="code"||id==="nm") && e.key==="Enter" && APP.homeView==="code"){ document.querySelector('[data-act="join-code"]').click(); return; }
+  if(e.code==="Space" && APP.mode==="player" && !["INPUT","TEXTAREA","BUTTON"].includes(e.target.tagName)){ e.preventDefault(); plBuzz(); }
 });
-function setView(v){
-  document.getElementById("stage").dataset.view=v;
-  document.getElementById("tab-tv").setAttribute("aria-selected", v==="tv");
-  document.getElementById("tab-ph").setAttribute("aria-selected", v==="phone");
-}
-goHome();
+
+/* ================= boot ================= */
+(function boot(){
+  APP.dbOk = dbInit();
+  const q=new URLSearchParams(location.search).get("room");
+  if(q && /^\d{4}$/.test(q)){ APP.prefill=q; }
+  const lr=load("svoya.lastRoom",null);
+  goHome();
+  if(APP.dbOk && q && lr===q && ME_NAME.trim()) joinRoom(q, ME_NAME.trim());
+})();
+
 </script>
 </body>
 </html>
