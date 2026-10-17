@@ -303,6 +303,73 @@ body[data-mode="host"] .wrap{max-width:1280px}
 .rv.off{opacity:.45}
 .pl{font:inherit;color:inherit;text-align:left;cursor:pointer}
 .pl:hover{border-color:rgba(255,255,255,.3)}
+.rename{display:flex;align-items:center;gap:6px;border:0;background:none;padding:0;color:var(--phone-ink);font:inherit;font-weight:800;font-size:16px;cursor:pointer;text-align:left}
+.rename span{font-size:13px;color:var(--muted)}
+.hren{border:0;background:none;color:inherit;font:inherit;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:4px;text-align:left}
+.hren span{font-size:12px;opacity:.55}
+.hren:hover span{opacity:1;color:var(--gold)}
+.scbtn{border:0;background:none;color:inherit;padding:0;cursor:pointer;display:block}
+.pl{cursor:default}
+.qimg{max-width:100%;max-height:42vh;border-radius:12px;margin:4px 0 14px;background:#fff;object-fit:contain}
+.pimg{width:100%;max-height:40vh;object-fit:contain;border-radius:14px;background:var(--soft)}
+.ed-img{display:grid;gap:8px}
+.ed-img img{max-height:170px;max-width:100%;border-radius:10px;background:#fff;object-fit:contain;justify-self:start}
+.ed-img .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ed-img label.sb{cursor:pointer}
+.ed-url{flex:1;min-width:180px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin:6px 0 12px}
+.opt-b{display:flex;align-items:center;gap:10px;text-align:left;border:2px solid transparent;border-radius:14px;padding:14px;background:var(--soft);color:var(--phone-ink);font:inherit;font-weight:700;font-size:16px;min-height:58px}
+.opt-b b{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--board);color:var(--gold);font-size:14px}
+.opt-b span{flex:1}
+.opt-b em{font-style:normal;font-weight:800;opacity:.8}
+button.opt-b{cursor:pointer}button.opt-b:active{transform:scale(.98)}
+.opt-b.sel{border-color:var(--gold)}
+.opt-b.ok{background:rgba(22,163,108,.2);border-color:var(--ok)}
+.opt-b.bad{background:rgba(214,69,61,.18);border-color:var(--bad)}
+.opt-b.dim{opacity:.55}
+.tv .opt-b{background:rgba(255,255,255,.08);color:#fff;font-size:clamp(15px,1.6vw,20px)}
+.tv .opts{max-width:860px}
+@media (max-width:420px){ .opts{grid-template-columns:1fr} }
+.orgbar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--board);color:#fff;font-size:13px;font-weight:700}
+.orgbar span{flex:1}
+.orgbar button{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;font-weight:700}
+.endscreen{display:grid;gap:14px;justify-items:center;text-align:center;padding:12px 4px}
+.endscreen .meta{color:var(--gold);font-weight:700}
+.endscreen .big{font-family:var(--display);font-weight:900;font-size:clamp(26px,4vw,44px);line-height:1.1}
+.endscreen.ph .meta{color:var(--muted)}
+.endscreen.ph .big{font-size:24px}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;width:100%;max-width:520px}
+.pod{flex:1;display:grid;justify-items:center;gap:2px;min-width:0}
+.pod .pm{font-size:28px}.pod .pn{font-weight:800;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pod .ps{font-size:14px;opacity:.85}
+.pod .pb{width:100%;border-radius:12px 12px 0 0;background:var(--cell);color:var(--gold);font-family:var(--display);font-weight:900;font-size:24px;display:grid;place-items:center}
+.endscreen.ph .pod .pb{background:var(--board)}
+.pod.p1 .pb{height:110px}.pod.p2 .pb{height:80px}.pod.p3 .pb{height:56px}
+.hl{display:grid;gap:4px;font-size:15px;opacity:.95}
+.st-wrap{width:100%;overflow-x:auto}
+.st{width:100%;border-collapse:collapse;font-size:14px;text-align:left}
+.st th,.st td{padding:8px 10px;border-bottom:1px solid rgba(128,128,160,.3);white-space:nowrap}
+.st th{font-size:12px;opacity:.7;font-weight:700}
+.st .me-row{background:rgba(255,201,60,.15)}
+.qst{width:100%;text-align:left}
+.qst summary{cursor:pointer;font-weight:800;padding:6px 0}
+.qst ol{margin:6px 0 0;padding-left:22px;display:grid;gap:8px;font-size:14px}
+.qst li.r::marker{color:var(--ok)}.qst li.w::marker{color:var(--bad)}
+.qst .qa{opacity:.75;font-size:13px}
+.tv .endscreen{max-height:none}
+.hmenu-bg{position:fixed;inset:0;background:rgba(5,6,25,.55);z-index:40;border:0}
+.hmenu{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:41;background:#1A1F6E;color:#fff;border-radius:16px;padding:16px;display:grid;gap:8px;width:min(92vw,340px);box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
+.hmenu b{font-size:17px;margin-bottom:4px}
+.hmenu button{border:0;border-radius:10px;padding:11px 12px;background:rgba(255,255,255,.1);color:#fff;font:inherit;font-weight:700;text-align:left;cursor:pointer}
+.hmenu button:hover{background:rgba(255,255,255,.18)}
+.hmenu .hm-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hmenu .hm-row button{text-align:center;font-family:var(--display);font-weight:800}
+.hmenu .danger{color:#FF9C96}
+.hmenu .ghost2{background:transparent;border:1px solid rgba(255,255,255,.25);text-align:center}
+.qtools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.qtools .lbl{font-size:13px;opacity:.6}
+.hsel{border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.25);color:#fff;border-radius:10px;padding:9px 10px;font:inherit;font-weight:700}
+.hsel option{color:#000}
+.nolimit{font-size:13px;color:var(--muted);font-weight:700;text-align:center}
 .banner{background:var(--gold);color:var(--board);font-weight:800;font-size:14px;padding:10px 16px}
 .qrbox{width:192px;height:192px;background:#fff;border-radius:10px;padding:6px;flex:none;display:flex;align-items:center;justify-content:center}
 .qrbox img,.qrbox canvas{width:180px;height:180px;display:block}
@@ -368,7 +435,7 @@ const TMARK = {cat:"кот", auction:"аук", norisk:"б/р"};
 /* ================= storage ================= */
 function load(k, d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }
 function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
-const CFG_DEFAULTS = {picker:"host", window:7000, minus:true, early:true, cat:true, auction:true, final:true, access:"private", roomName:"Моя игра", max:6};
+const CFG_DEFAULTS = {picker:"host", window:7000, minus:true, early:true, cat:true, auction:true, final:true, access:"private", roomName:"Моя игра", max:6, phoneImg:false, host:"live", format:"classic", ansTime:25000, quizTime:20000, quizMinus:false};
 let CFG = Object.assign({}, CFG_DEFAULTS, load("svoya.cfg",{}));
 let CFG_HOST = null;
 let ME_NAME = load("svoya.name", "");
@@ -385,6 +452,40 @@ function stats(p){
 }
 function plural(n,a,b,c){ const m=n%10, h=n%100; return m===1&&h!==11?a: m>=2&&m<=4&&(h<10||h>=20)?b:c; }
 
+/* ================= images (IndexedDB) ================= */
+const IMG={cache:{}, db:null};
+function idb(){
+  if(!IMG.db) IMG.db=new Promise((res,rej)=>{ if(!window.indexedDB) return rej(new Error("no idb")); const r=indexedDB.open("svoya-media",1); r.onupgradeneeded=()=>r.result.createObjectStore("img"); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); });
+  return IMG.db;
+}
+async function imgPut(data){
+  const id="i"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+  IMG.cache[id]=data;
+  try{ const d=await idb(); await new Promise((res,rej)=>{ const tx=d.transaction("img","readwrite"); tx.objectStore("img").put(data,id); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){ console.warn(e); }
+  return id;
+}
+async function imgGet(id){
+  if(!id) return null; if(IMG.cache[id]) return IMG.cache[id];
+  try{ const d=await idb(); const v=await new Promise((res,rej)=>{ const r=d.transaction("img").objectStore("img").get(id); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); if(v) IMG.cache[id]=v; return v||null; }catch(e){ return null; }
+}
+const IMG_PENDING={};
+function imgSrc(q){
+  if(!q) return null; if(q.url) return q.url;
+  if(q.img){ if(IMG.cache[q.img]) return IMG.cache[q.img]; if(!IMG_PENDING[q.img]){ IMG_PENDING[q.img]=1; imgGet(q.img).then(v=>{ if(v) render(); }); } }
+  return null;
+}
+async function compressImage(blob, max=1280){
+  const url=URL.createObjectURL(blob);
+  try{
+    const im=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=()=>rej(new Error("Не удалось открыть картинку")); i.src=url; });
+    const k=Math.min(1, max/Math.max(im.naturalWidth, im.naturalHeight)), w=Math.max(1,Math.round(im.naturalWidth*k)), h=Math.max(1,Math.round(im.naturalHeight*k));
+    const c=document.createElement("canvas"); c.width=w; c.height=h; const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,w,h); x.drawImage(im,0,0,w,h);
+    let d=c.toDataURL("image/webp",0.78); if(!d.startsWith("data:image/webp")) d=c.toDataURL("image/jpeg",0.8);
+    if(d.length>400000) d=c.toDataURL("image/jpeg",0.6);
+    return d;
+  } finally { URL.revokeObjectURL(url); }
+}
+
 /* ================= validation ================= */
 function validate(p){
   const out=[]; const add=(lvl,msg,r,ti,qi)=>out.push({lvl,msg,r,ti,qi});
@@ -399,11 +500,12 @@ function validate(p){
       let prev=0, unordered=false;
       t.questions.forEach((q,qi)=>{
         const where=`${tn}, ${q.cost||"?"}`;
-        if(!q.text||!q.text.trim()) add("err",`${where}: нет текста вопроса`,ri,ti,qi);
+        if((!q.text||!q.text.trim()) && !q.img && !q.url) add("err",`${where}: нет текста вопроса`,ri,ti,qi);
         if(!q.answer||!q.answer.trim()) add("err",`${where}: нет ответа`,ri,ti,qi);
         if(!(q.cost>0)) add("err",`${where}: стоимость должна быть больше нуля`,ri,ti,qi);
         if(q.cost<=prev) unordered=true; prev=q.cost;
-        if(q.media) add("warn",`${where}: медиа из файла пока не переносится`,ri,ti,qi);
+        if(q.media) add("warn",`${where}: аудио и видео пока не поддерживаются`,ri,ti,qi);
+        if(q.choices && q.answer && !q.choices.some(x=>normA(x)===normA(q.answer))) add("warn",`${where}: ответа нет среди вариантов`,ri,ti,qi);
       });
       if(unordered && t.questions.length) add("warn",`${tn}: стоимости идут не по возрастанию`,ri,ti,null);
     });
@@ -437,6 +539,12 @@ function parseText(txt, title){
   txt.replace(/\r/g,"").split("\n").forEach((raw,i)=>{
     const line=raw.trim(); if(!line) return;
     let m;
+    if((m=line.match(/^(?:неверные\s+)?варианты\s*[:\-–—]\s*(.+)$/i))){
+      const list=m[1].split(/[;|]/).map(x=>x.trim()).filter(Boolean);
+      const tgt = inFinal ? p.final : (theme && theme.questions[theme.questions.length-1]);
+      if(tgt){ const ans=normA(tgt.answer||""); if(list.some(x=>normA(x)===ans) && list.length>=2) tgt.choices=list.slice(0,6); else tgt.wrong=list.filter(x=>normA(x)!==ans).slice(0,5); }
+      return;
+    }
     if(pending && (m=line.match(/^ответ\s*[:\-–—]\s*(.+)$/i))){ pushQ(pending.cost,pending.text,m[1].trim(),pending.type); pending=null; return; }
     if(pending){ p.notes.push(`Строка ${i}: у вопроса «${pending.text.slice(0,30)}…» нет ответа`); pushQ(pending.cost,pending.text,"",pending.type); pending=null; }
     if((m=line.match(/^#*\s*финал\s*[:\-–—]?\s*(.*)$/i))){ inFinal=true; p.final={theme:m[1].trim()||"Финал",text:"",answer:""}; return; }
@@ -469,7 +577,7 @@ function parseRows(rows, title){
   if(!rows.length) return p;
   const h=rows[0].map(c=>String(c??"").toLowerCase());
   const find=re=>h.findIndex(c=>re.test(c));
-  let col={round:find(/раунд|round/), theme:find(/тем|theme|topic/), cost:find(/стоим|цен|cost|price|балл|очк/), q:find(/вопрос|question/), a:find(/ответ|answer/), type:find(/тип|type/)};
+  let col={opts:find(/вариант|неверн|option|wrong/), round:find(/раунд|round/), theme:find(/тем|theme|topic/), cost:find(/стоим|цен|cost|price|балл|очк/), q:find(/вопрос|question/), a:find(/ответ|answer/), type:find(/тип|type/)};
   if(col.q<0||col.a<0){ col={round:-1,theme:0,cost:1,q:2,a:3,type:4}; } else rows=rows.slice(1);
   const rmap={};
   rows.forEach((r,i)=>{
@@ -480,7 +588,9 @@ function parseRows(rows, title){
     if(!rmap[rn]){ rmap[rn]= rn==="Раунд 1"&&!p.rounds[0].themes.length&&!Object.keys(rmap).length ? p.rounds[0] : (p.rounds.push({name:rn,themes:[]}), p.rounds[p.rounds.length-1]); rmap[rn].name=rn; }
     const R=rmap[rn]; let t=R.themes.find(x=>x.name===th); if(!t){ t={name:th,questions:[]}; R.themes.push(t); }
     const c=parseInt(g("cost").replace(/\s/g,""),10);
-    t.questions.push({cost:c>0?c:(t.questions.length+1)*100, text, answer:ans, type:typeFromWord(g("type"))});
+    const nq={cost:c>0?c:(t.questions.length+1)*100, text, answer:ans, type:typeFromWord(g("type"))};
+    const ol=g("opts"); if(ol){ const na=normA(ans), l=ol.split(/[;|]/).map(x=>x.trim()).filter(Boolean); if(l.some(x=>normA(x)===na) && l.length>=2) nq.choices=l.slice(0,6); else nq.wrong=l.filter(x=>normA(x)!==na).slice(0,5); }
+    t.questions.push(nq);
   });
   return p;
 }
@@ -507,25 +617,33 @@ function parseSiqXml(xml, title){
   const kids=(el,tag)=>Array.from(el.children).filter(c=>c.localName===tag);
   const one=(el,tag)=>kids(el,tag)[0];
   function readQ(q){
-    let text="", media=null;
-    const params=one(q,"params");
+    let text="", media=null, imgRef=null, url=null;
+    const takeImg=v=>{ v=(v||"").trim(); if(!v) return; if(/^https?:\/\//i.test(v)) url=v; else imgRef=v.replace(/^@/,""); };
+    const params=one(q,"params"); let choices=null, letters=null;
     if(params){
+      const ao=kids(params,"param").find(x=>x.getAttribute("name")==="answerOptions");
+      if(ao){ const ops=kids(ao,"param"); if(ops.length>=2){ letters=ops.map(o=>(o.getAttribute("name")||"").trim()); choices=ops.map(o=>kids(o,"item").map(it=>{ const t=it.getAttribute("type"); return !t||t==="text" ? it.textContent.trim() : "["+(t==="image"?"картинка":"медиа")+"]"; }).join(" ").trim()); } }
       const qp=kids(params,"param").find(x=>x.getAttribute("name")==="question");
-      if(qp) kids(qp,"item").forEach(it=>{ const t=it.getAttribute("type"); if(!t||t==="text") text+=(text?" ":"")+it.textContent.trim(); else media=t; });
+      if(qp) kids(qp,"item").forEach(it=>{ const t=it.getAttribute("type"); if(!t||t==="text") text+=(text?" ":"")+it.textContent.trim(); else if(t==="image") takeImg(it.textContent); else media=t; });
     }
     const sc=one(q,"scenario");
-    if(sc) kids(sc,"atom").forEach(a=>{ const t=a.getAttribute("type"); if(!t||t==="text"||t==="say") text+=(text?" ":"")+a.textContent.trim(); else if(t!=="marker") media=t; });
+    if(sc) kids(sc,"atom").forEach(a=>{ const t=a.getAttribute("type"); if(!t||t==="text"||t==="say") text+=(text?" ":"")+a.textContent.trim(); else if(t==="image") takeImg(a.textContent); else if(t!=="marker") media=t; });
     const right=one(q,"right"); const ans=right? (kids(right,"answer").map(a=>a.textContent.trim()).filter(Boolean)[0]||"") : "";
     let type=q.getAttribute("type")||""; const tEl=one(q,"type"); if(tEl) type=tEl.getAttribute("name")||type;
     if(!text && media) text=`[${media==="image"?"картинка":media==="voice"||media==="audio"?"аудио":media==="video"?"видео":"медиа"}]`;
-    return {cost:+q.getAttribute("price")||0, text, answer:ans, type:typeFromWord(type), media};
+    let answer=ans;
+    if(choices){ const li=letters.findIndex(l=>l.toLowerCase()===ans.trim().toLowerCase()); if(li>=0) answer=choices[li]; }
+    const o={cost:+q.getAttribute("price")||0, text, answer, type:typeFromWord(type), media};
+    if(choices) o.choices=choices;
+    if(imgRef) o._imgRef=imgRef; if(url) o.url=url; if(!media) delete o.media;
+    return o;
   }
   const roundsEl=pk? one(pk,"rounds") : null;
   (roundsEl?kids(roundsEl,"round"):[]).forEach((r,ri)=>{
     const themesEl=one(r,"themes"); const themes=themesEl?kids(themesEl,"theme"):[];
     if(r.getAttribute("type")==="final"){
       const t=themes[0]; if(!t) return; const qs=one(t,"questions"); const q=qs&&kids(qs,"question")[0];
-      if(q){ const x=readQ(q); p.final={theme:t.getAttribute("name")||"Финал", text:x.text, answer:x.answer}; if(x.media) p.notes.push("Финал содержит медиа, оно пока не переносится"); }
+      if(q){ const x=readQ(q); p.final={theme:t.getAttribute("name")||"Финал", text:x.text, answer:x.answer}; if(x.choices) p.final.choices=x.choices; if(x.media) p.notes.push("Финал содержит медиа, оно пока не переносится"); }
       return;
     }
     p.rounds.push({name:r.getAttribute("name")||("Раунд "+(ri+1)), themes:themes.map(t=>{ const qs=one(t,"questions"); return {name:t.getAttribute("name")||"", questions:(qs?kids(qs,"question"):[]).map(readQ)}; })});
@@ -544,7 +662,23 @@ async function importFile(file){
     await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
     const zip=await JSZip.loadAsync(file); const f=zip.file("content.xml");
     if(!f) throw new Error("В архиве нет content.xml. Это точно пак SIGame?");
-    return parseSiqXml(await f.async("string"), base);
+    const p=parseSiqXml(await f.async("string"), base);
+    const names=Object.keys(zip.files);
+    const findImg=name=>{
+      for(const c of [name, encodeURIComponent(name), encodeURI(name)]){ const z=zip.file("Images/"+c); if(z) return z; }
+      const low=name.toLowerCase();
+      const k=names.find(fn=>{ const b=fn.split("/").pop(); let d=b; try{ d=decodeURIComponent(b); }catch(e){} return d.toLowerCase()===low || b.toLowerCase()===low; });
+      return k?zip.file(k):null;
+    };
+    const qs=[]; p.rounds.forEach(r=>r.themes.forEach(t=>t.questions.forEach(q=>{ if(q._imgRef) qs.push(q); })));
+    let miss=0;
+    for(const q of qs){
+      const z=findImg(q._imgRef); delete q._imgRef;
+      if(!z){ miss++; continue; }
+      try{ q.img=await imgPut(await compressImage(await z.async("blob"))); }catch(e){ miss++; }
+    }
+    if(miss) p.notes.push(`${miss} ${plural(miss,"картинку","картинки","картинок")} не удалось извлечь из архива`);
+    return p;
   }
   if(ext==="json"){
     const j=JSON.parse(await file.text());
@@ -638,7 +772,7 @@ function issuesHTML(list){
   const items=list.slice(0,8).map((x,i)=>`<li class="${x.lvl==="err"?"e":"w"}">${x.qi!=null||x.ti!=null?`<button data-issue="${i}">${esc(x.msg)}</button>`:esc(x.msg)}</li>`).join("");
   return {cls, html:`<b>${head}</b>${list.length?`<ul>${items}${list.length>8?`<li>…и ещё ${list.length-8}</li>`:""}</ul>`:""}`};
 }
-function cellInner(q){ return `${q.cost||"?"}${TMARK[q.type]?`<sup>${TMARK[q.type]}</sup>`:""}`; }
+function cellInner(q){ const m=[TMARK[q.type], (q.img||q.url)&&"🖼", q.choices&&"АБВ"].filter(Boolean).join(" "); return `${q.cost||"?"}${m?`<sup>${m}</sup>`:""}`; }
 function renderEditor(){
   const d=S.draft, r=d.rounds[S.edRound], list=validate(d), iss=issuesHTML(list);
   const lvl={}; list.forEach(x=>{ if(x.qi!=null&&x.r===S.edRound){ const k=x.ti+"-"+x.qi; if(lvl[k]!=="err") lvl[k]=x.lvl; } });
@@ -650,7 +784,13 @@ function renderEditor(){
     const q=r.themes[S.edSel[0]].questions[S.edSel[1]];
     panel=`<div class="ed-panel"><b>${esc(r.themes[S.edSel[0]].name||"Тема")} · вопрос ${S.edSel[1]+1}</b>
       <label>Вопрос<textarea data-ed="q:text">${esc(q.text)}</textarea></label>
+      <div class="ed-img">${(q.img||q.url)?`<img id="ed-imgprev" src="${esc(imgSrc(q)||"")}" alt="Картинка вопроса">`:""}
+        <div class="row"><label class="sb">${q.img||q.url?"Заменить картинку":"Добавить картинку"}<input type="file" accept="image/*" data-edimg="1" hidden></label>
+        <input class="ed-url" data-ed="q:url" placeholder="или ссылка https://…" value="${esc(q.url||"")}" aria-label="Ссылка на картинку">
+        ${q.img||q.url?`<button class="sb red" data-edimgdel="1">Убрать</button>`:""}</div></div>
       <div class="ed-two"><label>Ответ<input data-ed="q:answer" value="${esc(q.answer)}"></label><label>Стоимость<input data-ed="q:cost" type="number" inputmode="numeric" min="1" step="100" value="${q.cost||""}"></label></div>
+      <label>Варианты ответа <small style="opacity:.7">(через точку с запятой, вместе с правильным; показываются игрокам)</small><input data-ed="q:choices" value="${esc((q.choices||[]).join("; "))}" placeholder="Пусто — вопрос без вариантов"></label>
+      ${q.choices&&q.choices.length?"":`<label>Неверные варианты только для режима «Викторина» <small style="opacity:.7">(можно оставить пустым)</small><input data-ed="q:wrong" value="${esc((q.wrong||[]).join("; "))}" placeholder="Подберутся автоматически из других ответов"></label>`}
       <div>${`<div class="seg" role="group">`+Object.entries(TYPES).map(([k,l])=>`<button data-edtype="${k}" aria-pressed="${(q.type||"normal")===k}">${l}</button>`).join("")+`</div>`}</div>
       <div><button class="sb red" data-eddel="q">Удалить вопрос</button></div></div>`;
   }
@@ -682,6 +822,9 @@ function edInput(el){
   else if(k.startsWith("final:")) d.final[k.slice(6)]=v;
   else if(k.startsWith("q:") && S.edSel){
     const q=d.rounds[S.edRound].themes[S.edSel[0]].questions[S.edSel[1]], f=k.slice(2);
+    if(f==="choices"){ const l=v.split(";").map(x=>x.trim()).filter(Boolean); if(l.length>=2) q.choices=l.slice(0,6); else delete q.choices; d.notes=[]; refreshEditor(); return; }
+    if(f==="wrong"){ const l=v.split(";").map(x=>x.trim()).filter(Boolean); if(l.length) q.wrong=l.slice(0,5); else delete q.wrong; return; }
+    if(f==="url"){ const u=v.trim(); if(u){ q.url=u; delete q.img; } else delete q.url; const im=document.getElementById("ed-imgprev"); if(im&&u) im.src=u; d.notes=[]; refreshEditor(); return; }
     q[f] = f==="cost" ? (parseInt(v,10)||0) : v;
     if(f==="text"||f==="answer") delete q.media;
   }
@@ -743,7 +886,7 @@ async function createRoom(){
     for(let i=0;i<15;i++){ code=String(1000+Math.floor(Math.random()*9000)); const m=(await ref(`rooms/${code}/meta`).once("value")).val(); if(!m || m.closed) break; }
     await ref(`rooms/${code}`).set({meta:{created:TS(), hostOnline:true, closed:false, name:CFG.roomName||"Моя игра", access:CFG.access, max:CFG.max, host:hostName()}});
     HOST={code, players:{}, seen:{}, H:{phase:"lobby", round:0, used:{}, qn:0}};
-    attachHost(); APP.mode="host"; S.view="setup"; pushState();
+    attachHost(); APP.mode="host"; S.view="setup"; pushState(); syncSelf();
   }catch(e){ console.error(e); alert("Не удалось создать комнату. Проверьте интернет и настройки базы."); }
   APP.busy=false; render();
 }
@@ -763,6 +906,7 @@ async function resumeHost(saved){
     PACK_ID=saved.packId; PACK=clone(findPack(PACK_ID));
     attachHost(); APP.mode="host"; S.view="setup";
     if(["reading","open"].includes(HOST.H.phase)) openBuzz(); else pushState();
+    if(AUTO()){ await joinRoom(HOST.code, hostName(), {silent:true}); if(HOST.H.phase!=="lobby") APP.mode="player"; }
   }catch(e){ alert("Не удалось подключиться"); }
   APP.busy=false; render();
 }
@@ -770,7 +914,7 @@ function closeRoom(){
   if(!HOST) return;
   if(!confirm("Закрыть комнату? Игроки увидят, что игра завершена.")) return;
   hRef("meta").update({closed:true, hostOnline:false}); ref(`public/${HOST.code}`).remove();
-  detachHost(); HOST=null; save("svoya.hosting",null); goHome();
+  detachHost(); dropSelf(false); HOST=null; save("svoya.hosting",null); goHome();
 }
 function saveHosting(){ if(HOST) save("svoya.hosting",{code:HOST.code, H:HOST.H, packId:PACK_ID}); }
 function syncPublic(){
@@ -793,11 +937,19 @@ function pushState(){
     roundName: ph!=="lobby" && PACK.rounds[h.round] ? PACK.rounds[h.round].name : "",
     board: ph==="lobby" ? null : boardOf(),
     chooser:h.chooser||null,
-    cur: h.cur ? {theme:h.cur.theme, cost:h.cur.cost, text:h.cur.text, sp:h.cur.sp, answer: ph==="reveal" ? h.cur.answer : null} : null,
+    cur: h.cur ? {theme:h.cur.theme, cost:h.cur.cost, text:h.cur.text, sp:h.cur.sp, choices: h.cur.choices||null, answer: ph==="reveal" ? h.cur.answer : null,
+      hasImg: !!(h.cur.img||h.cur.url), img: CFG.phoneImg&&h.cur.img ? h.cur.img : null, url: CFG.phoneImg&&h.cur.url ? h.cur.url : null} : null,
     responder:h.responder||null, tried:h.tried||{}, openAt:h.openAt||0, readMs:h.readMs||0, readAt:h.readAt||0,
     reaction: h.reaction==null ? null : h.reaction, msg:h.msg||"", msgOk: h.msgOk==null?null:h.msgOk,
     auc:h.auc||null,
+    ansDeadline: ph==="answer" ? (h.ansDeadline||0) : 0,
+    dl: ["open","quiz","answer"].includes(ph) ? (h.dl||0) : 0, dlTotal: h.dlTotal||0,
+    quiz: h.quiz ? {id:h.quiz.id, opts:h.quiz.opts, deadline:h.quiz.deadline, done:!!h.quiz.done, correct: h.quiz.done ? h.quiz.correct : null,
+      picked: Object.fromEntries(Object.keys(h.quiz.picks).map(k=>[k,true])),
+      picks: h.quiz.done ? Object.fromEntries(Object.entries(h.quiz.picks).map(([k,v])=>[k,v.i])) : null} : null,
+    stats: ph==="end" ? statsOut() : null,
     fin: f ? {
+      opts: f.opts||null, choices: ["final-answer","final-judge","end"].includes(ph) && !f.opts && PACK.final.choices ? PACK.final.choices : null,
       theme: PACK.final.theme, ids:f.ids,
       text: ["final-answer","final-judge","end"].includes(ph) ? PACK.final.text : null,
       answer: ["final-judge","end"].includes(ph) ? PACK.final.answer : null,
@@ -807,7 +959,7 @@ function pushState(){
       answers: ["final-judge","end"].includes(ph) ? f.answers : null,
       verdict: f.verdict
     } : null,
-    cfg:{picker:CFG.picker, window:CFG.window, minus:CFG.minus, early:CFG.early, cat:CFG.cat, auction:CFG.auction, final:!!(CFG.final&&PACK.final), access:CFG.access},
+    cfg:{phoneImg:!!CFG.phoneImg, host:CFG.host, format:CFG.format, ansTime:CFG.ansTime, picker:picker(), window:CFG.window, minus:CFG.minus, early:CFG.early, cat:CFG.cat, auction:CFG.auction, final:!!(CFG.final&&PACK.final), access:CFG.access},
     pack:{title:PACK.title, stats:stats(PACK)},
     host:hostName(), ts:TS()
   };
@@ -826,7 +978,9 @@ function onInput(pid, v){
   if(!v || !HOST || HOST.seen[pid]===v.n) return; HOST.seen[pid]=v.n;
   const h=H();
   switch(v.kind){
-    case "pick": if(h.phase==="board" && CFG.picker==="player" && h.chooser===pid) pick(+v.ti,+v.qi); break;
+    case "pick": if(h.phase==="board" && picker()==="player" && h.chooser===pid) pick(+v.ti,+v.qi); break;
+    case "ans": if(h.phase==="answer" && h.responder===pid && AUTO()){ h.said=String(v.text||"").trim().slice(0,80)||"—"; judge(h.cur.choices ? normA(h.said)===normA(h.cur.answer) : matchAnswer(h.said, h.cur.answer)); } break;
+    case "opt": quizPick(pid, v); break;
     case "cat": if(h.phase==="cat" && h.chooser===pid && v.to!==pid && HOST.players[v.to]) catGive(v.to); break;
     case "auc": if(h.phase==="auction" && h.auc.queue[0]===pid) aucAct(pid, v.act); break;
     case "bet": if(h.phase==="final-bet" && h.fin.ids.includes(pid) && h.fin.bets[pid]==null){ const max=Math.max(1,(HOST.players[pid]||{}).score||0); h.fin.bets[pid]=Math.max(1,Math.min(max,Math.round(+v.v||1))); checkBets(); } break;
@@ -835,28 +989,62 @@ function onInput(pid, v){
 }
 
 /* ---------- host game flow ---------- */
+const AUTO = () => CFG.host==="auto";
+const QUIZ = () => CFG.format==="quiz";
+const picker = () => (AUTO()||QUIZ()) ? "player" : CFG.picker;
+function autoLater(ms, fn){ if(AUTO()) later(fn, ms); }
+function normA(x){ return String(x||"").toLowerCase().replace(/ё/g,"е").replace(/[«»"'“”„.,!?()\[\]\-–—:;]/g," ").replace(/\s+/g," ").trim(); }
+function lev(a,b){ if(Math.abs(a.length-b.length)>2) return 9; const d=Array.from({length:a.length+1},(_,i)=>[i]); for(let j=1;j<=b.length;j++) d[0][j]=j; for(let i=1;i<=a.length;i++) for(let j=1;j<=b.length;j++) d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return d[a.length][b.length]; }
+function matchAnswer(said, ans){
+  const s=normA(said); if(!s) return false;
+  const vs=[normA(ans), ...String(ans||"").split(/[,;\/]|\sили\s|\(/i).map(normA)].filter(Boolean);
+  return vs.some(v=> s===v || (s.length>=3 && s.includes(v) && v.length>=3) || (s.length>=4 && v.includes(s) && s.length>=v.length*.6) || (v.length>=5 && lev(s,v)<=(v.length>=9?2:1)));
+}
+/* ---- stats ---- */
+function stP(id){ const st=H().st; if(!st.pl[id]) st.pl[id]={right:0, wrong:0, best:null}; return st.pl[id]; }
+function stRight(id, reaction){ const p=stP(id); p.right++; if(reaction!=null && (p.best==null || reaction<p.best)) p.best=Math.round(reaction*100)/100; }
+function stWrong(id){ stP(id).wrong++; }
+function stQ(){ const h=H(); return h.st.qs[h.st.qs.length-1]; }
+
 function startGame(){
   const ids=online(); if(!ids.length || validate(PACK).some(x=>x.lvl==="err")) return;
-  clearTimers();
+  clearTimers(); keepAwake();
   order().forEach(id=>{ HOST.players[id].score=0; hRef(`players/${id}/score`).set(0); });
-  Object.assign(H(),{phase:"board", round:0, used:{}, chooser:ids[0], cur:null, responder:null, tried:{}, msg:"", auc:null, fin:null});
-  hRef("buzz").remove(); hRef("input").remove(); HOST.seen={};
-  S.view="game"; pushState();
+  Object.assign(H(),{phase:"board", round:0, used:{}, chooser:ids[0], cur:null, responder:null, tried:{}, msg:"", auc:null, fin:null, quiz:null, st:{pl:{}, qs:[]}});
+  hRef("buzz").remove(); hRef("input").remove(); hRef("media").remove(); HOST.seen={}; preloadPackImages();
+  S.view="game"; if(AUTO() && PL) APP.mode="player";
+  armBoard(); pushState();
+}
+function armBoard(){
+  const h=H(); if(!AUTO()) return;
+  if(!HOST.players[h.chooser] || HOST.players[h.chooser].online===false){ const ids=online(); if(ids.length) h.chooser=ids[Math.floor(Math.random()*ids.length)]; }
+  const n=Object.keys(h.used).length, r=h.round;
+  later(()=>{ const x=H(); if(x.phase==="board" && x.round===r && Object.keys(x.used).length===n){ const f=[]; PACK.rounds[r].themes.forEach((t,ti)=>t.questions.forEach((_,qi)=>{ if(!x.used[ti+"-"+qi]) f.push([ti,qi]); })); if(f.length){ const [a,b]=f[Math.floor(Math.random()*f.length)]; pick(a,b); } } }, 30000);
 }
 function pick(ti,qi){
   const h=H(), key=ti+"-"+qi, th=PACK.rounds[h.round].themes[ti], item=th&&th.questions[qi];
   if(h.phase!=="board" || !item || h.used[key]) return;
-  clearTimers(); h.used[key]=true;
+  clearTimers(); h.used[key]=true; if(!h.st) h.st={pl:{}, qs:[]};
   let sp=item.type||"normal";
   if(sp==="cat"&&!CFG.cat) sp="normal"; if(sp==="auction"&&!CFG.auction) sp="normal";
+  if(QUIZ()) sp="normal";
   if(!HOST.players[h.chooser]) h.chooser=online()[0]||null;
-  h.cur={ti,qi,theme:th.name,cost:item.cost,text:item.text,answer:item.answer,sp,direct:false,noPenalty:false};
-  h.tried={}; h.responder=null; h.reaction=null; h.msg="";
-  if(sp==="cat"){ h.phase="cat"; pushState(); return; }
+  h.cur={ti,qi,theme:th.name,cost:item.cost,text:item.text,answer:item.answer,sp,direct:false,noPenalty:false,img:item.img||null,url:item.url||null,wrong:item.wrong||null,choices:item.choices||null};
+  h.st.qs.push({theme:th.name, cost:item.cost, text:(item.text||"🖼").slice(0,90), answer:item.answer, res:null, by:null, tries:[]});
+  sendMedia(h.cur);
+  h.tried={}; h.responder=null; h.reaction=null; h.msg=""; h.said=null; h.quiz=null;
+  if(QUIZ()){ startQuiz(); return; }
+  if(sp==="cat"){ h.phase="cat"; autoLater(20000, ()=>{ const x=H(); if(x.phase==="cat"&&x.cur===h.cur){ const o=online().filter(i=>i!==x.chooser); catGive(o.length?o[Math.floor(Math.random()*o.length)]:x.chooser); } }); pushState(); return; }
   if(sp==="auction"){ startAuction(); return; }
-  if(sp==="norisk" && h.chooser){ h.cur.direct=true; h.cur.noPenalty=true; h.responder=h.chooser; h.phase="answer"; pushState(); return; }
+  if(sp==="norisk" && h.chooser){ h.cur.direct=true; h.cur.noPenalty=true; h.responder=h.chooser; h.phase="answer"; armAnswer(); pushState(); return; }
   startReading();
 }
+function sendMedia(c){
+  if(!CFG.phoneImg || !c.img) return;
+  imgGet(c.img).then(d=>{ if(d && HOST && H().cur===c) hRef("media").set({id:c.img, data:d}); });
+}
+function preloadPackImages(){ PACK.rounds.forEach(r=>r.themes.forEach(t=>t.questions.forEach(q=>{ if(q.img) imgGet(q.img); }))); }
+function tvImg(c){ const src=imgSrc(c); return (c.img||c.url) ? (src?`<img class="qimg" src="${esc(src)}" alt="">`:`<div class="sub">Загружаем картинку…</div>`) : ""; }
 function startReading(){
   const h=H(); h.phase="reading"; h.readMs=Math.min(5000, 1500+(h.cur.text||"").length*30); h.readAt=now();
   pushState(); later(openBuzz, h.readMs);
@@ -868,48 +1056,68 @@ function openBuzz(){
   if(HOST.buzzRef) HOST.buzzRef.off();
   HOST.buzzRef=hRef(`buzz/${qn}`);
   HOST.buzzRef.on("child_added", ()=>{ const x=H(); if(x.phase!=="open"||x.qn!==qn||x.buzzLock) return; x.buzzLock=true; setTimeout(()=>resolveBuzz(qn),180); });
-  later(()=>{ const x=H(); if(x.phase==="open" && x.qn===qn && !x.buzzLock) reveal("Никто не ответил", null); }, CFG.window);
+  setDl(CFG.window);
   pushState();
 }
 async function resolveBuzz(qn){
   const h=H(); if(h.phase!=="open" || h.qn!==qn) return;
   const all=(await hRef(`buzz/${qn}`).once("value")).val()||{};
   const cand=Object.entries(all).filter(([id,ts])=>!h.tried[id] && HOST.players[id] && typeof ts==="number").sort((a,b)=>a[1]-b[1]);
-  if(!cand.length){ h.buzzLock=false; return; }
+  if(!cand.length){ h.buzzLock=false; if(h.dl && now()>=h.dl) onExpire(); return; }
   clearTimers();
-  const [id,ts]=cand[0]; h.responder=id; h.reaction=Math.max(0,(ts-h.openAt)/1000); h.phase="answer"; pushState();
+  const [id,ts]=cand[0]; h.responder=id; h.reaction=Math.max(0,(ts-h.openAt)/1000); h.phase="answer"; armAnswer(); pushState();
+}
+function setDl(ms){
+  const h=H(); h.dlKey=(h.dlKey||0)+1; const k=h.dlKey;
+  if(ms>0){ h.dl=now()+ms; h.dlTotal=ms; setTimeout(()=>{ if(HOST && H().dlKey===k) onExpire(); }, ms); }
+  else { h.dl=0; h.dlTotal=0; }
+}
+function onExpire(){
+  const h=H();
+  if(h.phase==="open" && !h.buzzLock){ const q=stQ(); if(q) q.res="nobody"; reveal("Никто не ответил", null); }
+  else if(h.phase==="quiz") quizReveal();
+  else if(h.phase==="answer" && AUTO()){ h.said="— (время вышло)"; judge(false); }
+}
+function addTime(ms){ const h=H(); const left=h.dl>0?Math.max(0,h.dl-now()):0; setDl(left+ms); pushState(); }
+function stopTime(){ setDl(0); pushState(); }
+function armAnswer(){
+  const h=H(); h.said=null; h.ansDeadline=0;
+  if(AUTO()){ setDl(CFG.ansTime); h.ansDeadline=h.dl||1; } else setDl(0);
 }
 function judge(ok){
   const h=H(); if(h.phase!=="answer") return;
-  const id=h.responder, c=h.cur.cost, nm=pname(id);
-  if(ok){ addScore(id,c); h.chooser=id; reveal(nm+": верно, +"+fmt(c), true); return; }
+  const id=h.responder, c=h.cur.cost, nm=pname(id), said=h.said?` «${h.said}»`:"";
+  const q=stQ(); if(q) q.tries.push({id, ok:!!ok});
+  if(ok){ addScore(id,c); stRight(id, h.reaction); if(q){ q.res="right"; q.by=id; } h.chooser=id; reveal(nm+said+": верно, +"+fmt(c), true); return; }
+  stWrong(id);
   const fine=(CFG.minus && !h.cur.noPenalty)?c:0; if(fine) addScore(id,-fine); h.tried[id]=true;
   const tail=fine?", −"+fmt(fine):"";
-  if(h.cur.direct || !online().some(x=>!h.tried[x])){ reveal(nm+": неверно"+tail, false); return; }
-  h.msg=nm+" ошибся"+tail; h.responder=null; openBuzz();
+  if(h.cur.direct || !online().some(x=>!h.tried[x])){ if(q) q.res="wrong"; reveal(nm+said+": неверно"+tail, false); return; }
+  h.msg=nm+said+" — неверно"+tail; h.responder=null; openBuzz();
 }
-function reveal(msg, ok){ clearTimers(); const h=H(); h.phase="reveal"; h.msg=msg; h.msgOk=ok; h.responder=null; pushState(); later(toBoard, 5000); }
+function reveal(msg, ok){ clearTimers(); const h=H(); h.dlKey=(h.dlKey||0)+1; h.dl=0; h.phase="reveal"; h.msg=msg; h.msgOk=ok; h.responder=null; pushState(); later(toBoard, QUIZ()?6000:5000); }
 function toBoard(){
-  clearTimers(); const h=H(); h.msg="";
+  clearTimers(); const h=H(); h.msg=""; h.quiz=null; hRef("media").remove();
   const total=PACK.rounds[h.round].themes.reduce((a,t)=>a+t.questions.length,0);
   if(Object.keys(h.used).length>=total){ endRound(); return; }
-  h.phase="board"; pushState();
+  h.phase="board"; armBoard(); pushState();
 }
 function endRound(){
   clearTimers(); const h=H();
   if(h.round < PACK.rounds.length-1){
     h.round++; h.used={}; h.phase="board";
     const ids=online(); if(ids.length) h.chooser=ids.slice().sort((a,b)=>(HOST.players[a].score||0)-(HOST.players[b].score||0))[0];
-    pushState();
+    armBoard(); pushState();
   } else startFinal();
 }
-function catGive(to){ const h=H(); if(h.phase!=="cat") return; h.responder=to; h.cur.direct=true; h.phase="answer"; h.reaction=null; pushState(); }
+function catGive(to){ const h=H(); if(h.phase!=="cat") return; clearTimers(); h.responder=to; h.cur.direct=true; h.phase="answer"; h.reaction=null; armAnswer(); pushState(); }
 function startAuction(){
   const h=H(), ids=online(); let i=ids.indexOf(h.chooser); if(i<0){ h.chooser=ids[0]; i=0; }
   const q=[...ids.slice(i+1),...ids.slice(0,i)];
   h.auc={bid:h.cur.cost, leader:h.chooser, queue:q, log:[pname(h.chooser)+" открывает торги: "+fmt(h.cur.cost)]};
-  h.phase="auction"; if(!q.length) aucFinish(); else pushState();
+  h.phase="auction"; if(!q.length) aucFinish(); else { armAuc(); pushState(); }
 }
+function armAuc(){ const a=H().auc, k=a.log.length+":"+a.queue[0]; autoLater(15000, ()=>{ const x=H(); if(x.phase==="auction" && x.auc.log.length+":"+x.auc.queue[0]===k) aucAct(x.auc.queue[0],"pass"); }); }
 function aucAct(id, act){
   const h=H(), a=h.auc; if(h.phase!=="auction" || a.queue[0]!==id) return;
   const sc=(HOST.players[id]||{}).score||0;
@@ -918,38 +1126,122 @@ function aucAct(id, act){
   a.queue.shift();
   if(act==="pass") a.log.push(pname(id)+": пас");
   else { const bid=act==="all"?sc:a.bid+100; a.queue.push(a.leader); a.leader=id; a.bid=bid; a.log.push(pname(id)+(act==="all"?": ва-банк, ":": ")+fmt(bid)); }
-  a.log=a.log.slice(-4);
-  if(!a.queue.length) aucFinish(); else pushState();
+  if(!a.queue.length) aucFinish(); else { armAuc(); pushState(); }
 }
-function aucFinish(){ const h=H(); h.responder=h.auc.leader; h.cur.cost=h.auc.bid; h.cur.direct=true; h.reaction=null; h.phase="answer"; pushState(); }
+function aucFinish(){ const h=H(); clearTimers(); h.responder=h.auc.leader; h.cur.cost=h.auc.bid; h.cur.direct=true; h.reaction=null; h.phase="answer"; armAnswer(); pushState(); }
+
+/* ---- quiz (multiple choice) ---- */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function makeOptions(answer, wrong, theme, choices){
+  if(choices && choices.length>=2){ const ci=choices.findIndex(x=>normA(x)===normA(answer)); if(ci>=0) return {opts:choices.slice(), correct:ci}; }
+  const A=String(answer||"").trim(), na=normA(A), seen=new Set([na]), out=[];
+  const add=x=>{ x=String(x||"").trim(); const n=normA(x); if(x && n && !seen.has(n) && out.length<3){ seen.add(n); out.push(x); } };
+  (wrong||[]).forEach(add);
+  if(out.length<3 && /^-?\d+([.,]\d+)?$/.test(A)){
+    const v=parseFloat(A.replace(",",".")), int=Number.isInteger(v), isYear=int && v>1000 && v<2100;
+    const deltas=shuffle(isYear?[1,2,3,5,7,10,-1,-2,-3,-5,-7,-10]:int&&Math.abs(v)<20?[1,2,3,-1,-2,4,-3]:[.1,.2,.25,.4,-.1,-.2,-.3,.5]);
+    for(const d of deltas){ let n=isYear||(int&&Math.abs(v)<20)? v+d : v*(1+d); n=int?Math.round(n):Math.round(n*10)/10; if(n>0||v<=0) add(String(n)); }
+  }
+  if(out.length<3){
+    const same=[], other=[];
+    PACK.rounds.forEach(r=>r.themes.forEach(t=>t.questions.forEach(q=>(t.name===theme?same:other).push(q.answer))));
+    if(PACK.final) other.push(PACK.final.answer);
+    const sim=x=>Math.abs(String(x).length-A.length);
+    shuffle(same).forEach(add); other.sort((a,b)=>sim(a)-sim(b)).slice(0,12).forEach(x=>{ if(Math.random()<.7) add(x); }); other.forEach(add);
+  }
+  const opts=shuffle([A, ...out]);
+  return {opts, correct:opts.indexOf(A)};
+}
+function startQuiz(){
+  const h=H(), o=makeOptions(h.cur.answer, h.cur.wrong, h.cur.theme, h.cur.choices);
+  h.qn=(h.qn||0)+1; h.quiz={id:h.qn, opts:o.opts, correct:o.correct, picks:{}, start:now()};
+  h.phase="quiz"; setDl(CFG.quizTime); pushState();
+}
+function quizPick(pid, v){
+  const h=H(), z=h.quiz; if(h.phase!=="quiz" || !z || +v.qid!==z.id || z.picks[pid] || !HOST.players[pid]) return;
+  const i=+v.i; if(!(i>=0 && i<z.opts.length)) return;
+  z.picks[pid]={i, t:Math.max(0,(now()-z.start)/1000)};
+  if(online().every(id=>z.picks[id])) quizReveal(); else pushState();
+}
+function quizReveal(){
+  const h=H(), z=h.quiz, c=h.cur.cost, q=stQ(); if(h.phase!=="quiz") return;
+  clearTimers();
+  const right=[]; Object.entries(z.picks).forEach(([pid,p])=>{ const ok=p.i===z.correct; if(q) q.tries.push({id:pid, ok}); if(ok){ addScore(pid,c); stRight(pid,p.t); right.push([pid,p.t]); } else { stWrong(pid); if(CFG.minus && CFG.quizMinus) addScore(pid,-c); } });
+  right.sort((a,b)=>a[1]-b[1]);
+  if(right.length){ h.chooser=right[0][0]; if(q){ q.res="right"; q.by=right[0][0]; q.quiz=[right.length, online().length]; } }
+  else if(q){ q.res=Object.keys(z.picks).length?"wrong":"nobody"; q.quiz=[0, online().length]; }
+  z.done=true;
+  reveal(right.length ? `Верно ответили ${right.length} из ${online().length}. Быстрее всех: ${pname(right[0][0])}` : "Никто не ответил верно", right.length>0);
+}
+
+/* ---- final ---- */
 function startFinal(){
   clearTimers(); const h=H();
   if(!CFG.final || !PACK.final){ h.phase="end"; pushState(); return; }
   const ids=online().filter(id=>(HOST.players[id].score||0)>0);
   if(!ids.length){ h.phase="end"; pushState(); return; }
-  h.fin={ids, bets:{}, answers:{}, verdict:{}}; h.phase="final-bet"; pushState();
+  h.fin={ids, bets:{}, answers:{}, verdict:{}};
+  if(QUIZ()){ const o=makeOptions(PACK.final.answer, PACK.final.wrong, "", PACK.final.choices); h.fin.opts=o.opts; }
+  h.phase="final-bet"; autoLater(30000, ()=>checkBets(true)); pushState();
 }
 function checkBets(force){
   const h=H(); if(h.phase!=="final-bet") return;
-  if(force || h.fin.ids.every(id=>h.fin.bets[id]!=null)){ h.fin.ids.forEach(id=>{ if(h.fin.bets[id]==null) h.fin.bets[id]=1; }); h.phase="final-answer"; }
+  if(force || h.fin.ids.every(id=>h.fin.bets[id]!=null)){ h.fin.ids.forEach(id=>{ if(h.fin.bets[id]==null) h.fin.bets[id]=1; }); h.phase="final-answer"; clearTimers(); autoLater(45000, ()=>checkAnswers(true)); }
   pushState();
 }
 function checkAnswers(force){
   const h=H(); if(h.phase!=="final-answer") return;
-  if(force || h.fin.ids.every(id=>h.fin.answers[id]!=null)){ h.fin.ids.forEach(id=>{ if(h.fin.answers[id]==null) h.fin.answers[id]="—"; }); h.phase="final-judge"; }
+  if(force || h.fin.ids.every(id=>h.fin.answers[id]!=null)){
+    clearTimers();
+    h.fin.ids.forEach(id=>{ if(h.fin.answers[id]==null) h.fin.answers[id]="—"; }); h.phase="final-judge";
+    if(AUTO() || QUIZ()) h.fin.ids.forEach((id,i)=>later(()=>finalJudge(id, QUIZ()? normA(h.fin.answers[id])===normA(PACK.final.answer) : matchAnswer(h.fin.answers[id], PACK.final.answer)), 1300*(i+1)));
+  }
   pushState();
 }
 function finalJudge(id, ok){
   const h=H(); if(h.phase!=="final-judge" || h.fin.verdict[id]!=null) return;
   h.fin.verdict[id]=ok; addScore(id, ok?h.fin.bets[id]:-h.fin.bets[id]);
+  if(ok) stP(id).finalOk=true; else stP(id).finalOk=false;
   if(h.fin.ids.every(i=>h.fin.verdict[i]!=null)) h.phase="end";
   pushState();
 }
-function backToLobby(){ clearTimers(); Object.assign(H(),{phase:"lobby", cur:null, responder:null, fin:null, auc:null, used:{}, round:0}); S.view="setup"; pushState(); }
+function hostTimeBtnsAllowed(){ const h=H(); return ["open","quiz"].includes(h.phase) || (h.phase==="answer" && AUTO()); }
+function skipQuestion(){ const h=H(); if(!h.cur || ["board","end","lobby"].includes(h.phase)) return; const q=stQ(); if(q) q.res="nobody"; if(h.quiz) h.quiz.done=false; h.quiz=null; reveal("Вопрос пропущен", null); }
+function undoQuestion(){ const h=H(); if(!h.cur || ["board","end","lobby","reveal"].includes(h.phase) || h.phase.startsWith("final")) return; clearTimers(); h.dlKey=(h.dlKey||0)+1; h.dl=0; delete h.used[h.cur.ti+"-"+h.cur.qi]; if(h.st && h.st.qs.length) h.st.qs.pop(); h.cur=null; h.quiz=null; h.responder=null; h.msg=""; hRef("media").remove(); h.phase="board"; armBoard(); pushState(); }
+function giveAnswer(pid){ const h=H(); if(!h.cur || !["reading","open","answer"].includes(h.phase) || QUIZ()) return; clearTimers(); h.responder=pid; h.reaction=null; h.phase="answer"; armAnswer(); pushState(); }
+function setChooser(pid){ const h=H(); h.chooser=pid; if(h.phase==="board"){ clearTimers(); armBoard(); } pushState(); }
+function backToLobby(){ clearTimers(); Object.assign(H(),{phase:"lobby", cur:null, responder:null, fin:null, auc:null, quiz:null, used:{}, round:0}); S.view="setup"; APP.mode="host"; pushState(); }
+function statsOut(){
+  const h=H(); if(!h.st) return null;
+  const players=order().map(id=>{ const s=h.st.pl[id]||{}; return {id, name:pname(id), score:HOST.players[id].score||0, right:s.right||0, wrong:s.wrong||0, best:s.best==null?null:s.best, fin:s.finalOk==null?null:s.finalOk}; }).sort((a,b)=>b.score-a.score);
+  const qs=h.st.qs.map(q=>({t:q.theme, c:q.cost, x:q.text, a:q.answer, r:q.res||"nobody", by:q.by?pname(q.by):null, n:q.quiz||null, w:q.tries.filter(t=>!t.ok).map(t=>pname(t.id))}));
+  const themes={}; h.st.qs.forEach(q=>{ const t=themes[q.theme]||(themes[q.theme]={n:0,ok:0}); t.n++; if(q.res==="right") t.ok++; });
+  const hard=Object.entries(themes).filter(([,v])=>v.n>=2).sort((a,b)=>a[1].ok/a[1].n-b[1].ok/b[1].n)[0];
+  const fast=players.filter(p=>p.best!=null).sort((a,b)=>a.best-b.best)[0];
+  return {players, qs, total:qs.length, ok:qs.filter(q=>q.r==="right").length, hard:hard?{t:hard[0], ok:hard[1].ok, n:hard[1].n}:null, fast:fast?{name:fast.name, best:fast.best}:null};
+}
+
+/* ---- organizer plays too (no-host mode) ---- */
+function syncSelf(){
+  if(!HOST) return;
+  if(AUTO() && !PL) joinRoom(HOST.code, hostName(), {silent:true});
+  else if(!AUTO() && PL && PL.code===HOST.code) dropSelf(true);
+}
+function dropSelf(remove){
+  if(!PL) return;
+  pRef("state").off(); pRef("players").off(); pRef("meta").off(); pRef("media").off();
+  pRef(`players/${PL.pid}/online`).onDisconnect().cancel();
+  if(remove) pRef(`players/${PL.pid}`).remove();
+  PL=null;
+}
+let WAKE=null;
+async function keepAwake(){ try{ if(navigator.wakeLock && !WAKE){ WAKE=await navigator.wakeLock.request("screen"); WAKE.addEventListener("release",()=>{ WAKE=null; }); } }catch(e){} }
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && HOST && H().phase!=="lobby") keepAwake(); });
 
 /* ================= PLAYER ================= */
 const pRef = p => ref(`rooms/${PL.code}/${p}`);
-async function joinRoom(code, name){
+async function joinRoom(code, name, opt){
+  opt=opt||{};
   APP.busy=true; APP.joinErr=""; render();
   try{
     if(!/^\d{4}$/.test(code)) throw "Код состоит из 4 цифр";
@@ -966,15 +1258,15 @@ async function joinRoom(code, name){
     PL={code, pid, name, state:null, players:{}, meta:m, lock:0, pressedQn:null, sent:{}, seenSelf:false, kicked:false};
     pRef(`players/${pid}/online`).onDisconnect().set(false);
     pRef("state").on("value", s=>{ const prev=PL&&PL.state; PL.state=s.val(); if(prev && PL.state && prev.qn!==PL.state.qn) PL.pressedQn=null; if(PL.state && PL.state.phase==="lobby") PL.sent={}; render(); });
-    pRef("players").on("value", s=>{ PL.players=Object.fromEntries(Object.entries(s.val()||{}).filter(([k,p])=>p&&p.name)); if(PL.players[pid]) PL.seenSelf=true; else if(PL.seenSelf && !PL.kicked){ PL.kicked=true; pRef(`players/${pid}/online`).onDisconnect().cancel(); } render(); });
+    pRef("players").on("value", s=>{ PL.players=Object.fromEntries(Object.entries(s.val()||{}).filter(([k,p])=>p&&p.name)); if(PL.players[pid] && PL.players[pid].name!==PL.name){ PL.name=PL.players[pid].name; ME_NAME=PL.name; save("svoya.name",PL.name); } if(PL.players[pid]) PL.seenSelf=true; else if(PL.seenSelf && !PL.kicked){ PL.kicked=true; pRef(`players/${pid}/online`).onDisconnect().cancel(); } render(); });
     pRef("meta").on("value", s=>{ PL.meta=s.val()||{}; render(); });
-    save("svoya.lastRoom", code);
-    APP.mode="player"; history.replaceState(null,"",location.pathname+"?room="+code);
+    pRef("media").on("value", s=>{ PL.media=s.val(); render(); });
+    if(!opt.silent){ save("svoya.lastRoom", code); APP.mode="player"; history.replaceState(null,"",location.pathname+"?room="+code); }
   }catch(e){ console.error(e); APP.joinErr = typeof e==="string" ? e : "Не удалось подключиться. Проверьте интернет."; }
   APP.busy=false; render();
 }
 function leaveRoom(){
-  if(PL){ pRef("state").off(); pRef("players").off(); pRef("meta").off(); pRef(`players/${PL.pid}/online`).onDisconnect().cancel(); if(!PL.kicked && PL.players[PL.pid]) pRef(`players/${PL.pid}/online`).set(false); }
+  if(PL){ pRef("state").off(); pRef("players").off(); pRef("meta").off(); pRef("media").off(); pRef(`players/${PL.pid}/online`).onDisconnect().cancel(); if(!PL.kicked && PL.players[PL.pid]) pRef(`players/${PL.pid}/online`).set(false); }
   PL=null; save("svoya.lastRoom",null); history.replaceState(null,"",location.pathname); goHome();
 }
 function send(kind, data){ pRef(`input/${PL.pid}`).set(Object.assign({kind, n:Date.now()+"-"+Math.random().toString(36).slice(2,6)}, data||{})); }
@@ -1068,17 +1360,22 @@ function renderSetup(){
     <div class="setup">
       <div class="set-col">
         <div class="opt"><div class="pack"><div><b>${esc(PACK.title)}</b><span>${stats(PACK)}</span></div><button class="sb gold" data-act="lib">Сменить вопросы</button></div>${errs?`<p style="color:#FFB3AE;opacity:1">В паке ${errs} ${plural(errs,"ошибка","ошибки","ошибок")}, откройте его в редакторе.</p>`:""}</div>
-        <div class="opt"><h3>Ведущий</h3><input class="tin" id="hostname" data-cfgname="1" value="${esc(ME_NAME)}" maxlength="20" placeholder="Ваше имя" aria-label="Имя ведущего"></div>
+        <div class="opt"><h3>Формат игры</h3>${seg("format",[["classic","Своя игра"],["quiz","Викторина"]])}<p>${QUIZ()?"Все отвечают одновременно, выбирая один из 4 вариантов. Кнопок нет. Если у вопроса нет своих вариантов, неверные подбираются из других ответов пака.":"Кто первым нажал кнопку, тот и отвечает. Классические правила."}</p></div>
+        <div class="opt"><h3>Ведущий</h3>${seg("host",[["live","Я веду игру"],["auto","Без ведущего"]])}<p>${AUTO()?"Вы играете вместе со всеми со своего телефона. Ответы проверяются автоматически: игрок пишет ответ, небольшие опечатки прощаются. Экран этого устройства не гасите до конца игры.":"Вы читаете вопросы и засчитываете ответы, игроки отвечают вслух."}</p>
+          <input class="tin" id="hostname" data-cfgname="1" value="${esc(ME_NAME)}" maxlength="20" placeholder="${AUTO()?"Ваше имя в игре":"Имя ведущего"}" aria-label="Ваше имя"></div>
         <div class="opt"><h3>Доступ к комнате</h3>${seg("access",[["private","Приватная"],["public","Открытая"]])}
           <p>${CFG.access==="private"?"Войти можно только по коду, ссылке или QR. Комнаты нет в общем списке.":"Комната видна в «Открытых играх», зайти может любой, пока есть места."}</p>
           ${CFG.access==="public"?`<input class="tin" id="roomname" data-cfgtext="roomName" value="${esc(CFG.roomName)}" maxlength="40" aria-label="Название комнаты" placeholder="Название комнаты"><div style="margin-top:10px">${seg("max",[[4,"до 4"],[6,"до 6"],[8,"до 8"],[12,"до 12"]])}</div>`:""}</div>
-        <div class="opt"><h3>Кто выбирает вопросы</h3>${seg("picker",[["host","Ведущий"],["player","Игрок с телефона"]])}<p>${cfgNoteHTML()}</p></div>
-        <div class="opt"><h3>Время на нажатие кнопки</h3>${seg("window",[[5000,"5 с"],[7000,"7 с"],[10000,"10 с"]])}</div>
+        ${!AUTO()&&!QUIZ()?`<div class="opt"><h3>Кто выбирает вопросы</h3>${seg("picker",[["host","Ведущий"],["player","Игрок с телефона"]])}<p>${cfgNoteHTML()}</p></div>`:""}
+        <div class="opt"><h3>Картинки в вопросах</h3>${seg("phoneImg",[[false,"Только на экране"],[true,"И на телефонах"]])}<p>${CFG.phoneImg?"Для игры на расстоянии: каждый телефон загружает картинку вопроса, около 150 КБ. Это расходует бесплатный лимит Firebase.":"Игроки смотрят картинку на общем экране, телефоны остаются кнопками. Трафика нет."}</p></div>
+        ${QUIZ()?`<div class="opt"><h3>Время на ответ</h3>${seg("quizTime",[[15000,"15 с"],[20000,"20 с"],[30000,"30 с"],[0,"Без лимита"]])}<p>Быстрее всех ответивший верно выбирает следующий вопрос.</p></div>`:`
+        <div class="opt"><h3>Время на нажатие кнопки</h3>${seg("window",[[5000,"5 с"],[7000,"7 с"],[10000,"10 с"],[0,"Без лимита"]])}</div>
+        ${AUTO()?`<div class="opt"><h3>Время на ввод ответа</h3>${seg("ansTime",[[15000,"15 с"],[25000,"25 с"],[40000,"40 с"],[0,"Без лимита"]])}</div>`:""}
         <div class="opt"><h3>Неверный ответ</h3>${seg("minus",[[true,"Снимает очки"],[false,"Без штрафа"]])}</div>
-        <div class="opt"><h3>Нажатие до конца вопроса</h3>${seg("early",[[true,"Блок на 0,5 с"],[false,"Без блока"]])}</div>
+        <div class="opt"><h3>Нажатие до конца вопроса</h3>${seg("early",[[true,"Блок на 0,5 с"],[false,"Без блока"]])}</div>`}
         <div class="opt"><h3>Спецвопросы и финал</h3><div class="chips">
-          <button data-tog="cat" aria-pressed="${CFG.cat}">Кот в мешке</button>
-          <button data-tog="auction" aria-pressed="${CFG.auction}">Аукцион</button>
+          ${QUIZ()?"":`<button data-tog="cat" aria-pressed="${CFG.cat}">Кот в мешке</button>
+          <button data-tog="auction" aria-pressed="${CFG.auction}">Аукцион</button>`}
           <button data-tog="final" aria-pressed="${CFG.final}">Финал со ставками</button></div>${CFG.final&&!PACK.final?`<p>В этом паке нет финала.</p>`:""}</div>
       </div>
       <div class="lobby">
@@ -1096,7 +1393,7 @@ function updateLobby(){
   const box=document.getElementById("lobby-players"); if(!box) return;
   const ids=order();
   box.innerHTML = ids.length ? ids.map(id=>{ const p=HOST.players[id], on=p.online!==false;
-    return `<div><span class="pl-name"><i class="on-dot ${on?"":"off"}"></i>${esc(p.name)}</span><button class="ed-x" data-kick="${id}" aria-label="Удалить игрока ${esc(p.name)}">×</button></div>`; }).join("")
+    return `<div><button class="pl-name hren" data-hrename="${id}" title="Переименовать"><i class="on-dot ${on?"":"off"}"></i>${esc(p.name)} <span>✎</span></button><button class="ed-x" data-kick="${id}" aria-label="Удалить игрока ${esc(p.name)}">×</button></div>`; }).join("")
     : `<div class="wait">Ждём игроков: пусть отсканируют QR или введут код</div>`;
   const btn=document.getElementById("start-btn"), errs=validate(PACK).some(x=>x.lvl==="err");
   if(btn){ btn.disabled=!online().length||errs; btn.textContent=online().length?`Начать игру · ${online().length} ${plural(online().length,"игрок","игрока","игроков")}`:"Начать игру"; }
@@ -1124,10 +1421,11 @@ function renderHostGame(){
     if(h.phase==="board" && h.chooser===id){ cls.push("choose"); tag="выбирает"; }
     if(h.responder===id && h.phase==="answer"){ cls.push("resp"); tag="отвечает"; }
     if(h.phase==="auction" && h.auc && h.auc.leader===id){ cls.push("choose"); tag="лидер"; }
-    return `<button class="${cls.join(" ")}" data-score="${id}" title="Изменить счёт"><div class="nm"><span><i class="on-dot ${p.online!==false?"":"off"}"></i>${esc(p.name)}</span><em>${tag}</em></div><div class="sc ${(p.score||0)<0?"neg":""}">${fmt(p.score||0)}</div></button>`;
+    return `<button class="${cls.join(" ")}" data-menu="${id}" title="Действия с игроком"><div class="nm"><span><i class="on-dot ${p.online!==false?"":"off"}"></i>${esc(p.name)}</span><em>${tag}</em></div><div class="sc ${(p.score||0)<0?"neg":""}">${fmt(p.score||0)}</div></button>`;
   }).join("");
   let main="", host="";
-  const ansStrip=(active,extra)=>`<span class="lbl">Ответ</span><span class="ans">${esc(c.answer)}</span><div class="btns">${extra||""}<button class="hb ok" data-act="ok" ${active?"":"disabled"}>Верно</button><button class="hb bad" data-act="bad" ${active?"":"disabled"}>Неверно</button></div>`;
+  const ansLabel = c && c.choices ? (()=>{ const i=c.choices.findIndex(x=>normA(x)===normA(c.answer)); return (i>=0?LET[i]+") ":"")+c.answer; })() : (c?c.answer:"");
+  const ansStrip=(active,extra)=>`<span class="lbl">Ответ</span><span class="ans">${esc(ansLabel)}</span><div class="btns">${extra||""}<button class="hb ok" data-act="ok" ${active?"":"disabled"}>Верно</button><button class="hb bad" data-act="bad" ${active?"":"disabled"}>Неверно</button></div>`;
   switch(h.phase){
     case "board":{
       const R=PACK.rounds[h.round], N=Math.max(1,...R.themes.map(t=>t.questions.length));
@@ -1137,26 +1435,33 @@ function renderHostGame(){
         return `<button class="cell" ${used?"disabled":""} data-pick="${ti}-${qi}" aria-label="${esc(t.name)} за ${q.cost}">${used?"":q.cost}</button>`;
       }).join("")).join("")+`</div>`;
       const ch=h.chooser?pname(h.chooser):"—";
-      host=`<span class="lbl">Ход</span><span class="ans" style="color:#fff;font-weight:600">${CFG.picker==="host"?`${esc(ch)} называет вопрос, откройте его на табло`:`${esc(ch)} выбирает вопрос на телефоне (можно открыть и отсюда)`}</span><div class="btns"><button class="hb neutral" data-act="pass-turn">Передать ход</button></div>`;
+      host=`<span class="lbl">Ход</span><span class="ans" style="color:#fff;font-weight:600">${picker()==="host"?`${esc(ch)} называет вопрос, откройте его на табло`:`${esc(ch)} выбирает вопрос на телефоне (можно открыть и отсюда)`}</span><div class="btns"><select class="hsel" data-chooser aria-label="Кто ходит">${online().map(x=>`<option value="${x}" ${x===h.chooser?"selected":""}>Ходит: ${esc(pname(x))}</option>`).join("")}</select><button class="hb neutral" data-act="rand-turn">Случайно</button><button class="hb neutral" data-act="low-turn">Отстающему</button></div>`;
       break;
     }
     case "reading":{
       const el=Math.max(0,now()-h.readAt);
-      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div><div class="text">${esc(c.text)}</div><div class="sub">Прочитайте вопрос вслух, кнопки пока заблокированы</div><div class="bar read" style="animation-duration:${h.readMs}ms;animation-delay:-${el}ms"></div></div>`;
+      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div>${tvImg(c)}<div class="text">${esc(c.text)}</div>${c.choices&&h.phase!=="quiz"?optsHTML(c.choices,null,null):""}<div class="sub">Прочитайте вопрос вслух, кнопки пока заблокированы</div><div class="bar read" style="animation-duration:${h.readMs}ms;animation-delay:-${el}ms"></div></div>`;
       host=ansStrip(false,`<button class="hb neutral" data-act="open-now">Открыть кнопки</button>`); break;
     }
     case "open":{
       const el=Math.max(0,now()-h.openAt);
-      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div><div class="text">${esc(c.text)}</div><div class="sub">${h.msg?esc(h.msg)+". ":""}Кнопки открыты</div><div class="bar" style="animation-duration:${CFG.window}ms;animation-delay:-${el}ms"></div></div>`;
-      host=ansStrip(false,`<button class="hb neutral" data-act="nobody">Никто</button>`); break;
+      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div>${tvImg(c)}<div class="text">${esc(c.text)}</div>${c.choices&&h.phase!=="quiz"?optsHTML(c.choices,null,null):""}<div class="sub">${h.msg?esc(h.msg)+". ":""}Кнопки открыты${h.dl?"":" · без лимита времени"}</div>${h.dl?`<div class="bar" style="animation-duration:${h.dlTotal}ms;animation-delay:-${Math.max(0,h.dlTotal-(h.dl-now()))}ms"></div>`:""}</div>`;
+      host=ansStrip(false,timeBtns()+`<button class="hb neutral" data-act="nobody">Никто</button>`); break;
     }
     case "answer":{
       const how=c.sp==="cat"?"Кот в мешке":c.sp==="auction"?"Аукцион":c.sp==="norisk"?"Вопрос без риска":(h.reaction!=null?`нажал первым за ${h.reaction.toFixed(2).replace(".",",")} с`:"");
-      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div><div class="text">${esc(c.text)}</div><div class="sub">Отвечает ${esc(pname(h.responder))}${how?" · "+how:""}</div></div>`;
-      host=ansStrip(true); break;
+      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div>${tvImg(c)}<div class="text">${esc(c.text)}</div>${c.choices&&h.phase!=="quiz"?optsHTML(c.choices,null,null):""}<div class="sub">Отвечает ${esc(pname(h.responder))}${how?" · "+how:""}</div></div>`;
+      host=AUTO()? `<span class="lbl">Автопроверка</span><span class="ans" style="color:#fff;font-weight:600">${esc(pname(h.responder))} отвечает на телефоне · ${esc(ansLabel)}</span><div class="btns">${timeBtns()}<button class="hb ok" data-act="ok">Засчитать</button><button class="hb bad" data-act="bad">Не засчитать</button></div>` : ansStrip(true); break;
+    }
+    case "quiz":{
+      const z=h.quiz, el=Math.max(0,now()-z.start), n=Object.keys(z.picks).length;
+      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${c.cost}</div>${tvImg(c)}<div class="text">${esc(c.text)}</div>${c.choices&&h.phase!=="quiz"?optsHTML(c.choices,null,null):""}${optsHTML(z.opts,null,null)}<div class="sub">Ответили ${n} из ${online().length}${h.dl?"":" · без лимита времени"}</div>${h.dl?`<div class="bar" style="animation-duration:${h.dlTotal}ms;animation-delay:-${Math.max(0,h.dlTotal-(h.dl-now()))}ms"></div>`:""}</div>`;
+      host=`<span class="lbl">Ответ</span><span class="ans">${esc(ansLabel)}</span><div class="btns">${timeBtns()}<button class="hb neutral" data-act="quiz-end">Показать ответ</button></div>`; break;
     }
     case "reveal":
-      main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div><div class="big">${esc(c.answer)}</div><div class="sub">${esc(h.msg)}</div></div>`;
+      if(h.quiz && h.quiz.done){ const cnt=h.quiz.opts.map((_,i)=>Object.values(h.quiz.picks).filter(p=>p.i===i).length);
+        main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div><div class="text">${esc(c.text)}</div>${optsHTML(h.quiz.opts,h.quiz.correct,null,cnt)}<div class="sub">${esc(h.msg)}</div></div>`; }
+      else main=`<div class="q"><div class="meta">${esc(c.theme)} · ${fmt(c.cost)}</div><div class="big">${esc(c.answer)}</div><div class="sub">${esc(h.msg)}</div></div>`;
       host=`<span class="lbl">Пульт</span><span class="ans"></span><div class="btns"><button class="hb neutral" data-act="next">Дальше</button></div>`; break;
     case "cat":
       main=`<div class="q"><div class="big">Кот в мешке</div><div class="sub">${esc(pname(h.chooser))} отдаёт вопрос сопернику с телефона. Тема «${esc(c.theme)}», ${c.cost}. Отвечают без кнопки.</div></div>`;
@@ -1177,23 +1482,69 @@ function renderHostGame(){
       host=`<div class="judge-list"><div><span class="lbl">Правильный ответ:</span> <b style="color:var(--gold)">${esc(PACK.final.answer)}</b></div>`+h.fin.ids.map(id=>{ const v=h.fin.verdict[id];
         return `<div class="judge-row"><span class="who">${esc(pname(id))}</span><span class="said">«${esc(h.fin.answers[id]||"—")}» · ставка ${fmt(h.fin.bets[id])}</span>${v==null?`<button class="hb ok" data-fj="${id}:1">Верно</button><button class="hb bad" data-fj="${id}:0">Неверно</button>`:`<span class="done">${v?"✓":"✗"}</span>`}</div>`; }).join("")+`</div>`; break;
     case "end":{
-      const best=ids.slice().sort((a,b)=>(HOST.players[b].score||0)-(HOST.players[a].score||0))[0];
-      main=`<div class="q"><div class="meta">Игра окончена</div><div class="big">${best&&(HOST.players[best].score||0)>0?esc(pname(best))+" побеждает":"Победителя нет"}</div><div class="sub">${ids.map(id=>esc(pname(id))+": "+fmt(HOST.players[id].score||0)).join(" · ")}</div></div>`;
+      main=statsHTML(statsOut(), false);
       host=`<span class="lbl">Пульт</span><span class="ans"></span><div class="btns"><button class="hb neutral" data-act="lobby">Новая игра с теми же игроками</button></div>`; break;
     }
   }
+  const qtools = c && ["reading","open","answer","quiz","cat","auction"].includes(h.phase) ? `<div class="qtools"><button class="hb neutral" data-act="skip-q">Пропустить вопрос</button><button class="hb neutral" data-act="undo-q">Вернуть на табло</button><span class="lbl">Нажмите на игрока, чтобы дать ему ответить, передать ход или изменить очки</span></div>` : `<div class="qtools"><span class="lbl">Нажмите на игрока: ход, очки, имя</span></div>`;
   let skip="";
   if(h.phase==="board") skip = h.round<PACK.rounds.length-1 ? "Следующий раунд" : (CFG.final&&PACK.final?"К финалу":"Завершить игру");
   document.getElementById("tv").innerHTML=`
-    <div class="tv-head"><span class="tv-title">${roundLabel(h)} · комната ${HOST.code}</span><div style="display:flex;gap:8px;flex-wrap:wrap">${skip?`<button class="ghost" data-act="skip">${skip}</button>`:""}<button class="ghost" data-act="lobby">В лобби</button><button class="ghost" data-act="close-room">Закрыть</button></div></div>
-    <div class="scores" style="grid-template-columns:repeat(${Math.min(Math.max(ids.length,1),6)},1fr)">${scores||`<div class="pl">Игроков нет</div>`}</div>${main}<div class="host">${host}</div>`;
+    <div class="tv-head"><span class="tv-title">${roundLabel(h)} · комната ${HOST.code}</span><div style="display:flex;gap:8px;flex-wrap:wrap">${skip?`<button class="ghost" data-act="skip">${skip}</button>`:""}${PL?`<button class="ghost" data-act="to-phone">Мой телефон</button>`:""}<button class="ghost" data-act="lobby">В лобби</button><button class="ghost" data-act="close-room">Закрыть</button></div></div>
+    <div class="scores" style="grid-template-columns:repeat(${Math.min(Math.max(ids.length,1),6)},1fr)">${scores||`<div class="pl">Игроков нет</div>`}</div>${main}<div class="host">${host}</div>${h.phase==="end"?"":qtools}${S.menu?hostMenuHTML():""}`;
+}
+
+/* ================= shared: options & stats ================= */
+function dlBar(dl, total, cls){
+  if(!dl) return `<div class="nolimit">⏱ без лимита времени</div>`;
+  const left=Math.max(0, dl-now()), T=Math.max(total||left,1);
+  return `<div class="${cls||"timer"}"><i style="animation-duration:${T}ms;animation-delay:-${Math.max(0,T-left)}ms"></i></div>`;
+}
+const LET="АБВГДЕ";
+function optsHTML(opts, correct, mine, counts, clickable){
+  return `<div class="opts">`+arr(opts).map((o,i)=>{
+    const cls=["opt-b"]; if(correct!=null){ if(i===correct) cls.push("ok"); else if(i===mine) cls.push("bad"); else cls.push("dim"); } else if(i===mine) cls.push("sel");
+    const inner=`<b>${LET[i]}</b><span>${esc(o)}</span>${counts?`<em>${counts[i]}</em>`:""}`;
+    return clickable ? `<button class="${cls.join(" ")}" data-${clickable}="${i}">${inner}</button>` : `<div class="${cls.join(" ")}">${inner}</div>`;
+  }).join("")+`</div>`;
+}
+function statsHTML(S2, phone, meName){
+  if(!S2) return `<div class="q"><div class="big">Игра окончена</div></div>`;
+  const P=arr(S2.players), top=P.slice(0,3), medal=["🥇","🥈","🥉"];
+  const win=P[0] && P[0].score>0 ? P[0] : null;
+  const pod=`<div class="podium">${[1,0,2].filter(i=>top[i]).map(i=>`<div class="pod p${i+1}"><div class="pm">${medal[i]}</div><div class="pn">${esc(top[i].name)}</div><div class="ps">${fmt(top[i].score)}</div><div class="pb">${i+1}</div></div>`).join("")}</div>`;
+  const hl=[`Сыграно вопросов: <b>${S2.total}</b>, отвечено верно: <b>${S2.ok}</b>${S2.total?` (${Math.round(S2.ok/S2.total*100)}%)`:""}`];
+  if(S2.fast) hl.push(`Самая быстрая реакция: <b>${esc(S2.fast.name)}</b>, ${String(S2.fast.best).replace(".",",")} с`);
+  if(S2.hard) hl.push(`Самая сложная тема: <b>${esc(S2.hard.t)}</b>, верно ${S2.hard.ok} из ${S2.hard.n}`);
+  const table=`<div class="st-wrap"><table class="st"><thead><tr><th>#</th><th>Игрок</th><th>Очки</th><th>Верно</th><th>Ошибки</th><th>Реакция</th></tr></thead><tbody>${P.map((p,i)=>`<tr${meName&&p.name===meName?' class="me-row"':""}><td>${i+1}</td><td>${esc(p.name)}${p.fin===true?" ✓ф":p.fin===false?" ✗ф":""}</td><td>${fmt(p.score)}</td><td>${p.right}</td><td>${p.wrong}</td><td>${p.best!=null?String(p.best).replace(".",",")+" с":"—"}</td></tr>`).join("")}</tbody></table></div>`;
+  const qs=arr(S2.qs).map(q=>`<li class="${q.r==="right"?"r":q.r==="wrong"?"w":"n"}"><div><b>${esc(q.t)} · ${q.c}</b> ${esc(q.x)}</div><div class="qa">Ответ: ${esc(q.a)} · ${q.r==="right"?(q.n?`верно ${arr(q.n)[0]} из ${arr(q.n)[1]}, первым `:"ответил ")+esc(q.by):q.r==="wrong"?"никто не ответил верно":"никто не отвечал"}${arr(q.w).length&&!q.n?` · ошиблись: ${arr(q.w).map(esc).join(", ")}`:""}</div></li>`).join("");
+  return `<div class="endscreen ${phone?"ph":""}"><div class="meta">Игра окончена</div><div class="big">${win?esc(win.name)+(phone&&win.name===meName?", вы победили!":" побеждает!"):"Победителя нет"}</div>${pod}<div class="hl">${hl.map(x=>`<div>${x}</div>`).join("")}</div>${table}${qs?`<details class="qst" ${phone?"":"open"}><summary>Статистика по вопросам</summary><ol>${qs}</ol></details>`:""}</div>`;
+}
+
+function timeBtns(){ const h=H(); return `<button class="hb neutral" data-act="t-add10">+10 с</button><button class="hb neutral" data-act="t-add30">+30 с</button>${h.dl?`<button class="hb neutral" data-act="t-stop">Без лимита</button>`:""}`; }
+function hostMenuHTML(){
+  const id=S.menu, p=HOST&&HOST.players[id]; if(!p) return "";
+  const h=H(), c=h.cur, cost=c?c.cost:100, inQ=c && ["reading","open","answer"].includes(h.phase) && !QUIZ();
+  return `<div class="hmenu-bg" data-act="menu-close"></div><div class="hmenu" role="dialog" aria-label="Действия с игроком"><b>${esc(p.name)} · ${fmt(p.score||0)}</b>
+    ${h.phase!=="lobby"&&h.chooser!==id?`<button data-mact="chooser">Передать ход этому игроку</button>`:""}
+    ${inQ&&h.responder!==id?`<button data-mact="give">Дать ответить на вопрос</button>`:""}
+    <div class="hm-row"><button data-mact="plus">+${fmt(cost)}</button><button data-mact="minus">−${fmt(cost)}</button></div>
+    <button data-mact="score">Изменить счёт…</button><button data-mact="rename">Переименовать…</button>
+    <button data-mact="kick" class="danger">Удалить из комнаты</button><button data-act="menu-close" class="ghost2">Отмена</button></div>`;
 }
 
 /* ================= render: player ================= */
 function plSummary(st){
   const c=st.cfg||{};
-  return [["Вопросы",esc((st.pack||{}).title)],["Ведущий",esc(st.host)],["Доступ",c.access==="public"?"открытая":"приватная"],["Выбор вопросов",c.picker==="host"?"ведущий":"игрок"],["На кнопку",(c.window||7000)/1000+" с"],["Ошибка",c.minus?"минус очки":"без штрафа"],["Финал",c.final?"есть":"нет"]]
+  return [["Вопросы",esc((st.pack||{}).title)],["Ведущий",esc(st.host)],["Доступ",c.access==="public"?"открытая":"приватная"],["Выбор вопросов",c.picker==="host"?"ведущий":"игрок"],["На кнопку",c.window?c.window/1000+" с":"без лимита"],["Ошибка",c.minus?"минус очки":"без штрафа"],["Финал",c.final?"есть":"нет"],["Картинки",c.phoneImg?"на телефонах":"на общем экране"]]
     .map(([k,v])=>`<div><span>${k}</span><span>${v}</span></div>`).join("");
+}
+function plImg(c){
+  if(!c) return "";
+  if(c.url) return `<img class="pimg" src="${esc(c.url)}" alt="Картинка вопроса">`;
+  if(c.img) return PL.media && PL.media.id===c.img ? `<img class="pimg" src="${esc(PL.media.data)}" alt="Картинка вопроса">` : `<div class="hint">Загружаем картинку…</div>`;
+  if(c.hasImg) return `<div class="hint">🖼 Картинка на общем экране</div>`;
+  return "";
 }
 const arr = x => Array.isArray(x) ? x : Object.keys(x||{}).sort((a,b)=>a-b).map(k=>x[k]);
 function renderPlayer(){
@@ -1216,20 +1567,29 @@ function renderPlayer(){
         } else body=`<div class="status">${esc(pn(st.chooser))} выбирает вопрос</div><div class="hint">${esc(st.roundName||"")}</div><div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
         break;
       case "reading":
-        body=`<div class="status">${esc(c.theme)} · ${c.cost}</div><div class="card qtext">${esc(c.text)}</div><div class="buzz-wrap"><button class="buzzer locked ${PL.early?"early":""}" data-act="buzz">${PL.early?"Рано!":"Ждите"}</button><span class="kbd">${st.cfg.early?"Раннее нажатие блокирует кнопку на 0,5 с":"Кнопка откроется после вопроса"}</span></div>`; break;
+        body=`<div class="status">${esc(c.theme)} · ${c.cost}</div>${plImg(c)}${c.text?`<div class="card qtext">${esc(c.text)}</div>`:""}${c.choices&&st.phase!=="quiz"&&!(st.phase==="answer"&&st.responder===PL.pid&&st.cfg.host==="auto")?optsHTML(c.choices,null,null):""}<div class="buzz-wrap"><button class="buzzer locked ${PL.early?"early":""}" data-act="buzz">${PL.early?"Рано!":"Ждите"}</button><span class="kbd">${st.cfg.early?"Раннее нажатие блокирует кнопку на 0,5 с":"Кнопка откроется после вопроса"}</span></div>`; break;
       case "open":{
-        if(tried[PL.pid]) body=`<div class="status">Вы уже отвечали</div><div class="card qtext">${esc(c.text)}</div><div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
+        if(tried[PL.pid]) body=`<div class="status">Вы уже отвечали</div>${plImg(c)}${c.text?`<div class="card qtext">${esc(c.text)}</div>`:""}${c.choices&&st.phase!=="quiz"&&!(st.phase==="answer"&&st.responder===PL.pid&&st.cfg.host==="auto")?optsHTML(c.choices,null,null):""}<div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
         else if(PL.pressedQn===st.qn) body=`<div class="status">Нажато!</div><div class="hint">Ведущий определяет, кто был первым…</div><div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#FFD27A 0%,var(--gold) 55%,#A87A00 100%);box-shadow:0 2px 0 #A87A00">✓</button></div>`;
         else { const elp=Math.max(0,now()-st.openAt);
-          body=`<div class="status">${st.msg?esc(st.msg):"Кнопки открыты"}</div><div class="card qtext">${esc(c.text)}</div><div class="buzz-wrap"><button class="buzzer live" data-act="buzz">Жми!</button><div class="timer"><i style="animation-duration:${st.cfg.window}ms;animation-delay:-${elp}ms"></i></div></div>`; }
+          body=`<div class="status">${st.msg?esc(st.msg):"Кнопки открыты"}</div>${plImg(c)}${c.text?`<div class="card qtext">${esc(c.text)}</div>`:""}${c.choices&&st.phase!=="quiz"&&!(st.phase==="answer"&&st.responder===PL.pid&&st.cfg.host==="auto")?optsHTML(c.choices,null,null):""}<div class="buzz-wrap"><button class="buzzer live" data-act="buzz">Жми!</button>${dlBar(st.dl, st.dlTotal)}</div>`; }
         break;
       }
       case "answer":
-        if(st.responder===PL.pid) body=`<div class="status">Ваш ответ!</div><div class="hint">${c.sp==="norisk"?"Вопрос без риска: за ошибку очки не снимаются. ":""}Говорите вслух, ведущий засчитает.</div><div class="card qtext">${esc(c.text)}</div><div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#5FE0A8 0%,var(--ok) 55%,#0C6B46 100%);box-shadow:0 2px 0 #0C6B46">Вы!</button>${st.reaction!=null?`<div class="kbd">Время реакции ${Number(st.reaction).toFixed(2).replace(".",",")} с</div>`:""}</div>`;
-        else body=`<div class="status">Отвечает ${esc(pn(st.responder))}</div>${st.reaction!=null?`<div class="hint">Нажал за ${Number(st.reaction).toFixed(2).replace(".",",")} с</div>`:""}<div class="card qtext">${esc(c.text)}</div>`;
+        if(st.responder===PL.pid && st.cfg.host==="auto"){ const left=Math.max(0,st.ansDeadline-now());
+          body=`<div class="status">Ваш ответ!</div><div class="hint">${c.sp==="norisk"?"Вопрос без риска: за ошибку очки не снимаются. ":""}${c.choices?"Выберите вариант.":"Напишите ответ, небольшие опечатки не страшны."}</div>${plImg(c)}${c.text?`<div class="card qtext">${esc(c.text)}</div>`:""}${c.choices ? (PL.sent.pa===st.qn+":"+st.ansDeadline?`<div class="hint">Ответ отправлен</div>`:optsHTML(c.choices,null,null,null,"aopt")) : `<input class="field" id="pa" placeholder="Ваш ответ" autocomplete="off" maxlength="80" enterkeyhint="send"><button class="pbtn hot" data-act="pa" ${PL.sent.pa===st.qn+":"+st.ansDeadline?"disabled":""}><span>Ответить</span><span></span></button>`}${dlBar(st.dl, st.dlTotal)}`; }
+        else if(st.responder===PL.pid) body=`<div class="status">Ваш ответ!</div><div class="hint">${c.sp==="norisk"?"Вопрос без риска: за ошибку очки не снимаются. ":""}Говорите вслух, ведущий засчитает.</div>${plImg(c)}${c.text?`<div class="card qtext">${esc(c.text)}</div>`:""}${c.choices&&st.phase!=="quiz"&&!(st.phase==="answer"&&st.responder===PL.pid&&st.cfg.host==="auto")?optsHTML(c.choices,null,null):""}<div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#5FE0A8 0%,var(--ok) 55%,#0C6B46 100%);box-shadow:0 2px 0 #0C6B46">Вы!</button>${st.reaction!=null?`<div class="kbd">Время реакции ${Number(st.reaction).toFixed(2).replace(".",",")} с</div>`:""}</div>`;
+        else body=`<div class="status">Отвечает ${esc(pn(st.responder))}${st.cfg.host==="auto"?" (пишет ответ)":""}</div>${st.reaction!=null?`<div class="hint">Нажал за ${Number(st.reaction).toFixed(2).replace(".",",")} с</div>`:""}${plImg(c)}${c.text?`<div class="card qtext">${esc(c.text)}</div>`:""}${c.choices&&st.phase!=="quiz"&&!(st.phase==="answer"&&st.responder===PL.pid&&st.cfg.host==="auto")?optsHTML(c.choices,null,null):""}`;
         break;
+      case "quiz":{
+        const z=st.quiz, done=(z.picked||{})[PL.pid], left=Math.max(0,z.deadline-now()), mine=PL.qpick&&PL.qpick.id===z.id?PL.qpick.i:null;
+        body=`<div class="status">${esc(c.theme)} · ${c.cost}</div>${plImg(c)}${c.text?`<div class="card qtext">${esc(c.text)}</div>`:""}${c.choices&&st.phase!=="quiz"&&!(st.phase==="answer"&&st.responder===PL.pid&&st.cfg.host==="auto")?optsHTML(c.choices,null,null):""}${optsHTML(z.opts,null,mine,null,done?null:"opt")}<div class="hint">${done?"Ответ принят. Ждём остальных…":"Выберите вариант"}</div>${dlBar(st.dl, st.dlTotal)}`;
+        break;
+      }
       case "reveal":
-        body=`<div class="status">${esc(st.msg)}</div><div class="card"><div class="k">Правильный ответ</div><div class="v" style="font-size:22px">${esc(c.answer)}</div></div>`; break;
+        if(st.quiz && st.quiz.done){ const mine=st.quiz.picks?st.quiz.picks[PL.pid]:null, ok=mine!=null&&mine===st.quiz.correct;
+          body=`<div class="status">${mine==null?"Вы не ответили":ok?"Верно! +"+fmt(c.cost):"Неверно"}</div>${c.text?`<div class="card qtext">${esc(c.text)}</div>`:""}${optsHTML(st.quiz.opts,st.quiz.correct,mine==null?null:mine)}<div class="hint">${esc(st.msg)}</div>`; }
+        else body=`<div class="status">${esc(st.msg)}</div><div class="card"><div class="k">Правильный ответ</div><div class="v" style="font-size:22px">${esc(c.answer)}</div></div>`; break;
       case "cat":
         if(st.chooser===PL.pid) body=`<div class="status">Кот в мешке!</div><div class="hint">Отдайте вопрос сопернику. Тема «${esc(c.theme)}», ${c.cost}. Он ответит без кнопки.</div><div class="choices">`+Object.entries(PL.players).filter(([id,p])=>id!==PL.pid&&p.online!==false).map(([id,p])=>`<button class="pbtn" data-catto="${id}"><span>${esc(p.name)}</span><span>${fmt(p.score)}</span></button>`).join("")+`</div>`;
         else body=`<div class="status">${esc(pn(st.chooser))} выбирает, кому отдать кота в мешке</div><div class="hint">Возможно, вам.</div>`;
@@ -1254,17 +1614,19 @@ function renderPlayer(){
         const f=st.fin;
         if(!arr(f.ids).includes(PL.pid)) body=`<div class="status">Идёт финал</div><div class="card qtext">${esc(f.text)}</div>`;
         else if((f.ansDone||{})[PL.pid] || PL.sent.fa) body=`<div class="status">Ответ отправлен</div><div class="card qtext">${esc(f.text)}</div>`;
+        else if(!f.opts && f.choices) body=`<div class="status">Финал: «${esc(f.theme)}»</div><div class="card qtext">${esc(f.text)}</div>${optsHTML(f.choices,null,null,null,"fcho")}`;
+        else if(f.opts) body=`<div class="status">Финал: «${esc(f.theme)}»</div><div class="card qtext">${esc(f.text)}</div>${optsHTML(f.opts,null,null,null,"fopt")}`;
         else body=`<div class="status">Финал: «${esc(f.theme)}»</div><div class="card qtext">${esc(f.text)}</div><input class="field" id="fa" placeholder="Ваш ответ" autocomplete="off" maxlength="120"><button class="pbtn hot" data-act="fa"><span>Отправить ответ</span><span></span></button>`;
         break;
       }
       case "final-judge":{
         const f=st.fin, v=(f.verdict||{})[PL.pid];
-        body=`<div class="status">Ведущий проверяет ответы</div><div class="card"><div class="k">Правильный ответ</div><div class="v" style="font-size:22px">${esc(f.answer)}</div></div>`+(v!=null&&f.bets?`<span class="pill ${v?"ok":"bad"}">${v?"Верно, +":"Неверно, −"}${fmt(f.bets[PL.pid])}</span>`:"");
+        body=`<div class="status">${st.cfg.host==="auto"||st.cfg.format==="quiz"?"Проверяем ответы…":"Ведущий проверяет ответы"}</div><div class="card"><div class="k">Правильный ответ</div><div class="v" style="font-size:22px">${esc(f.answer)}</div></div>`+(v!=null&&f.bets?`<span class="pill ${v?"ok":"bad"}">${v?"Верно, +":"Неверно, −"}${fmt(f.bets[PL.pid])}</span>`:"");
         break;
       }
       case "end":{
-        const ranked=Object.entries(PL.players).sort((a,b)=>(b[1].score||0)-(a[1].score||0)), place=ranked.findIndex(e=>e[0]===PL.pid)+1;
-        body=`<div class="status">Игра окончена</div><div class="card"><div class="k">Ваше место</div><div class="v">${place} из ${ranked.length}</div></div><div class="hint">Ведущий может начать новую игру в этой же комнате.</div>`; break;
+        body=statsHTML(st.stats, true, (PL.players[PL.pid]||{}).name)+(HOST?`<button class="pbtn" data-act="lobby"><span>Новая игра с теми же игроками</span><span></span></button>`:`<div class="hint">Организатор может начать новую игру в этой же комнате.</div>`);
+        break;
       }
     }
   }
@@ -1275,8 +1637,10 @@ function renderPlayer(){
     const lead=ranked[0]&&ranked[0][0]===id&&(p.score||0)>0;
     return `<div class="rv ${act?"act":""} ${p.online===false?"off":""}"><div class="n"><span>${esc(p.name)}</span>${lead?"<i>1-й</i>":""}</div><div class="s ${(p.score||0)<0?"neg":""}">${fmt(p.score||0)}</div></div>`;
   }).join("");
-  const banner = PL.meta && PL.meta.hostOnline===false && !PL.meta.closed ? `<div class="banner">Ведущий отключился. Ждём, когда он вернётся…</div>` : "";
-  preserve(el, `<div class="ph-top"><div class="me">Комната ${PL.code}${sp&&sp!=="lobby"?" · "+place+"-е место":""}<b>${esc(me.name)}</b></div><div class="sc">${fmt(me.score||0)}</div></div>${banner}${rivals?`<div class="ph-rivals">${rivals}</div>`:""}<div class="ph-body">${body}${PL.kicked||(PL.meta&&PL.meta.closed)?"":`<button class="back" data-act="leave" style="margin-top:auto">Выйти из комнаты</button>`}</div>`);
+  const isOrg = HOST && HOST.code===PL.code;
+  const banner = isOrg ? `<div class="orgbar"><span>Вы организатор</span><button data-act="to-board">Табло</button><button data-act="close-room">Закрыть комнату</button></div>`
+    : PL.meta && PL.meta.hostOnline===false && !PL.meta.closed ? `<div class="banner">${st&&st.cfg&&st.cfg.host==="auto"?"Организатор отключился. Ждём, когда он вернётся…":"Ведущий отключился. Ждём, когда он вернётся…"}</div>` : "";
+  preserve(el, `<div class="ph-top"><div class="me">Комната ${PL.code}${sp&&sp!=="lobby"?" · "+place+"-е место":""}<b>${esc(me.name)}</b></div><div class="sc">${fmt(me.score||0)}</div></div>${banner}${rivals?`<div class="ph-rivals">${rivals}</div>`:""}<div class="ph-body">${body}${PL.kicked||(PL.meta&&PL.meta.closed)||isOrg?"":`<button class="back" data-act="leave" style="margin-top:auto">Выйти из комнаты</button>`}</div>`);
   const bet=document.getElementById("bet");
   if(bet){ document.getElementById("betv").textContent=fmt(+bet.value); bet.oninput=()=>{ document.getElementById("betv").textContent=fmt(+bet.value); }; }
 }
@@ -1286,12 +1650,19 @@ function hostPackChanged(){ if(HOST && H().phase==="lobby") pushState(); }
 document.addEventListener("input", e=>{
   const t=e.target, ds=t.dataset||{};
   if(ds.cfgtext){ CFG[ds.cfgtext]=t.value; save("svoya.cfg",CFG); const b=document.getElementById("acc-badge"); if(b) b.innerHTML=accBadge(); clearTimeout(window._sm); window._sm=setTimeout(()=>{ syncMeta(); syncPublic(); },500); return; }
-  if(ds.cfgname){ ME_NAME=t.value; save("svoya.name",ME_NAME); clearTimeout(window._sm); window._sm=setTimeout(()=>{ syncMeta(); pushState(); },600); return; }
+  if(ds.cfgname){ ME_NAME=t.value; save("svoya.name",ME_NAME); if(PL && HOST && PL.code===HOST.code && t.value.trim()){ clearTimeout(window._sn); window._sn=setTimeout(()=>pRef(`players/${PL.pid}/name`).set(t.value.trim().slice(0,20)),600); } clearTimeout(window._sm); window._sm=setTimeout(()=>{ syncMeta(); pushState(); },600); return; }
   if(t.id==="code"){ t.value=t.value.replace(/\D/g,"").slice(0,4); APP.prefill=t.value; }
   if(t.id==="nm"){ ME_NAME=t.value; save("svoya.name",ME_NAME); }
   if(ds.ed!=null && S.draft) edInput(t);
 });
-document.addEventListener("change", e=>{
+document.addEventListener("change", async e=>{
+  if(e.target.hasAttribute && e.target.hasAttribute("data-chooser")){ setChooser(e.target.value); return; }
+  if(e.target.dataset && e.target.dataset.edimg && S.draft && S.edSel){
+    const f=e.target.files[0]; if(!f) return;
+    const q=S.draft.rounds[S.edRound].themes[S.edSel[0]].questions[S.edSel[1]];
+    try{ const d=await compressImage(f); q.img=await imgPut(d); delete q.url; S.draft.notes=[]; render(); }catch(err){ alert(err.message||"Не удалось загрузить картинку"); }
+    return;
+  }
   if(e.target.hasAttribute && e.target.hasAttribute("data-edfinal")){ S.draft.final = e.target.checked ? (S.draft._final||{theme:"",text:"",answer:""}) : (S.draft._final=S.draft.final, null); render(); }
 });
 document.addEventListener("pointerdown", e=>{ const t=e.target.closest('[data-act="buzz"]'); if(t && APP.mode==="player"){ e.preventDefault(); plBuzz(); } });
@@ -1302,6 +1673,10 @@ document.addEventListener("click", e=>{
   if(ds.home){ setHomeView(ds.home); return; }
   if(ds.joinroom){ const n=(document.getElementById("nm")||{}).value||""; if(!n.trim()){ APP.joinErr="Введите имя, чтобы войти"; render(); return; } joinRoom(ds.joinroom, n.trim()); return; }
   // player
+  if(ds.aopt!=null && PL && PL.state && PL.state.cur && PL.state.cur.choices){ const st=PL.state; PL.sent.pa=st.qn+":"+st.ansDeadline; send("ans",{text:arr(st.cur.choices)[+ds.aopt]}); render(); return; }
+  if(ds.opt!=null && PL && PL.state && PL.state.quiz){ PL.qpick={id:PL.state.quiz.id, i:+ds.opt}; send("opt",{qid:PL.state.quiz.id, i:+ds.opt}); render(); return; }
+  if(ds.fcho!=null && PL && PL.state && PL.state.fin){ PL.sent.fa=true; send("fa",{text:arr(PL.state.fin.choices)[+ds.fcho]}); render(); return; }
+  if(ds.fopt!=null && PL && PL.state && PL.state.fin){ PL.sent.fa=true; send("fa",{text:arr(PL.state.fin.opts)[+ds.fopt]}); render(); return; }
   if(ds.ppick){ const [ti,qi]=ds.ppick.split("-"); send("pick",{ti,qi}); return; }
   if(ds.pauc){ send("auc",{act:ds.pauc}); return; }
   if(ds.catto){ if(APP.mode==="player") send("cat",{to:ds.catto}); else catGive(ds.catto); return; }
@@ -1309,14 +1684,27 @@ document.addEventListener("click", e=>{
   if(ds.pick){ const [x,y]=ds.pick.split("-").map(Number); pick(x,y); return; }
   if(ds.fj){ const [id,v]=ds.fj.split(":"); finalJudge(id, v==="1"); return; }
   if(ds.kick){ const p=HOST.players[ds.kick]; if(p && confirm(`Удалить ${p.name} из комнаты?`)) hRef(`players/${ds.kick}`).remove(); return; }
+  if(ds.menu){ S.menu=ds.menu; render(); return; }
+  if(ds.mact){ const id=S.menu, p=HOST.players[id]; S.menu=null; if(!p){ render(); return; } const h=H(), cost=h.cur?h.cur.cost:100;
+    switch(ds.mact){
+      case "chooser": setChooser(id); break;
+      case "give": giveAnswer(id); break;
+      case "plus": addScore(id,cost); render(); break;
+      case "minus": addScore(id,-cost); render(); break;
+      case "score": { const v=prompt(`Счёт игрока ${p.name}`, p.score||0); if(v!=null && v.trim()!=="" && !isNaN(+v)){ p.score=Math.round(+v); hRef(`players/${id}/score`).set(p.score); } render(); break; }
+      case "rename": { const v=prompt(`Новое имя для «${p.name}»`, p.name); const n=v==null?"":v.trim().slice(0,20); if(n && n!==p.name){ p.name=n; hRef(`players/${id}/name`).set(n); } render(); break; }
+      case "kick": if(confirm(`Удалить ${p.name} из комнаты?`)){ hRef(`players/${id}`).remove(); if(h.chooser===id){ const o=online().filter(x=>x!==id); h.chooser=o[0]||null; pushState(); } } render(); break;
+    } return; }
+  if(ds.hrename){ const p=HOST.players[ds.hrename]; if(!p) return; const v=prompt(`Новое имя для «${p.name}»`, p.name); if(v==null) return; const n=v.trim().slice(0,20); if(!n||n===p.name) return; p.name=n; hRef(`players/${ds.hrename}/name`).set(n); if(H().phase==="lobby") updateLobby(); else render(); return; }
   if(ds.score){ const p=HOST.players[ds.score]; if(!p) return; const v=prompt(`Счёт игрока ${p.name}`, p.score||0); if(v!=null && v.trim()!=="" && !isNaN(+v)){ p.score=Math.round(+v); hRef(`players/${ds.score}/score`).set(p.score); render(); } return; }
-  if(ds.cfg){ const v=ds.val; CFG[ds.cfg]= v==="true"?true:v==="false"?false:isNaN(+v)?v:+v; save("svoya.cfg",CFG); syncMeta(); pushState(); return; }
+  if(ds.cfg){ const v=ds.val; CFG[ds.cfg]= v==="true"?true:v==="false"?false:isNaN(+v)?v:+v; save("svoya.cfg",CFG); syncMeta(); pushState(); if(ds.cfg==="host") syncSelf(); return; }
   if(ds.tog){ CFG[ds.tog]=!CFG[ds.tog]; save("svoya.cfg",CFG); pushState(); return; }
   // library / editor
   if(ds.lib){ S.libTab=ds.lib; S.upMsg=null; render(); return; }
   if(ds.choose){ choosePack(ds.choose); S.view="setup"; hostPackChanged(); render(); return; }
   if(ds.edit){ const src=findPack(ds.edit), mine=MINE.some(p=>p.id===ds.edit); const d=clone(src); if(!mine){ d.id=null; d.title=src.title+" (копия)"; d.author="Вы"; } openEditor(d); return; }
   if(ds.del){ const p=MINE.find(x=>x.id===ds.del); if(p && confirm(`Удалить «${p.title}»?`)){ MINE=MINE.filter(x=>x.id!==ds.del); save("svoya.packs",MINE); if(PACK_ID===ds.del){ choosePack("demo"); hostPackChanged(); } render(); } return; }
+  if(ds.edimgdel && S.edSel){ const q=S.draft.rounds[S.edRound].themes[S.edSel[0]].questions[S.edSel[1]]; delete q.img; delete q.url; render(); return; }
   if(ds.edcell){ S.edSel=ds.edcell.split("-").map(Number); render(); return; }
   if(ds.edround){ S.edRound=+ds.edround; S.edSel=null; render(); return; }
   if(ds.edtype && S.edSel){ S.draft.rounds[S.edRound].themes[S.edSel[0]].questions[S.edSel[1]].type=ds.edtype; render(); return; }
@@ -1344,6 +1732,18 @@ document.addEventListener("click", e=>{
     case "buzz": if(e.detail===0) plBuzz(); break;
     case "bet": { const v=+document.getElementById("bet").value; PL.sent.bet=true; send("bet",{v}); render(); break; }
     case "fa": submitFA(); break;
+    case "pa": submitPA(); break;
+    case "to-phone": APP.mode="player"; render(); break;
+    case "to-board": APP.mode="host"; render(); break;
+    case "quiz-end": quizReveal(); break;
+    case "menu-close": S.menu=null; render(); break;
+    case "t-add10": addTime(10000); break;
+    case "t-add30": addTime(30000); break;
+    case "t-stop": stopTime(); break;
+    case "skip-q": skipQuestion(); break;
+    case "undo-q": undoQuestion(); break;
+    case "rand-turn": { const o=online(); if(o.length) setChooser(o[Math.floor(Math.random()*o.length)]); break; }
+    case "low-turn": { const o=online().slice().sort((a,b)=>(HOST.players[a].score||0)-(HOST.players[b].score||0)); if(o.length) setChooser(o[0]); break; }
     case "ok": judge(true); break;
     case "bad": judge(false); break;
     case "next": toBoard(); break;
@@ -1369,10 +1769,12 @@ document.addEventListener("click", e=>{
     case "ed-play": { const id=saveDraft(); choosePack(id); S.view="setup"; S.draft=null; hostPackChanged(); render(); break; }
   }
 });
+function submitPA(){ const st=PL&&PL.state; if(!st||st.phase!=="answer"||st.responder!==PL.pid) return; const f=document.getElementById("pa"); const v=(f&&f.value.trim())||""; if(!v) return; PL.sent.pa=st.qn+":"+st.ansDeadline; send("ans",{text:v}); render(); }
 function submitFA(){ const f=document.getElementById("fa"); const v=(f&&f.value.trim())||""; if(!v) return; PL.sent.fa=true; send("fa",{text:v}); render(); }
 document.addEventListener("keydown", e=>{
   const id=e.target.id;
   if(id==="fa" && e.key==="Enter"){ submitFA(); return; }
+  if(id==="pa" && e.key==="Enter"){ submitPA(); return; }
   if((id==="code"||id==="nm") && e.key==="Enter" && APP.homeView==="code"){ document.querySelector('[data-act="join-code"]').click(); return; }
   if(e.code==="Space" && APP.mode==="player" && !["INPUT","TEXTAREA","BUTTON"].includes(e.target.tagName)){ e.preventDefault(); plBuzz(); }
 });
