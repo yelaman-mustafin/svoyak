@@ -65,6 +65,7 @@ function startGame() {
   hRef("buzz").remove();
   hRef("input").remove();
   hRef("media").remove();
+  hRef("smedia").remove();
   HOST.seen = {};
   preloadPackImages();
   S.view = "game";
@@ -208,11 +209,13 @@ function introDone(force) {
   } else startReading();
 }
 
-// Отправляет картинку вопроса на телефоны, если это включено в настройках.
+// Отправляет картинку вопроса: на телефоны (media), если это включено в настройках,
+// иначе только на общие экраны (smedia), если они открыты. Иначе ничего не отправляет.
 function sendMedia(c) {
-  if (!CFG.phoneImg || !c.img) return;
+  const path = CFG.phoneImg ? "media" : HOST.screens ? "smedia" : null;
+  if (!path || !c.img) return;
   imgGet(c.img).then(d => {
-    if (d && HOST && H().cur === c) hRef("media").set({ id: c.img, data: d });
+    if (d && HOST && H().cur === c) hRef(path).set({ id: c.img, data: d });
   });
 }
 
@@ -413,6 +416,7 @@ function toBoard() {
   h.msg = "";
   h.quiz = null;
   hRef("media").remove();
+  hRef("smedia").remove();
   const total = PACK.rounds[h.round].themes.reduce((a, t) => a + t.questions.length, 0);
   if (Object.keys(h.used).length >= total) {
     endRound();
@@ -754,6 +758,7 @@ function undoQuestion() {
   h.responder = null;
   h.msg = "";
   hRef("media").remove();
+  hRef("smedia").remove();
   h.phase = "board";
   armBoard();
   pushState();

@@ -27,8 +27,10 @@ function qHead(st, c) {
 }
 
 // Картинка вопроса на телефоне (или подсказка, что она на общем экране).
-function plImg(c) {
+// Если картинки на телефоны выключены, адрес мог прийти только ради общих экранов — не показываем.
+function plImg(c, st) {
   if (!c) return "";
+  if (st && st.cfg && !st.cfg.phoneImg) return c.hasImg ? `<div class="hint">🖼 Картинка на общем экране</div>` : "";
   if (c.url) return `<img class="pimg" src="${esc(c.url)}" alt="Картинка вопроса">`;
   if (c.img)
     return PL.media && PL.media.id === c.img
@@ -41,7 +43,7 @@ function plImg(c) {
 // Вопрос на телефоне: шапка, картинка, текст и варианты (если их не нужно нажимать).
 // Лежит в прокручиваемой зоне, чтобы кнопка под ней всегда оставалась на экране.
 function qZone(st, c, noChoices, top) {
-  return `<div class="qzone">${top || ""}${qHead(st, c)}${plImg(c)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && !noChoices ? optsHTML(c.choices, null, null) : ""}</div>`;
+  return `<div class="qzone">${top || ""}${qHead(st, c)}${plImg(c, st)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && !noChoices ? optsHTML(c.choices, null, null) : ""}</div>`;
 }
 
 // Фазы вопроса: экран телефона делится на вопрос сверху и кнопку снизу без общей прокрутки.

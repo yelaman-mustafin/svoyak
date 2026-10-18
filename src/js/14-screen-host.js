@@ -127,7 +127,7 @@ function renderSetup() {
       </div>
       <div class="lobby">
         <div><span class="access-badge ${CFG.access === "public" ? "pub" : ""}" id="acc-badge">${accBadge()}</span></div>
-        <div class="code"><div id="qr" class="qrbox" aria-label="QR-код для входа"></div><div><div class="k">Код комнаты</div><div class="v">${HOST.code}</div><button class="sb" data-act="copy-link" style="margin-top:6px">Скопировать ссылку</button></div></div>
+        <div class="code"><div id="qr" class="qrbox" aria-label="QR-код для входа"></div><div><div class="k">Код комнаты</div><div class="v">${HOST.code}</div><button class="sb" data-act="copy-link" style="margin-top:6px">Скопировать ссылку</button> <button class="sb" data-act="copy-screen-link" style="margin-top:6px" title="Откройте её на телевизоре или проекторе: там будет табло без ответов и кнопок ведущего">Ссылка для экрана</button></div></div>
         <div class="k" style="font-size:13px;opacity:.75;word-break:break-all">${esc(joinURL(HOST.code))}</div>
         <div class="joined" id="lobby-players"></div>
         <button class="start" data-act="start" id="start-btn">Начать игру</button>
@@ -135,7 +135,7 @@ function renderSetup() {
     </div>`
   );
   updateLobby();
-  drawQR();
+  drawQR(HOST.code);
 }
 
 // Плашка доступа: приватная или открытая комната.
@@ -171,13 +171,16 @@ function updateLobby() {
   }
 }
 
-// Рисует QR-код ссылки на комнату (один раз, потом берёт из кэша).
-function drawQR() {
+// Готовые картинки QR-кодов по ссылке, чтобы не рисовать заново при каждой перерисовке.
+const QR_CACHE = {};
+
+// Рисует QR-код ссылки на комнату в блок #qr (ведущий в лобби или общий экран).
+function drawQR(code) {
   const box = document.getElementById("qr");
   if (!box) return;
-  const url = joinURL(HOST.code);
-  if (HOST.qrFor === url && HOST.qrImg) {
-    box.innerHTML = `<img src="${HOST.qrImg}" alt="">`;
+  const url = joinURL(code);
+  if (QR_CACHE[url]) {
+    box.innerHTML = `<img src="${QR_CACHE[url]}" alt="">`;
     return;
   }
   loadScript("https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js")
@@ -195,10 +198,7 @@ function drawQR() {
       });
       setTimeout(() => {
         const c = b.querySelector("canvas");
-        if (c) {
-          HOST.qrImg = c.toDataURL();
-          HOST.qrFor = url;
-        }
+        if (c) QR_CACHE[url] = c.toDataURL();
       }, 50);
     })
     .catch(() => {

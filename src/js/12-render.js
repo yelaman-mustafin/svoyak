@@ -57,15 +57,16 @@ function preserve(el, html) {
   }
 }
 
-// Перерисовывает текущий экран: ведущий (#tv) или телефон (#phone).
+// Перерисовывает текущий экран: ведущий или общий экран (#tv) либо телефон (#phone).
 function render() {
   const tv = document.getElementById("tv"),
     ps = document.getElementById("pshell");
-  const hostMode = APP.mode === "host";
-  tv.hidden = !hostMode;
-  ps.hidden = hostMode;
+  const big = APP.mode === "host" || APP.mode === "screen";
+  tv.hidden = !big;
+  ps.hidden = big;
   document.body.dataset.mode = APP.mode;
-  if (hostMode) renderHost();
+  if (APP.mode === "host") renderHost();
+  else if (APP.mode === "screen") renderScreen();
   else if (APP.mode === "player") renderPlayer();
   else renderHome();
 }

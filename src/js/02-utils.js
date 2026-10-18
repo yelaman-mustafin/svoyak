@@ -92,6 +92,11 @@ function joinURL(code) {
   return location.origin + location.pathname + "?room=" + code;
 }
 
+// Ссылка, по которой телевизор или проектор открывает комнату как общий экран.
+function screenURL(code) {
+  return location.origin + location.pathname + "?screen=" + code;
+}
+
 // Нормализует ответ для сравнения: нижний регистр, ё→е, без кавычек и знаков препинания.
 function normA(x) {
   return String(x || "")

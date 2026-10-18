@@ -65,6 +65,6 @@ function statsHTML(S2, phone, meName) {
         )
         .join("")}</div>`
     : "";
-  return `<div class="endscreen ${phone ? "ph" : ""}"><div class="meta">Игра окончена</div><div class="big">${win ? esc(win.name) + (phone && win.name === meName ? ", вы победили!" : " побеждает!") : "Победителя нет"}</div>${pod}${noms}${places}</div>`;
+  return `<div class="endscreen ${phone ? "ph" : ""}"><div class="meta">Игра окончена</div><div class="big">${win ? esc(win.name) + (phone && win.name === meName ? ", вы победили!" : " побеждает!") : "Победителя нет"}</div>${pod}<div class="end-grid">${places}${noms}</div></div>`;
 }
 
