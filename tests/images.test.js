@@ -1,5 +1,5 @@
 const {JSDOM}=require("jsdom");const fs=require("fs");const makeFake=require("./fake-firebase.js");const fb=makeFake();
-const html=fs.readFileSync(require("path").join(__dirname,"..","index.html"),"utf8").replace(/<script src="https:\/\/cdn.jsdelivr[^>]+><\/script>/g,"");
+const html=fs.readFileSync(require("path").join(__dirname,"..","dist","index.html"),"utf8").replace(/<script src="https:\/\/cdn.jsdelivr[^>]+><\/script>/g,"");
 const mk=()=>new JSDOM(html,{runScripts:"dangerously",pretendToBeVisual:true,url:"https://x.io/s/",beforeParse(w){w.firebase=fb;w.FIREBASE_CONFIG_OVERRIDE={databaseURL:"x"};w.confirm=()=>true;w.prompt=()=>null;}});
 const sl=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{
