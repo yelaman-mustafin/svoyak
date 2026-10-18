@@ -6,6 +6,7 @@
 // Главная: выбор роли, вход по коду, список открытых игр, возврат в незаконченную игру.
 function renderHome() {
   const el = document.getElementById("phone");
+  el.classList.remove("qmode");
   const v = APP.homeView;
   let b = "";
   if (!configured || !APP.dbOk) {
