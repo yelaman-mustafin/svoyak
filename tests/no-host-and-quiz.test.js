@@ -40,7 +40,7 @@ async function join(c,code,name){ Q(c,"[data-home=code]").click(); await sl(10);
  for(const c of [o,a]){ if(Q(c,"#fa")){ Q(c,"#fa").value="алматы"; Q(c,"[data-act=fa]").click(); } } await sl(3500);
  console.log("final end:", o.window.eval("H().phase"));
  console.log("org end phone:", T(o,".ph-body"));
- console.log("A end:", T(a,".endscreen .hl"), "|", T(a,".st tbody"));
+ console.log("A end:", T(a,".endscreen .noms"), "|", T(a,".places"));
  // ===== QUIZ =====
  fb=makeFake(); const h=client(fb), b=client(fb), c2=client(fb); await sl(30);
  Q(h,"[data-act=host]").click(); await sl(80);
@@ -63,7 +63,7 @@ async function join(c,code,name){ Q(c,"[data-home=code]").click(); await sl(10);
  for(const c of [b,c2]) if(Q(c,"[data-act=bet]")) Q(c,"[data-act=bet]").click(); await sl(120);
  console.log("final opts on phone:", T(b,".ph-body").slice(0,120));
  const fo=b.window.eval('arr(PL.state.fin.opts).indexOf("Алматы")'); if(Q(b,`[data-fopt="${fo}"]`)) Q(b,`[data-fopt="${fo}"]`).click(); await sl(3000);
- console.log("quiz end host:", h.window.eval("H().phase"), T(h,"#tv .hl"));
+ console.log("quiz end host:", h.window.eval("H().phase"), T(h,"#tv .noms"));
  // parser options
  console.log("parse opts:", h.window.eval('JSON.stringify(parseText("# Т\\n100 Столица Франции? = Париж\\nВарианты: Париж; Лион; Марсель; Ницца").rounds[0].themes[0].questions[0].wrong)'));
  process.exit(0);

@@ -34,7 +34,7 @@ function optsHTML(opts, correct, mine, counts, clickable) {
   );
 }
 
-// Финальный экран: победитель, пьедестал, итоги, таблица игроков и статистика по вопросам.
+// Финальный экран: победитель, пьедестал, все игроки по местам и номинации.
 function statsHTML(S2, phone, meName) {
   if (!S2) return `<div class="q"><div class="big">Игра окончена</div></div>`;
   const P = arr(S2.players),
@@ -48,21 +48,17 @@ function statsHTML(S2, phone, meName) {
         `<div class="pod p${i + 1}"><div class="pm">${medal[i]}</div><div class="pn">${esc(top[i].name)}</div><div class="ps">${fmt(top[i].score)}</div><div class="pb">${i + 1}</div></div>`
     )
     .join("")}</div>`;
-  const hl = [
-    `Сыграно вопросов: <b>${S2.total}</b>, отвечено верно: <b>${S2.ok}</b>${S2.total ? ` (${Math.round((S2.ok / S2.total) * 100)}%)` : ""}`
-  ];
-  if (S2.fast)
-    hl.push(
-      `Самая быстрая реакция: <b>${esc(S2.fast.name)}</b>, ${String(S2.fast.best).replace(".", ",")} с`
-    );
-  if (S2.hard) hl.push(`Самая сложная тема: <b>${esc(S2.hard.t)}</b>, верно ${S2.hard.ok} из ${S2.hard.n}`);
-  const table = `<div class="st-wrap"><table class="st"><thead><tr><th>#</th><th>Игрок</th><th>Очки</th><th>Верно</th><th>Ошибки</th><th>Реакция</th></tr></thead><tbody>${P.map((p, i) => `<tr${meName && p.name === meName ? ' class="me-row"' : ""}><td>${i + 1}</td><td>${esc(p.name)}${p.fin === true ? " ✓ф" : p.fin === false ? " ✗ф" : ""}</td><td>${fmt(p.score)}</td><td>${p.right}</td><td>${p.wrong}</td><td>${p.best != null ? String(p.best).replace(".", ",") + " с" : "—"}</td></tr>`).join("")}</tbody></table></div>`;
-  const qs = arr(S2.qs)
-    .map(
-      q =>
-        `<li class="${q.r === "right" ? "r" : q.r === "wrong" ? "w" : "n"}"><div><b>${esc(q.t)} · ${q.c}</b> ${esc(q.x)}</div><div class="qa">Ответ: ${esc(q.a)} · ${q.r === "right" ? (q.n ? `верно ${arr(q.n)[0]} из ${arr(q.n)[1]}, первым ` : "ответил ") + esc(q.by) : q.r === "wrong" ? "никто не ответил верно" : "никто не отвечал"}${arr(q.w).length && !q.n ? ` · ошиблись: ${arr(q.w).map(esc).join(", ")}` : ""}</div></li>`
-    )
-    .join("");
-  return `<div class="endscreen ${phone ? "ph" : ""}"><div class="meta">Игра окончена</div><div class="big">${win ? esc(win.name) + (phone && win.name === meName ? ", вы победили!" : " побеждает!") : "Победителя нет"}</div>${pod}<div class="hl">${hl.map(x => `<div>${x}</div>`).join("")}</div>${table}${qs ? `<details class="qst" ${phone ? "" : "open"}><summary>Статистика по вопросам</summary><ol>${qs}</ol></details>` : ""}</div>`;
+  const places = P.length
+    ? `<div class="places">${P.map((p, i) => `<div class="${meName && p.name === meName ? "me" : ""}"><i>${i + 1}</i><span>${esc(p.name)}</span><b>${fmt(p.score)}</b></div>`).join("")}</div>`
+    : "";
+  const noms = arr(S2.noms).length
+    ? `<div class="noms">${arr(S2.noms)
+        .map(
+          x =>
+            `<div class="nom"><div class="ni">${x.i}</div><div class="nt">${esc(x.t)}</div><div class="nn">${esc(x.n)}</div><div class="nd">${esc(x.d)}</div></div>`
+        )
+        .join("")}</div>`
+    : "";
+  return `<div class="endscreen ${phone ? "ph" : ""}"><div class="meta">Игра окончена</div><div class="big">${win ? esc(win.name) + (phone && win.name === meName ? ", вы победили!" : " побеждает!") : "Победителя нет"}</div>${pod}${noms}${places}</div>`;
 }
 

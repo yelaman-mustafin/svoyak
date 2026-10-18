@@ -136,7 +136,7 @@ function pick(ti, qi) {
   h.st.qs.push({
     theme: th.name,
     cost: item.cost,
-    text: (item.text || "🖼").slice(0, 90),
+    len: (item.text || "").length,
     answer: item.answer,
     res: null,
     by: null,
@@ -775,7 +775,8 @@ function backToLobby() {
   pushState();
 }
 
-// Данные для финального экрана: таблица игроков, вопросы, самая сложная тема, самая быстрая реакция.
+// Данные для финального экрана: игроки по местам и шуточные номинации.
+// Номинация попадает в список, только если для неё есть данные.
 function statsOut() {
   const h = H();
   if (!h.st) return null;
@@ -788,38 +789,24 @@ function statsOut() {
         score: HOST.players[id].score || 0,
         right: s.right || 0,
         wrong: s.wrong || 0,
-        best: s.best == null ? null : s.best,
-        fin: s.finalOk == null ? null : s.finalOk
+        best: s.best == null ? null : s.best
       };
     })
     .sort((a, b) => b.score - a.score);
-  const qs = h.st.qs.map(q => ({
-    t: q.theme,
-    c: q.cost,
-    x: q.text,
-    a: q.answer,
-    r: q.res || "nobody",
-    by: q.by ? pname(q.by) : null,
-    n: q.quiz || null,
-    w: q.tries.filter(t => !t.ok).map(t => pname(t.id))
-  }));
-  const themes = {};
-  h.st.qs.forEach(q => {
-    const t = themes[q.theme] || (themes[q.theme] = { n: 0, ok: 0 });
-    t.n++;
-    if (q.res === "right") t.ok++;
-  });
-  const hard = Object.entries(themes)
-    .filter(([, v]) => v.n >= 2)
-    .sort((a, b) => a[1].ok / a[1].n - b[1].ok / b[1].n)[0];
+  const sec = x => String(x).replace(".", ",") + " с";
+  const top = (list, key) => list.filter(x => x[key] > 0).sort((a, b) => b[key] - a[key])[0];
+  const won = h.st.qs.filter(q => q.res === "right" && q.by && HOST.players[q.by]);
+  const noms = [];
   const fast = players.filter(p => p.best != null).sort((a, b) => a.best - b.best)[0];
-  return {
-    players,
-    qs,
-    total: qs.length,
-    ok: qs.filter(q => q.r === "right").length,
-    hard: hard ? { t: hard[0], ok: hard[1].ok, n: hard[1].n } : null,
-    fast: fast ? { name: fast.name, best: fast.best } : null
-  };
+  if (fast) noms.push({ i: "⚡", t: "Самый быстрый клик", n: fast.name, d: sec(fast.best) });
+  const smart = top(players, "right");
+  if (smart) noms.push({ i: "🧠", t: "Больше всех верных ответов", n: smart.name, d: smart.right + " " + plural(smart.right, "ответ", "ответа", "ответов") });
+  const long = won.slice().sort((a, b) => (b.len || 0) - (a.len || 0))[0];
+  if (long && long.len) noms.push({ i: "📜", t: "Самый длинный вопрос", n: pname(long.by), d: long.len + " " + plural(long.len, "символ", "символа", "символов") });
+  const rich = won.slice().sort((a, b) => b.cost - a.cost)[0];
+  if (rich) noms.push({ i: "💎", t: "Самый дорогой ответ", n: pname(rich.by), d: fmt(rich.cost) + " · " + rich.theme });
+  const brave = top(players, "wrong");
+  if (brave) noms.push({ i: "🎲", t: "Самый смелый игрок", n: brave.name, d: brave.wrong + " " + plural(brave.wrong, "ошибка", "ошибки", "ошибок") });
+  return { players: players.map(p => ({ name: p.name, score: p.score })), noms };
 }
 
