@@ -1,6 +1,6 @@
 const {JSDOM}=require("jsdom");const fs=require("fs");const makeFake=require("./fake-firebase.js");
 const fb=makeFake();
-const html=fs.readFileSync(require("path").join(__dirname,"..","index.html"),"utf8").replace(/<script src="https:\/\/cdn.jsdelivr[^>]+><\/script>/g,"");
+const html=fs.readFileSync(require("path").join(__dirname,"..","dist","index.html"),"utf8").replace(/<script src="https:\/\/cdn.jsdelivr[^>]+><\/script>/g,"");
 function client(name){ const d=new JSDOM(html,{runScripts:"dangerously",pretendToBeVisual:true,url:"https://x.github.io/svoya/",beforeParse(w){ w.firebase=fb; w.FIREBASE_CONFIG_OVERRIDE={databaseURL:"x"}; w.confirm=()=>true; w.alert=m=>console.log("ALERT",name,m); w.prompt=()=>null; }}); d.name=name; return d; }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const q=(c,s)=>c.window.document.querySelector(s);
