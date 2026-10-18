@@ -186,8 +186,17 @@ const CFG_DEFAULTS = {
   quizMinus: false
 };
 
+// Версия сохранённых настроек. Браузер хранит настройки целиком, поэтому новое значение
+// по умолчанию до старых ведущих не доходит. Чтобы донести его, повышаем версию и
+// сбрасываем нужный пункт: 2 — картинки на телефонах теперь включены по умолчанию.
+const CFG_VERSION = 2;
+
 // Текущие настройки комнаты: значения по умолчанию плюс то, что ведущий менял раньше.
-let CFG = Object.assign({}, CFG_DEFAULTS, load("svoya.cfg", {}));
+let CFG = (() => {
+  const saved = load("svoya.cfg", {});
+  if ((saved.v || 1) < 2) delete saved.phoneImg;
+  return Object.assign({}, CFG_DEFAULTS, saved, { v: CFG_VERSION });
+})();
 
 // Включён ли режим без ведущего.
 const AUTO = () => CFG.host === "auto";
