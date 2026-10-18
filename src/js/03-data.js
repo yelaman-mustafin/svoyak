@@ -178,7 +178,7 @@ const CFG_DEFAULTS = {
   access: "private",
   roomName: "Моя игра",
   max: 6,
-  phoneImg: false,
+  phoneImg: true,
   host: "live",
   format: "classic",
   ansTime: 25000,

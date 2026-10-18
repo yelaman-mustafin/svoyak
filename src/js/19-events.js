@@ -1,5 +1,5 @@
 /* ======================================================================
-   18. ОБРАБОТЧИКИ СОБЫТИЙ
+   19. ОБРАБОТЧИКИ СОБЫТИЙ
    Все кнопки размечены data-атрибутами (data-act, data-pick, data-cfg…),
    а обработчики ниже повешены один раз на весь документ.
    ====================================================================== */
@@ -384,6 +384,24 @@ document.addEventListener("click", e => {
       joinRoom(c, n);
       break;
     }
+    case "join-screen":
+      joinScreen((document.getElementById("code").value || "").trim());
+      break;
+    case "screen-leave":
+      leaveScreen();
+      break;
+    case "copy-screen-link": {
+      const u = screenURL(HOST.code);
+      (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject())
+        .then(() => {
+          t.textContent = "Скопировано";
+          setTimeout(() => {
+            t.textContent = "Ссылка для экрана";
+          }, 1500);
+        })
+        .catch(() => prompt("Откройте эту ссылку на телевизоре или проекторе", u));
+      break;
+    }
     case "leave":
       if (
         !PL ||
@@ -459,6 +477,9 @@ document.addEventListener("click", e => {
       break;
     case "next":
       toBoard();
+      break;
+    case "intro-skip":
+      introDone();
       break;
     case "open-now":
       openBuzz();
@@ -586,6 +607,10 @@ document.addEventListener("keydown", e => {
   }
   if ((id === "code" || id === "nm") && e.key === "Enter" && APP.homeView === "code") {
     document.querySelector('[data-act="join-code"]').click();
+    return;
+  }
+  if (id === "code" && e.key === "Enter" && APP.homeView === "screen") {
+    document.querySelector('[data-act="join-screen"]').click();
     return;
   }
   if (

@@ -6,6 +6,7 @@
 // Главная: выбор роли, вход по коду, список открытых игр, возврат в незаконченную игру.
 function renderHome() {
   const el = document.getElementById("phone");
+  el.classList.remove("qmode");
   const v = APP.homeView;
   let b = "";
   if (!configured || !APP.dbOk) {
@@ -23,8 +24,15 @@ function renderHome() {
     ${lr && !hs ? `<button class="entry resume" data-act="rejoin"><b>Вернуться в комнату ${esc(lr)}</b><span>Счёт сохранится</span></button>` : ""}
     <button class="entry main" data-act="host" ${APP.busy ? "disabled" : ""}><b>${APP.busy ? "Создаём комнату…" : "Провести игру"}</b><span>Вы ведущий: выбираете вопросы, показываете табло на экране и засчитываете ответы</span></button>
     <button class="entry" data-home="code"><b>Войти по коду</b><span>Ведущий покажет код или QR на своём экране</span></button>
-    <button class="entry" data-home="rooms"><b>Открытые игры</b><span>Присоединиться к игре, которую ведёт кто-то другой</span></button>`;
+    <button class="entry" data-home="rooms"><b>Открытые игры</b><span>Присоединиться к игре, которую ведёт кто-то другой</span></button>
+    <button class="entry" data-home="screen"><b>Показать на большом экране</b><span>Для телевизора или проектора: табло, вопросы и очки без ответов и кнопок ведущего</span></button>`;
   }
+  if (v === "screen")
+    b = `<button class="back" data-home="main">← Назад</button><div class="status">Большой экран</div>
+    <div class="hint">Откройте эту страницу на телевизоре или проекторе и введите код комнаты. Экран не считается игроком и ничего не нажимает.</div>
+    <input class="field codein" id="code" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off" aria-label="Код комнаты" value="${esc(APP.prefill)}">
+    ${APP.joinErr ? `<div class="err-t">${esc(APP.joinErr)}</div>` : ""}
+    <button class="pbtn hot" data-act="join-screen" ${APP.busy ? "disabled" : ""}><span>${APP.busy ? "Подключаемся…" : "Показать"}</span><span></span></button>`;
   if (v === "code")
     b = `<button class="back" data-home="main">← Назад</button><div class="status">Войти по коду</div>
     <input class="field codein" id="code" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off" aria-label="Код комнаты" value="${esc(APP.prefill)}">

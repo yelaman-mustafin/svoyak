@@ -82,6 +82,15 @@ function attachHost() {
     HOST.players = Object.fromEntries(Object.entries(s.val() || {}).filter(([k, p]) => p && p.name));
     onPlayers();
   });
+  hRef("screens").on("value", s => {
+    const was = HOST.screens || 0;
+    HOST.screens = Object.keys(s.val() || {}).length;
+    // Открылся первый экран посреди вопроса с картинкой — отправим её и ему.
+    if (!was && HOST.screens && H().cur && H().phase !== "lobby") {
+      sendMedia(H().cur);
+      pushState();
+    }
+  });
   hRef("input").on("child_added", s => onInput(s.key, s.val()));
   hRef("input").on("child_changed", s => onInput(s.key, s.val()));
 }
@@ -93,6 +102,7 @@ function detachHost() {
   hRef("meta/hostOnline").onDisconnect().cancel();
   hRef("players").off();
   hRef("input").off();
+  hRef("screens").off();
   if (HOST.buzzRef) HOST.buzzRef.off();
   clearTimers();
 }
@@ -116,7 +126,8 @@ async function resumeHost(saved) {
     attachHost();
     APP.mode = "host";
     S.view = "setup";
-    if (["reading", "open"].includes(HOST.H.phase)) openBuzz();
+    if (HOST.H.phase === "intro") introDone();
+    else if (["reading", "open"].includes(HOST.H.phase)) openBuzz();
     else pushState();
     if (AUTO()) {
       await joinRoom(HOST.code, hostName(), { silent: true });
@@ -206,13 +217,13 @@ function pushState() {
       ? {
           theme: h.cur.theme,
           cost: h.cur.cost,
-          text: h.cur.text,
+          text: ph === "intro" ? null : h.cur.text,
           sp: h.cur.sp,
-          choices: h.cur.choices || null,
+          choices: ph === "intro" ? null : h.cur.choices || null,
           answer: ph === "reveal" ? h.cur.answer : null,
           hasImg: !!(h.cur.img || h.cur.url),
-          img: CFG.phoneImg && h.cur.img ? h.cur.img : null,
-          url: CFG.phoneImg && h.cur.url ? h.cur.url : null
+          img: (CFG.phoneImg || HOST.screens) && h.cur.img ? h.cur.img : null,
+          url: (CFG.phoneImg || HOST.screens) && h.cur.url ? h.cur.url : null
         }
       : null,
     responder: h.responder || null,

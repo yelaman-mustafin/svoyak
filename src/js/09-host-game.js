@@ -65,6 +65,7 @@ function startGame() {
   hRef("buzz").remove();
   hRef("input").remove();
   hRef("media").remove();
+  hRef("smedia").remove();
   HOST.seen = {};
   preloadPackImages();
   S.view = "game";
@@ -136,13 +137,14 @@ function pick(ti, qi) {
   h.st.qs.push({
     theme: th.name,
     cost: item.cost,
-    text: (item.text || "🖼").slice(0, 90),
+    len: (item.text || "").length,
     answer: item.answer,
     res: null,
     by: null,
     tries: []
   });
   sendMedia(h.cur);
+  h.left = null;
   h.tried = {};
   h.responder = null;
   h.reaction = null;
@@ -150,7 +152,7 @@ function pick(ti, qi) {
   h.said = null;
   h.quiz = null;
   if (QUIZ()) {
-    startQuiz();
+    showIntro("quiz");
     return;
   }
   if (sp === "cat") {
@@ -173,19 +175,47 @@ function pick(ti, qi) {
     h.cur.direct = true;
     h.cur.noPenalty = true;
     h.responder = h.chooser;
+    showIntro("answer");
+    return;
+  }
+  showIntro("reading");
+}
+
+// Сколько длится заставка «тема и стоимость» перед вопросом. 0 — без заставки
+// (так делают тесты через window.INTRO_MS_OVERRIDE).
+const INTRO_MS = window.INTRO_MS_OVERRIDE != null ? window.INTRO_MS_OVERRIDE : 2500;
+
+// Заставка перед вопросом: на всех экранах крупно тема и стоимость, текст вопроса пока скрыт.
+// to — что будет после неё: reading (чтение), quiz (викторина) или answer (вопрос без риска).
+function showIntro(to) {
+  const h = H();
+  h.introTo = to;
+  if (!INTRO_MS) return introDone(true);
+  h.phase = "intro";
+  pushState();
+  later(introDone, INTRO_MS);
+}
+
+// Конец заставки (по таймеру или кнопкой «Показать вопрос» у ведущего).
+function introDone(force) {
+  const h = H();
+  if (h.phase !== "intro" && force !== true) return;
+  clearTimers();
+  if (h.introTo === "quiz") startQuiz();
+  else if (h.introTo === "answer") {
     h.phase = "answer";
     armAnswer();
     pushState();
-    return;
-  }
-  startReading();
+  } else startReading();
 }
 
-// Отправляет картинку вопроса на телефоны, если это включено в настройках.
+// Отправляет картинку вопроса: на телефоны (media), если это включено в настройках,
+// иначе только на общие экраны (smedia), если они открыты. Иначе ничего не отправляет.
 function sendMedia(c) {
-  if (!CFG.phoneImg || !c.img) return;
+  const path = CFG.phoneImg ? "media" : HOST.screens ? "smedia" : null;
+  if (!path || !c.img) return;
   imgGet(c.img).then(d => {
-    if (d && HOST && H().cur === c) hRef("media").set({ id: c.img, data: d });
+    if (d && HOST && H().cur === c) hRef(path).set({ id: c.img, data: d });
   });
 }
 
@@ -210,11 +240,25 @@ function startReading() {
   later(openBuzz, h.readMs);
 }
 
+// Сколько секунд минимум получают остальные игроки после неверного ответа,
+// даже если до нажатия время почти вышло.
+const BUZZ_MIN_LEFT = 2000;
+
+// Запоминает, сколько времени оставалось на кнопку в момент нажатия.
+// После неверного ответа кнопки откроются с этим остатком (0 — без лимита).
+function rememberLeft() {
+  const h = H();
+  h.left = h.dl ? Math.max(BUZZ_MIN_LEFT, h.dl - now()) : 0;
+}
+
 // Открывает кнопки. Каждое открытие получает свой номер qn,
 // нажатия пишутся в rooms/{код}/buzz/{qn}, старые нажатия не мешают.
+// Первое открытие даёт полное время, повторное (после ошибки) — то, что оставалось.
 function openBuzz() {
   const h = H();
   clearTimers();
+  const ms = h.left != null ? h.left : CFG.window;
+  h.left = null;
   h.qn = (h.qn || 0) + 1;
   h.phase = "open";
   h.openAt = now();
@@ -228,7 +272,7 @@ function openBuzz() {
     x.buzzLock = true;
     setTimeout(() => resolveBuzz(qn), 180);
   });
-  setDl(CFG.window);
+  setDl(ms, CFG.window || ms);
   pushState();
 }
 
@@ -246,6 +290,7 @@ async function resolveBuzz(qn) {
     if (h.dl && now() >= h.dl) onExpire();
     return;
   }
+  rememberLeft();
   clearTimers();
   const [id, ts] = cand[0];
   h.responder = id;
@@ -256,14 +301,15 @@ async function resolveBuzz(qn) {
 }
 
 // Ставит дедлайн текущей фазы (кнопка, викторина, ввод ответа). 0 — без лимита.
+// total — полная длина полоски таймера (если время продолжается после паузы, полоска не полная).
 // Старые таймеры не срабатывают благодаря ключу dlKey.
-function setDl(ms) {
+function setDl(ms, total) {
   const h = H();
   h.dlKey = (h.dlKey || 0) + 1;
   const k = h.dlKey;
   if (ms > 0) {
     h.dl = now() + ms;
-    h.dlTotal = ms;
+    h.dlTotal = Math.max(total || ms, ms);
     setTimeout(() => {
       if (HOST && H().dlKey === k) onExpire();
     }, ms);
@@ -370,6 +416,7 @@ function toBoard() {
   h.msg = "";
   h.quiz = null;
   hRef("media").remove();
+  hRef("smedia").remove();
   const total = PACK.rounds[h.round].themes.reduce((a, t) => a + t.questions.length, 0);
   if (Object.keys(h.used).length >= total) {
     endRound();
@@ -711,6 +758,7 @@ function undoQuestion() {
   h.responder = null;
   h.msg = "";
   hRef("media").remove();
+  hRef("smedia").remove();
   h.phase = "board";
   armBoard();
   pushState();
@@ -720,6 +768,7 @@ function undoQuestion() {
 function giveAnswer(pid) {
   const h = H();
   if (!h.cur || !["reading", "open", "answer"].includes(h.phase) || QUIZ()) return;
+  if (h.phase === "open") rememberLeft();
   clearTimers();
   h.responder = pid;
   h.reaction = null;
@@ -757,7 +806,8 @@ function backToLobby() {
   pushState();
 }
 
-// Данные для финального экрана: таблица игроков, вопросы, самая сложная тема, самая быстрая реакция.
+// Данные для финального экрана: игроки по местам и шуточные номинации.
+// Номинация попадает в список, только если для неё есть данные.
 function statsOut() {
   const h = H();
   if (!h.st) return null;
@@ -770,38 +820,24 @@ function statsOut() {
         score: HOST.players[id].score || 0,
         right: s.right || 0,
         wrong: s.wrong || 0,
-        best: s.best == null ? null : s.best,
-        fin: s.finalOk == null ? null : s.finalOk
+        best: s.best == null ? null : s.best
       };
     })
     .sort((a, b) => b.score - a.score);
-  const qs = h.st.qs.map(q => ({
-    t: q.theme,
-    c: q.cost,
-    x: q.text,
-    a: q.answer,
-    r: q.res || "nobody",
-    by: q.by ? pname(q.by) : null,
-    n: q.quiz || null,
-    w: q.tries.filter(t => !t.ok).map(t => pname(t.id))
-  }));
-  const themes = {};
-  h.st.qs.forEach(q => {
-    const t = themes[q.theme] || (themes[q.theme] = { n: 0, ok: 0 });
-    t.n++;
-    if (q.res === "right") t.ok++;
-  });
-  const hard = Object.entries(themes)
-    .filter(([, v]) => v.n >= 2)
-    .sort((a, b) => a[1].ok / a[1].n - b[1].ok / b[1].n)[0];
+  const sec = x => String(x).replace(".", ",") + " с";
+  const top = (list, key) => list.filter(x => x[key] > 0).sort((a, b) => b[key] - a[key])[0];
+  const won = h.st.qs.filter(q => q.res === "right" && q.by && HOST.players[q.by]);
+  const noms = [];
   const fast = players.filter(p => p.best != null).sort((a, b) => a.best - b.best)[0];
-  return {
-    players,
-    qs,
-    total: qs.length,
-    ok: qs.filter(q => q.r === "right").length,
-    hard: hard ? { t: hard[0], ok: hard[1].ok, n: hard[1].n } : null,
-    fast: fast ? { name: fast.name, best: fast.best } : null
-  };
+  if (fast) noms.push({ i: "⚡", t: "Самый быстрый клик", n: fast.name, d: sec(fast.best) });
+  const smart = top(players, "right");
+  if (smart) noms.push({ i: "🧠", t: "Больше всех верных ответов", n: smart.name, d: smart.right + " " + plural(smart.right, "ответ", "ответа", "ответов") });
+  const long = won.slice().sort((a, b) => (b.len || 0) - (a.len || 0))[0];
+  if (long && long.len) noms.push({ i: "📜", t: "Самый длинный вопрос", n: pname(long.by), d: long.len + " " + plural(long.len, "символ", "символа", "символов") });
+  const rich = won.slice().sort((a, b) => b.cost - a.cost)[0];
+  if (rich) noms.push({ i: "💎", t: "Самый дорогой ответ", n: pname(rich.by), d: fmt(rich.cost) + " · " + rich.theme });
+  const brave = top(players, "wrong");
+  if (brave) noms.push({ i: "🎲", t: "Самый смелый игрок", n: brave.name, d: brave.wrong + " " + plural(brave.wrong, "ошибка", "ошибки", "ошибок") });
+  return { players: players.map(p => ({ name: p.name, score: p.score })), noms };
 }
 

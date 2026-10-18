@@ -1671,61 +1671,74 @@ button.opt-b:active {
 .pod.p3 .pb {
   height: 56px;
 }
-.hl {
+.places {
+  width: 100%;
+  max-width: 520px;
   display: grid;
-  gap: 4px;
-  font-size: 15px;
-  opacity: 0.95;
+  gap: 6px;
 }
-.st-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-.st {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
+.places div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: 12px;
+  background: rgba(128, 128, 160, 0.14);
+  font-weight: 700;
   text-align: left;
 }
-.st th,
-.st td {
-  padding: 8px 10px;
-  border-bottom: 1px solid rgba(128, 128, 160, 0.3);
+.places div i {
+  width: 28px;
+  font-style: normal;
+  opacity: 0.7;
+}
+.places div span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
-.st th {
-  font-size: 12px;
-  opacity: 0.7;
-  font-weight: 700;
+.places div b {
+  font-family: var(--display);
+  font-variant-numeric: tabular-nums;
 }
-.st .me-row {
-  background: rgba(255, 201, 60, 0.15);
+.places .me {
+  outline: 2px solid var(--gold);
 }
-.qst {
+.noms {
   width: 100%;
-  text-align: left;
-}
-.qst summary {
-  cursor: pointer;
-  font-weight: 800;
-  padding: 6px 0;
-}
-.qst ol {
-  margin: 6px 0 0;
-  padding-left: 22px;
+  max-width: 860px;
   display: grid;
-  gap: 8px;
-  font-size: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
 }
-.qst li.r::marker {
-  color: var(--ok);
+.nom {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  padding: 12px 10px;
+  border-radius: 14px;
+  background: rgba(255, 201, 60, 0.14);
 }
-.qst li.w::marker {
-  color: var(--bad);
+.nom .ni {
+  font-size: 26px;
 }
-.qst .qa {
-  opacity: 0.75;
+.nom .nt {
   font-size: 13px;
+  opacity: 0.8;
+}
+.nom .nn {
+  font-weight: 800;
+  font-size: 16px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nom .nd {
+  font-size: 13px;
+  opacity: 0.75;
 }
 .tv .endscreen {
   max-height: none;
@@ -1906,5 +1919,283 @@ button.opt-b:active {
   .qrbox canvas {
     width: 138px;
     height: 138px;
+  }
+}
+/* ---------- Телефон во время вопроса: всё на одном экране без прокрутки ----------
+   Вопрос, картинка и варианты сверху (если не помещаются, прокручивается только эта зона),
+   кнопка или варианты ответа снизу и всегда видны. */
+#pshell .screen.qmode {
+  height: calc(100dvh - 64px);
+  min-height: 0;
+}
+.screen.qmode .ph-body {
+  min-height: 0;
+  overflow: hidden;
+  gap: 8px;
+  padding: 12px 16px 16px;
+}
+.screen.qmode .status {
+  font-size: 15px;
+}
+.qzone {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overscroll-behavior: contain;
+}
+.qzone > * {
+  flex: none;
+}
+.qzone .qtext {
+  padding: 10px 12px;
+  font-size: 15px;
+  line-height: 1.35;
+}
+.qzone .qhead {
+  padding: 6px 12px;
+}
+.screen.qmode .ph-top {
+  padding: 12px 18px 10px;
+}
+.qzone .pimg {
+  max-height: 24dvh;
+}
+.qzone .pimg:has(~ .opts),
+.qzone .pimg:has(~ .card ~ .opts) {
+  max-height: 16dvh;
+}
+.screen.qmode .opts {
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0;
+}
+.screen.qmode .opt-b {
+  min-height: 46px;
+  padding: 10px 12px;
+  font-size: 15px;
+  gap: 8px;
+}
+.screen.qmode .opt-b b {
+  width: 24px;
+  height: 24px;
+  font-size: 13px;
+}
+.screen.qmode .buzz-wrap,
+.qbottom {
+  flex: none;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.screen.qmode .buzz-wrap {
+  align-items: center;
+  padding-bottom: 12px;
+}
+.screen.qmode .buzz-wrap .buzzer {
+  width: 100%;
+  height: min(96px, 13dvh);
+  border-radius: 22px;
+  font-size: 30px;
+}
+.screen.qmode .buzzer.pressed,
+.screen.qmode .buzzer:active:not(:disabled) {
+  transform: translateY(8px);
+}
+@media (max-width: 520px) {
+  #pshell .screen.qmode {
+    height: 100dvh;
+  }
+}
+.screen.qmode .nolimit,
+.screen.qmode .buzz-wrap .kbd {
+  display: none;
+}
+.status.ok-t {
+  color: var(--ok);
+}
+/* ---------- Заставка перед вопросом: тема и стоимость ---------- */
+.q.intro .intro-theme {
+  font-family: var(--display);
+  font-size: clamp(28px, 4.5vw, 54px);
+  font-weight: 900;
+  line-height: 1.1;
+  max-width: 22ch;
+}
+.intro-cost {
+  font-family: var(--display);
+  color: var(--gold);
+  font-size: clamp(56px, 10vw, 120px);
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 14px;
+  animation: intro-pop 0.5s ease-out both;
+}
+@keyframes intro-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.intro-ph {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 24px 12px;
+  border-radius: 18px;
+  background: var(--board);
+  color: #fff;
+}
+.intro-ph .k {
+  opacity: 0.7;
+  font-size: 14px;
+}
+.intro-ph .intro-theme {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.intro-ph .intro-cost {
+  font-size: 72px;
+}
+.intro-ph .hint {
+  color: #fff;
+  opacity: 0.8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-cost {
+    animation: none;
+  }
+}
+/* ---------- Общий экран для зрителей (телевизор, проектор) ---------- */
+body[data-mode="screen"] .wrap {
+  max-width: none;
+  padding: 12px;
+}
+body[data-mode="screen"] .tv {
+  height: calc(100dvh - 24px);
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+body[data-mode="screen"] .tv > .q,
+body[data-mode="screen"] .tv > .endscreen {
+  flex: 1;
+}
+/* Вопрос на экране целиком помещается по высоте: картинка уменьшается, остальное нет. */
+body[data-mode="screen"] .tv > .q {
+  min-height: 0;
+  overflow: hidden;
+}
+body[data-mode="screen"] .tv > .q > * {
+  flex: none;
+}
+body[data-mode="screen"] .tv > .q > .qimg {
+  flex: 0 1 auto;
+  min-height: 60px;
+}
+body[data-mode="screen"] .tv > .board {
+  flex: 1;
+  grid-auto-rows: 1fr;
+}
+.tv div.cell {
+  display: grid;
+  place-items: center;
+}
+.tv div.cell.used {
+  background: var(--cell-used);
+  color: transparent;
+}
+body[data-mode="screen"] .cell {
+  min-height: clamp(56px, 10vh, 120px);
+  font-size: clamp(18px, 2.8vw, 44px);
+}
+body[data-mode="screen"] .theme {
+  font-size: clamp(14px, 1.6vw, 26px);
+}
+body[data-mode="screen"] .q .text {
+  max-width: 40ch;
+  font-size: clamp(20px, min(2.6vw, 4.6vh), 44px);
+}
+body[data-mode="screen"] .q .meta {
+  font-size: clamp(14px, 1.4vw, 22px);
+}
+body[data-mode="screen"] .qimg {
+  max-height: 50vh;
+}
+body[data-mode="screen"] .pl .sc {
+  font-size: clamp(22px, 2.4vw, 36px);
+}
+.scr-turn {
+  margin-top: 14px;
+  text-align: center;
+  color: var(--gold);
+  font-size: clamp(18px, 2vw, 28px);
+  font-weight: 800;
+}
+.scr-k {
+  opacity: 0.7;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.scr-lobby .code {
+  justify-content: center;
+  gap: 28px;
+}
+.scr-lobby .code .v {
+  font-size: clamp(48px, 7vw, 96px);
+}
+.scr-lobby .qrbox {
+  width: 260px;
+  height: 260px;
+}
+.scr-lobby .qrbox img,
+.scr-lobby .qrbox canvas {
+  width: 248px;
+  height: 248px;
+}
+.scr-names {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.scr-names span {
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+}
+/* Итоги: места и номинации. На широком экране — две колонки, чтобы всё было видно сразу. */
+.end-grid {
+  width: 100%;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+@media (min-width: 900px) {
+  .endscreen:not(.ph) .end-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    align-items: start;
+    max-width: 1100px;
+  }
+  .endscreen:not(.ph) .noms {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

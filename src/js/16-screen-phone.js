@@ -27,8 +27,10 @@ function qHead(st, c) {
 }
 
 // Картинка вопроса на телефоне (или подсказка, что она на общем экране).
-function plImg(c) {
+// Если картинки на телефоны выключены, адрес мог прийти только ради общих экранов — не показываем.
+function plImg(c, st) {
   if (!c) return "";
+  if (st && st.cfg && !st.cfg.phoneImg) return c.hasImg ? `<div class="hint">🖼 Картинка на общем экране</div>` : "";
   if (c.url) return `<img class="pimg" src="${esc(c.url)}" alt="Картинка вопроса">`;
   if (c.img)
     return PL.media && PL.media.id === c.img
@@ -37,6 +39,15 @@ function plImg(c) {
   if (c.hasImg) return `<div class="hint">🖼 Картинка на общем экране</div>`;
   return "";
 }
+
+// Вопрос на телефоне: шапка, картинка, текст и варианты (если их не нужно нажимать).
+// Лежит в прокручиваемой зоне, чтобы кнопка под ней всегда оставалась на экране.
+function qZone(st, c, noChoices, top) {
+  return `<div class="qzone">${top || ""}${qHead(st, c)}${plImg(c, st)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && !noChoices ? optsHTML(c.choices, null, null) : ""}</div>`;
+}
+
+// Фазы вопроса: экран телефона делится на вопрос сверху и кнопку снизу без общей прокрутки.
+const Q_PHASES = ["reading", "open", "answer", "quiz"];
 
 // Телефон игрока. Сверху имя, счёт и соперники, ниже экран текущей фазы.
 function renderPlayer() {
@@ -84,34 +95,37 @@ function renderPlayer() {
         } else
           body = `<div class="status">${esc(pn(st.chooser))} выбирает вопрос</div><div class="hint">${esc(st.roundName || "")}</div><div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
         break;
+      case "intro":
+        body = `<div class="intro-ph"><div class="k">${esc(st.roundName || "")}</div><div class="intro-theme">${esc(c.theme)}</div><div class="intro-cost">${fmt(c.cost)}</div>${c.sp === "norisk" ? `<div class="hint">Вопрос без риска${st.responder === PL.pid ? ": отвечаете вы" : ""}</div>` : ""}</div>`;
+        break;
       case "reading":
-        body = `<div class="status">Ведущий читает вопрос</div>${qHead(st, c)}${plImg(c)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && st.phase !== "quiz" && !(st.phase === "answer" && st.responder === PL.pid && st.cfg.host === "auto") ? optsHTML(c.choices, null, null) : ""}<div class="buzz-wrap"><button class="buzzer locked ${PL.early ? "early" : ""}" data-act="buzz">${PL.early ? "Рано!" : "Ждите"}</button><span class="kbd">${st.cfg.early ? "Раннее нажатие блокирует кнопку на 0,5 с" : "Кнопка откроется после вопроса"}</span></div>`;
+        body = `<div class="status">Ведущий читает вопрос</div>${qZone(st, c)}<div class="buzz-wrap"><button class="buzzer locked ${PL.early ? "early" : ""}" data-act="buzz">${PL.early ? "Рано!" : "Ждите"}</button><span class="kbd">${st.cfg.early ? "Раннее нажатие блокирует кнопку на 0,5 с" : "Кнопка откроется после вопроса"}</span></div>`;
         break;
       case "open": {
         if (tried[PL.pid])
-          body = `<div class="status">Вы уже отвечали</div>${qHead(st, c)}${plImg(c)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && st.phase !== "quiz" && !(st.phase === "answer" && st.responder === PL.pid && st.cfg.host === "auto") ? optsHTML(c.choices, null, null) : ""}<div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
+          body = `<div class="status">Вы уже отвечали</div>${qZone(st, c)}<div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
         else if (PL.pressedQn === st.qn)
-          body = `<div class="status">Нажато!</div><div class="hint">Ведущий определяет, кто был первым…</div><div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#FFD27A 0%,var(--gold) 55%,#A87A00 100%);box-shadow:0 2px 0 #A87A00">✓</button></div>`;
+          body = `<div class="status">Нажато!</div>${qZone(st, c, false, `<div class="hint">Ведущий определяет, кто был первым…</div>`)}<div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#FFD27A 0%,var(--gold) 55%,#A87A00 100%);box-shadow:0 2px 0 #A87A00">✓</button></div>`;
         else {
           const elp = Math.max(0, now() - st.openAt);
-          body = `<div class="status">${st.msg ? esc(st.msg) : "Кнопки открыты"}</div>${qHead(st, c)}${plImg(c)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && st.phase !== "quiz" && !(st.phase === "answer" && st.responder === PL.pid && st.cfg.host === "auto") ? optsHTML(c.choices, null, null) : ""}<div class="buzz-wrap"><button class="buzzer live" data-act="buzz">Жми!</button>${dlBar(st.dl, st.dlTotal)}</div>`;
+          body = `${st.msg ? `<div class="status">${esc(st.msg)}</div>` : ""}${qZone(st, c)}<div class="buzz-wrap"><button class="buzzer live" data-act="buzz">Жми!</button>${dlBar(st.dl, st.dlTotal)}</div>`;
         }
         break;
       }
       case "answer":
         if (st.responder === PL.pid && st.cfg.host === "auto") {
           const left = Math.max(0, st.ansDeadline - now());
-          body = `<div class="status">Ваш ответ!</div><div class="hint">${c.sp === "norisk" ? "Вопрос без риска: за ошибку очки не снимаются. " : ""}${c.choices ? "Выберите вариант." : "Напишите ответ, небольшие опечатки не страшны."}</div>${qHead(st, c)}${plImg(c)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices ? (PL.sent.pa === st.qn + ":" + st.ansDeadline ? `<div class="hint">Ответ отправлен</div>` : optsHTML(c.choices, null, null, null, "aopt")) : `<input class="field" id="pa" placeholder="Ваш ответ" autocomplete="off" maxlength="80" enterkeyhint="send"><button class="pbtn hot" data-act="pa" ${PL.sent.pa === st.qn + ":" + st.ansDeadline ? "disabled" : ""}><span>Ответить</span><span></span></button>`}${dlBar(st.dl, st.dlTotal)}`;
+          body = `<div class="status">Ваш ответ!</div>${qZone(st, c, true, `<div class="hint">${c.sp === "norisk" ? "Вопрос без риска: за ошибку очки не снимаются. " : ""}${c.choices ? "Выберите вариант." : "Напишите ответ, небольшие опечатки не страшны."}</div>`)}<div class="qbottom">${c.choices ? (PL.sent.pa === st.qn + ":" + st.ansDeadline ? `<div class="hint">Ответ отправлен</div>` : optsHTML(c.choices, null, null, null, "aopt")) : `<input class="field" id="pa" placeholder="Ваш ответ" autocomplete="off" maxlength="80" enterkeyhint="send"><button class="pbtn hot" data-act="pa" ${PL.sent.pa === st.qn + ":" + st.ansDeadline ? "disabled" : ""}><span>Ответить</span><span></span></button>`}${dlBar(st.dl, st.dlTotal)}</div>`;
         } else if (st.responder === PL.pid)
-          body = `<div class="status">Ваш ответ!</div><div class="hint">${c.sp === "norisk" ? "Вопрос без риска: за ошибку очки не снимаются. " : ""}Говорите вслух, ведущий засчитает.</div>${qHead(st, c)}${plImg(c)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && st.phase !== "quiz" && !(st.phase === "answer" && st.responder === PL.pid && st.cfg.host === "auto") ? optsHTML(c.choices, null, null) : ""}<div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#5FE0A8 0%,var(--ok) 55%,#0C6B46 100%);box-shadow:0 2px 0 #0C6B46">Вы!</button>${st.reaction != null ? `<div class="kbd">Время реакции ${Number(st.reaction).toFixed(2).replace(".", ",")} с</div>` : ""}</div>`;
+          body = `<div class="status ok-t">Ваш ответ!</div>${qZone(st, c, false, `<div class="hint">${c.sp === "norisk" ? "Вопрос без риска: за ошибку очки не снимаются. " : ""}Говорите вслух, ведущий засчитает.${st.reaction != null ? ` Реакция ${Number(st.reaction).toFixed(2).replace(".", ",")} с.` : ""}</div>`)}`;
         else
-          body = `<div class="status">Отвечает ${esc(pn(st.responder))}${st.cfg.host === "auto" ? " (пишет ответ)" : ""}</div>${st.reaction != null ? `<div class="hint">Нажал за ${Number(st.reaction).toFixed(2).replace(".", ",")} с</div>` : ""}${qHead(st, c)}${plImg(c)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && st.phase !== "quiz" && !(st.phase === "answer" && st.responder === PL.pid && st.cfg.host === "auto") ? optsHTML(c.choices, null, null) : ""}`;
+          body = `<div class="status">Отвечает ${esc(pn(st.responder))}${st.cfg.host === "auto" ? " (пишет ответ)" : ""}</div>${qZone(st, c, false, st.reaction != null ? `<div class="hint">Нажал за ${Number(st.reaction).toFixed(2).replace(".", ",")} с</div>` : "")}`;
         break;
       case "quiz": {
         const z = st.quiz,
           done = (z.picked || {})[PL.pid],
           mine = PL.qpick && PL.qpick.id === z.id ? PL.qpick.i : null;
-        body = `<div class="status">Выберите ответ</div>${qHead(st, c)}${plImg(c)}${c.text ? `<div class="card qtext">${esc(c.text)}</div>` : ""}${c.choices && st.phase !== "quiz" && !(st.phase === "answer" && st.responder === PL.pid && st.cfg.host === "auto") ? optsHTML(c.choices, null, null) : ""}${optsHTML(z.opts, null, mine, null, done ? null : "opt")}<div class="hint">${done ? "Ответ принят. Ждём остальных…" : "Выберите вариант"}</div>${dlBar(st.dl, st.dlTotal)}`;
+        body = `<div class="status">Выберите ответ</div>${qZone(st, c, true)}<div class="qbottom">${optsHTML(z.opts, null, mine, null, done ? null : "opt")}<div class="hint">${done ? "Ответ принят. Ждём остальных…" : "Выберите вариант"}</div>${dlBar(st.dl, st.dlTotal)}</div>`;
         break;
       }
       case "reveal":
@@ -219,9 +233,11 @@ function renderPlayer() {
     : PL.meta && PL.meta.hostOnline === false && !PL.meta.closed && st && st.phase !== "lobby"
       ? `<div class="banner">${st && st.cfg && st.cfg.host === "auto" ? "Организатор отключился. Ждём, когда он вернётся…" : "Ведущий отключился. Ждём, когда он вернётся…"}</div>`
       : "";
+  const qmode = !!(st && Q_PHASES.includes(sp) && !PL.kicked && !(PL.meta && PL.meta.closed));
+  el.classList.toggle("qmode", qmode);
   preserve(
     el,
-    `<div class="ph-top"><div class="me">Комната ${PL.code}${sp && sp !== "lobby" ? " · " + place + "-е место" : ""}<b>${esc(me.name)}</b></div><div class="sc">${fmt(me.score || 0)}</div></div>${banner}${rivals ? `<div class="ph-rivals">${rivals}</div>` : ""}<div class="ph-body">${body}${PL.kicked || (PL.meta && PL.meta.closed) || isOrg ? "" : `<button class="back" data-act="leave" style="margin-top:auto">Выйти из комнаты</button>`}</div>`
+    `<div class="ph-top"><div class="me">Комната ${PL.code}${sp && sp !== "lobby" ? " · " + place + "-е место" : ""}<b>${esc(me.name)}</b></div><div class="sc">${fmt(me.score || 0)}</div></div>${banner}${rivals ? `<div class="ph-rivals">${rivals}</div>` : ""}<div class="ph-body">${body}${PL.kicked || (PL.meta && PL.meta.closed) || isOrg || qmode ? "" : `<button class="back" data-act="leave" style="margin-top:auto">Выйти из комнаты</button>`}</div>`
   );
   const bet = document.getElementById("bet");
   if (bet) {

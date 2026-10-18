@@ -1,7 +1,7 @@
 const {JSDOM}=require("jsdom");const fs=require("fs");const makeFake=require("./fake-firebase.js");
 const html=fs.readFileSync(require("path").join(__dirname,"..","dist","index.html"),"utf8").replace(/<script src="https:\/\/cdn.jsdelivr[^>]+><\/script>/g,"");
 const sl=ms=>new Promise(r=>setTimeout(r,ms));
-const cl=(fb)=>new JSDOM(html,{runScripts:"dangerously",pretendToBeVisual:true,url:"https://x.io/s/",beforeParse(w){w.firebase=fb;w.FIREBASE_CONFIG_OVERRIDE={databaseURL:"x"};w.confirm=()=>true;w.prompt=()=>"777";}});
+const cl=(fb)=>new JSDOM(html,{runScripts:"dangerously",pretendToBeVisual:true,url:"https://x.io/s/",beforeParse(w){w.firebase=fb;w.FIREBASE_CONFIG_OVERRIDE={databaseURL:"x"};w.INTRO_MS_OVERRIDE=0;w.confirm=()=>true;w.prompt=()=>"777";}});
 const T=(c,s)=>{const e=c.window.document.querySelector(s);return e?e.textContent.replace(/\s+/g," ").trim().slice(0,200):"<none>"};
 const Q=(c,s)=>c.window.document.querySelector(s);
 (async()=>{

@@ -1,7 +1,7 @@
 const {JSDOM}=require("jsdom");const fs=require("fs");const makeFake=require("./fake-firebase.js");
 const html=fs.readFileSync(require("path").join(__dirname,"..","dist","index.html"),"utf8").replace(/<script src="https:\/\/cdn.jsdelivr[^>]+><\/script>/g,"");
 const sl=ms=>new Promise(r=>setTimeout(r,ms));
-function client(fb,name){ return new JSDOM(html,{runScripts:"dangerously",pretendToBeVisual:true,url:"https://x.io/s/",beforeParse(w){w.firebase=fb;w.FIREBASE_CONFIG_OVERRIDE={databaseURL:"x"};w.confirm=()=>true;w.prompt=()=>null;w.alert=m=>console.log("ALERT",m);}}); }
+function client(fb,name){ return new JSDOM(html,{runScripts:"dangerously",pretendToBeVisual:true,url:"https://x.io/s/",beforeParse(w){w.firebase=fb;w.FIREBASE_CONFIG_OVERRIDE={databaseURL:"x"};w.INTRO_MS_OVERRIDE=0;w.confirm=()=>true;w.prompt=()=>null;w.alert=m=>console.log("ALERT",m);}}); }
 const T=(c,s)=>{const e=c.window.document.querySelector(s);return e?e.textContent.replace(/\s+/g," ").trim().slice(0,170):"<none>"};
 const Q=(c,s)=>c.window.document.querySelector(s);
 async function join(c,code,name){ Q(c,"[data-home=code]").click(); await sl(10); Q(c,"#code").value=code; Q(c,"#nm").value=name; Q(c,"[data-act=join-code]").click(); await sl(100); }
@@ -40,7 +40,7 @@ async function join(c,code,name){ Q(c,"[data-home=code]").click(); await sl(10);
  for(const c of [o,a]){ if(Q(c,"#fa")){ Q(c,"#fa").value="алматы"; Q(c,"[data-act=fa]").click(); } } await sl(3500);
  console.log("final end:", o.window.eval("H().phase"));
  console.log("org end phone:", T(o,".ph-body"));
- console.log("A end:", T(a,".endscreen .hl"), "|", T(a,".st tbody"));
+ console.log("A end:", T(a,".endscreen .noms"), "|", T(a,".places"));
  // ===== QUIZ =====
  fb=makeFake(); const h=client(fb), b=client(fb), c2=client(fb); await sl(30);
  Q(h,"[data-act=host]").click(); await sl(80);
@@ -63,7 +63,7 @@ async function join(c,code,name){ Q(c,"[data-home=code]").click(); await sl(10);
  for(const c of [b,c2]) if(Q(c,"[data-act=bet]")) Q(c,"[data-act=bet]").click(); await sl(120);
  console.log("final opts on phone:", T(b,".ph-body").slice(0,120));
  const fo=b.window.eval('arr(PL.state.fin.opts).indexOf("Алматы")'); if(Q(b,`[data-fopt="${fo}"]`)) Q(b,`[data-fopt="${fo}"]`).click(); await sl(3000);
- console.log("quiz end host:", h.window.eval("H().phase"), T(h,"#tv .hl"));
+ console.log("quiz end host:", h.window.eval("H().phase"), T(h,"#tv .noms"));
  // parser options
  console.log("parse opts:", h.window.eval('JSON.stringify(parseText("# Т\\n100 Столица Франции? = Париж\\nВарианты: Париж; Лион; Марсель; Ницца").rounds[0].themes[0].questions[0].wrong)'));
  process.exit(0);

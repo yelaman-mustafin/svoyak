@@ -43,6 +43,19 @@ const CHECKS = {
     /media removed: true/,
     /pimg: false/,                                 // «только на экране» — телефоны не грузят
     /"_imgRef":"кот\.jpg"/                         // картинки из .siq находятся
+  ],
+  "screen-and-timer.test.js": [
+    /resume after wrong: open left ok: true bar total = window: true/, // таймер продолжается после ошибки
+    /intro: intro \| tv: Раунд 1Казахстан100 \| phone: Раунд 1Казахстан100 \| text hidden: true/, // заставка
+    /after intro: reading \| text shown: true/,     // после заставки — вопрос
+    /screen mode: screen \| host sees screens: 1 \| lobby: Код комнаты\d{4} \| not a player: 1/, // экран по ссылке
+    /screen board cells: 25/,                       // табло на экране
+    /answer hidden: true \| no host buttons: true/, // ответа и кнопок ведущего нет
+    /screen reveal shows answer: true/,             // ответ появляется после показа
+    /screen-only image: true media: true \| screen img: true \| phone img: false/, // картинка только на экран
+    /screen end: true true/,                        // пьедестал и места
+    /screen from home: screen \| screens: 2/,       // вход через главную
+    /screen left: true host screens: 0/             // экран отключился
   ]
 };
 
