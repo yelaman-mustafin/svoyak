@@ -140,10 +140,10 @@ async function resumeHost(saved) {
   render();
 }
 
-// Закрывает комнату: игроки видят «Ведущий закрыл комнату», карточка пропадает из списка.
+// Завершает игру и закрывает комнату: игроки видят «Ведущий завершил игру», карточка пропадает из списка.
 function closeRoom() {
   if (!HOST) return;
-  if (!confirm("Закрыть комнату? Игроки увидят, что игра завершена.")) return;
+  if (!confirm("Завершить игру? Комната закроется для всех игроков.")) return;
   hRef("meta").update({ closed: true, hostOnline: false });
   ref(`public/${HOST.code}`).remove();
   detachHost();
@@ -228,6 +228,7 @@ function pushState() {
       : null,
     responder: h.responder || null,
     tried: h.tried || {},
+    delta: h.delta || {},
     openAt: h.openAt || 0,
     readMs: h.readMs || 0,
     readAt: h.readAt || 0,

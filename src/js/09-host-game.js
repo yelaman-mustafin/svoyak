@@ -27,6 +27,13 @@ function stRight(id, reaction) {
   if (reaction != null && (p.best == null || reaction < p.best)) p.best = Math.round(reaction * 100) / 100;
 }
 
+// Сколько очков игрок получил или потерял на текущем вопросе (видно всем на телефонах).
+function addDelta(id, d) {
+  const h = H();
+  if (!h.delta) h.delta = {};
+  h.delta[id] = (h.delta[id] || 0) + d;
+}
+
 // Записывает ошибку.
 function stWrong(id) {
   stP(id).wrong++;
@@ -145,6 +152,7 @@ function pick(ti, qi) {
   });
   sendMedia(h.cur);
   h.left = null;
+  h.delta = {};
   h.tried = {};
   h.responder = null;
   h.reaction = null;
@@ -371,6 +379,7 @@ function judge(ok) {
   if (q) q.tries.push({ id, ok: !!ok });
   if (ok) {
     addScore(id, c);
+    addDelta(id, c);
     stRight(id, h.reaction);
     if (q) {
       q.res = "right";
@@ -383,6 +392,7 @@ function judge(ok) {
   stWrong(id);
   const fine = CFG.minus && !h.cur.noPenalty ? c : 0;
   if (fine) addScore(id, -fine);
+  addDelta(id, -fine);
   h.tried[id] = true;
   const tail = fine ? ", −" + fmt(fine) : "";
   if (h.cur.direct || !online().some(x => !h.tried[x])) {
@@ -406,7 +416,7 @@ function reveal(msg, ok) {
   h.msgOk = ok;
   h.responder = null;
   pushState();
-  later(toBoard, QUIZ() ? 6000 : 5000);
+  later(toBoard, QUIZ() ? 4000 : 3000);
 }
 
 // Возврат к табло. Если вопросы раунда кончились, переходит к следующему раунду.
@@ -626,11 +636,14 @@ function quizReveal() {
     if (q) q.tries.push({ id: pid, ok });
     if (ok) {
       addScore(pid, c);
+      addDelta(pid, c);
       stRight(pid, p.t);
       right.push([pid, p.t]);
     } else {
       stWrong(pid);
-      if (CFG.minus && CFG.quizMinus) addScore(pid, -c);
+      const fine = CFG.minus && CFG.quizMinus ? c : 0;
+      if (fine) addScore(pid, -fine);
+      addDelta(pid, -fine);
     }
   });
   right.sort((a, b) => a[1] - b[1]);
