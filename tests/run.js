@@ -45,7 +45,9 @@ const CHECKS = {
     /"_imgRef":"кот\.jpg"/                         // картинки из .siq находятся
   ],
   "screen-and-timer.test.js": [
-    /resume after wrong: open left ok: true bar total = window: true/ // таймер продолжается после ошибки
+    /resume after wrong: open left ok: true bar total = window: true/, // таймер продолжается после ошибки
+    /intro: intro \| tv: Раунд 1Казахстан100 \| phone: Раунд 1Казахстан100 \| text hidden: true/, // заставка
+    /after intro: reading \| text shown: true/      // после заставки — вопрос
   ]
 };
 

@@ -288,6 +288,10 @@ function renderHostGame() {
   const ansStrip = (active, extra) =>
     `<span class="lbl">Ответ</span><span class="ans">${esc(ansLabel)}</span><div class="btns">${extra || ""}<button class="hb ok" data-act="ok" ${active ? "" : "disabled"}>Верно</button><button class="hb bad" data-act="bad" ${active ? "" : "disabled"}>Неверно</button></div>`;
   switch (h.phase) {
+    case "intro":
+      main = introHTML(c, PACK.rounds[h.round] ? PACK.rounds[h.round].name : "");
+      host = `<span class="lbl">Заставка</span><span class="ans" style="color:#fff;font-weight:600">Сейчас покажется вопрос</span><div class="btns"><button class="hb neutral" data-act="intro-skip">Показать вопрос</button></div>`;
+      break;
     case "board": {
       const R = PACK.rounds[h.round],
         N = Math.max(1, ...R.themes.map(t => t.questions.length));
@@ -402,7 +406,7 @@ function renderHostGame() {
     }
   }
   const qtools =
-    c && ["reading", "open", "answer", "quiz", "cat", "auction"].includes(h.phase)
+    c && ["intro", "reading", "open", "answer", "quiz", "cat", "auction"].includes(h.phase)
       ? `<div class="qtools"><button class="hb neutral" data-act="skip-q">Пропустить вопрос</button><button class="hb neutral" data-act="undo-q">Вернуть на табло</button><span class="lbl">Нажмите на игрока, чтобы дать ему ответить, передать ход или изменить очки</span></div>`
       : `<div class="qtools"><span class="lbl">Нажмите на игрока: ход, очки, имя</span></div>`;
   let skip = "";

@@ -20,5 +20,15 @@ async function join(c,code,name){ Q(c,"[data-home=code]").click(); await sl(10);
  Q(h,"[data-act=bad]").click(); await sl(60);
  const left=h.window.eval("H().dl-now()"), total=h.window.eval("H().dlTotal"), win=h.window.eval("CFG.window");
  console.log("resume after wrong:", h.window.eval("H().phase"), "left ok:", left>2000&&left<=3000, "bar total = window:", total===win);
+ // ===== Заставка «тема и стоимость» =====
+ const fb2=makeFake(), h2=cl(fb2,null,300), p2=cl(fb2,null,300); await sl(30);
+ Q(h2,"[data-act=host]").click(); await sl(80);
+ await join(p2,h2.window.eval("HOST.code"),"Вика");
+ Q(h2,"[data-act=start]").click(); await sl(60);
+ Q(h2,'#tv [data-pick="0-0"]').click(); await sl(80);
+ const code2=h2.window.eval("HOST.code");
+ console.log("intro:", h2.window.eval("H().phase"), "| tv:", T(h2,"#tv .q.intro"), "| phone:", T(p2,".intro-ph"), "| text hidden:", fb2.__get(`rooms/${code2}/state/cur/text`)===null);
+ await sl(400);
+ console.log("after intro:", h2.window.eval("H().phase"), "| text shown:", !!fb2.__get(`rooms/${code2}/state/cur/text`));
  process.exit(0);
 })().catch(e=>{console.log("ERR",e.stack);process.exit(1)});

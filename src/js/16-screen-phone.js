@@ -93,6 +93,9 @@ function renderPlayer() {
         } else
           body = `<div class="status">${esc(pn(st.chooser))} выбирает вопрос</div><div class="hint">${esc(st.roundName || "")}</div><div class="buzz-wrap"><button class="buzzer" disabled>Ждите</button></div>`;
         break;
+      case "intro":
+        body = `<div class="intro-ph"><div class="k">${esc(st.roundName || "")}</div><div class="intro-theme">${esc(c.theme)}</div><div class="intro-cost">${fmt(c.cost)}</div>${c.sp === "norisk" ? `<div class="hint">Вопрос без риска${st.responder === PL.pid ? ": отвечаете вы" : ""}</div>` : ""}</div>`;
+        break;
       case "reading":
         body = `<div class="status">Ведущий читает вопрос</div>${qZone(st, c)}<div class="buzz-wrap"><button class="buzzer locked ${PL.early ? "early" : ""}" data-act="buzz">${PL.early ? "Рано!" : "Ждите"}</button><span class="kbd">${st.cfg.early ? "Раннее нажатие блокирует кнопку на 0,5 с" : "Кнопка откроется после вопроса"}</span></div>`;
         break;

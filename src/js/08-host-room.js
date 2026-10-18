@@ -116,7 +116,8 @@ async function resumeHost(saved) {
     attachHost();
     APP.mode = "host";
     S.view = "setup";
-    if (["reading", "open"].includes(HOST.H.phase)) openBuzz();
+    if (HOST.H.phase === "intro") introDone();
+    else if (["reading", "open"].includes(HOST.H.phase)) openBuzz();
     else pushState();
     if (AUTO()) {
       await joinRoom(HOST.code, hostName(), { silent: true });
@@ -206,9 +207,9 @@ function pushState() {
       ? {
           theme: h.cur.theme,
           cost: h.cur.cost,
-          text: h.cur.text,
+          text: ph === "intro" ? null : h.cur.text,
           sp: h.cur.sp,
-          choices: h.cur.choices || null,
+          choices: ph === "intro" ? null : h.cur.choices || null,
           answer: ph === "reveal" ? h.cur.answer : null,
           hasImg: !!(h.cur.img || h.cur.url),
           img: CFG.phoneImg && h.cur.img ? h.cur.img : null,

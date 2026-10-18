@@ -11,6 +11,12 @@ function dlBar(dl, total, cls) {
   return `<div class="${cls || "timer"}"><i style="animation-duration:${T}ms;animation-delay:-${Math.max(0, T - left)}ms"></i></div>`;
 }
 
+// Заставка перед вопросом: раунд, тема и стоимость крупно. Общая для экрана ведущего и «Экрана».
+function introHTML(c, roundName) {
+  const sp = c.sp === "norisk" ? "Вопрос без риска" : "";
+  return `<div class="q intro"><div class="meta">${esc(roundName || "")}</div><div class="intro-theme">${esc(c.theme)}</div><div class="intro-cost">${fmt(c.cost)}</div>${sp ? `<div class="sub">${sp}</div>` : ""}</div>`;
+}
+
 // Варианты ответа. correct — правильный (подсвечивается после ответа),
 // mine — выбор игрока, counts — сколько человек выбрали, clickable — имя data-атрибута для кнопок.
 function optsHTML(opts, correct, mine, counts, clickable) {

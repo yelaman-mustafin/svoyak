@@ -151,7 +151,7 @@ function pick(ti, qi) {
   h.said = null;
   h.quiz = null;
   if (QUIZ()) {
-    startQuiz();
+    showIntro("quiz");
     return;
   }
   if (sp === "cat") {
@@ -174,12 +174,38 @@ function pick(ti, qi) {
     h.cur.direct = true;
     h.cur.noPenalty = true;
     h.responder = h.chooser;
+    showIntro("answer");
+    return;
+  }
+  showIntro("reading");
+}
+
+// Сколько длится заставка «тема и стоимость» перед вопросом. 0 — без заставки
+// (так делают тесты через window.INTRO_MS_OVERRIDE).
+const INTRO_MS = window.INTRO_MS_OVERRIDE != null ? window.INTRO_MS_OVERRIDE : 2500;
+
+// Заставка перед вопросом: на всех экранах крупно тема и стоимость, текст вопроса пока скрыт.
+// to — что будет после неё: reading (чтение), quiz (викторина) или answer (вопрос без риска).
+function showIntro(to) {
+  const h = H();
+  h.introTo = to;
+  if (!INTRO_MS) return introDone(true);
+  h.phase = "intro";
+  pushState();
+  later(introDone, INTRO_MS);
+}
+
+// Конец заставки (по таймеру или кнопкой «Показать вопрос» у ведущего).
+function introDone(force) {
+  const h = H();
+  if (h.phase !== "intro" && force !== true) return;
+  clearTimers();
+  if (h.introTo === "quiz") startQuiz();
+  else if (h.introTo === "answer") {
     h.phase = "answer";
     armAnswer();
     pushState();
-    return;
-  }
-  startReading();
+  } else startReading();
 }
 
 // Отправляет картинку вопроса на телефоны, если это включено в настройках.

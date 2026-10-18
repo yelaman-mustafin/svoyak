@@ -460,6 +460,9 @@ document.addEventListener("click", e => {
     case "next":
       toBoard();
       break;
+    case "intro-skip":
+      introDone();
+      break;
     case "open-now":
       openBuzz();
       break;

@@ -2017,3 +2017,68 @@ button.opt-b:active {
 .status.ok-t {
   color: var(--ok);
 }
+/* ---------- Заставка перед вопросом: тема и стоимость ---------- */
+.q.intro .intro-theme {
+  font-family: var(--display);
+  font-size: clamp(28px, 4.5vw, 54px);
+  font-weight: 900;
+  line-height: 1.1;
+  max-width: 22ch;
+}
+.intro-cost {
+  font-family: var(--display);
+  color: var(--gold);
+  font-size: clamp(56px, 10vw, 120px);
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 14px;
+  animation: intro-pop 0.5s ease-out both;
+}
+@keyframes intro-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.intro-ph {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 24px 12px;
+  border-radius: 18px;
+  background: var(--board);
+  color: #fff;
+}
+.intro-ph .k {
+  opacity: 0.7;
+  font-size: 14px;
+}
+.intro-ph .intro-theme {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.intro-ph .intro-cost {
+  font-size: 72px;
+}
+.intro-ph .hint {
+  color: #fff;
+  opacity: 0.8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-cost {
+    animation: none;
+  }
+}
