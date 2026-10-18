@@ -3,6 +3,16 @@
    Выбор роли: провести игру, войти по коду, открытые игры.
    ====================================================================== */
 
+// Шапка главной: мини-табло, название и подзаголовок.
+function heroHTML() {
+  return `<div class="hero"><div class="hero-cells">${[100, 200, 300, 400, 500].map(n => `<i>${n}</i>`).join("")}</div><div class="brand">Своя игра</div><small>Тот самый формат, адаптированный под онлайн-игру</small></div>`;
+}
+
+// Кнопка-карточка на главной: иконка, заголовок, пояснение и стрелка. kind — main, join, resume или обычная.
+function entryHTML(kind, attrs, icon, title, text) {
+  return `<button class="entry ${kind}" ${attrs}><i class="ei" aria-hidden="true">${icon}</i><span class="et"><b>${title}</b><span>${text}</span></span><em class="ea" aria-hidden="true">›</em></button>`;
+}
+
 // Главная: выбор роли, вход по коду, список открытых игр, возврат в незаконченную игру.
 function renderHome() {
   const el = document.getElementById("phone");
@@ -10,7 +20,7 @@ function renderHome() {
   const v = APP.homeView;
   let b = "";
   if (!configured || !APP.dbOk) {
-    b = `<div class="brand">Своя игра<small>Викторина с кнопками на телефонах</small></div>
+    b = `${heroHTML()}
       <div class="card"><div class="status" style="font-size:16px">${configured ? "Не удалось подключиться к базе" : "Подключите базу данных"}</div>
       <div class="hint" style="margin-top:6px">${configured ? "Проверьте интернет и настройки Firebase в файле." : "Чтобы игроки могли заходить с разных телефонов, нужна бесплатная база Firebase. Вставьте её настройки в начало файла index.html (блок FIREBASE_CONFIG) и обновите страницу."}</div></div>`;
     el.innerHTML = `<div class="ph-body" style="padding-top:28px"><div class="home">${b}</div></div>`;
@@ -19,13 +29,13 @@ function renderHome() {
   if (v === "main") {
     const hs = load("svoya.hosting", null),
       lr = load("svoya.lastRoom", null);
-    b = `<div class="brand">Своя игра<small>Викторина с кнопками на телефонах</small></div>
-    ${hs ? `<button class="entry resume" data-act="resume-host"><b>Вернуться в свою комнату ${esc(hs.code)}</b><span>Вы ведущий этой игры</span></button>` : ""}
-    ${lr && !hs ? `<button class="entry resume" data-act="rejoin"><b>Вернуться в комнату ${esc(lr)}</b><span>Счёт сохранится</span></button>` : ""}
-    <button class="entry main" data-act="host" ${APP.busy ? "disabled" : ""}><b>${APP.busy ? "Создаём комнату…" : "Провести игру"}</b><span>Вы ведущий: выбираете вопросы, показываете табло на экране и засчитываете ответы</span></button>
-    <button class="entry" data-home="code"><b>Войти по коду</b><span>Ведущий покажет код или QR на своём экране</span></button>
-    <button class="entry" data-home="rooms"><b>Открытые игры</b><span>Присоединиться к игре, которую ведёт кто-то другой</span></button>
-    <button class="entry" data-home="screen"><b>Показать на большом экране</b><span>Для телевизора или проектора: табло, вопросы и очки без ответов и кнопок ведущего</span></button>`;
+    b = `${heroHTML()}
+    ${hs ? entryHTML("resume", 'data-act="resume-host"', "↩", "Вернуться в свою комнату " + esc(hs.code), "Вы ведущий этой игры") : ""}
+    ${lr && !hs ? entryHTML("resume", 'data-act="rejoin"', "↩", "Вернуться в комнату " + esc(lr), "Счёт сохранится") : ""}
+    ${entryHTML("main", 'data-act="host"' + (APP.busy ? " disabled" : ""), "🎤", APP.busy ? "Создаём комнату…" : "Провести игру", "Вы ведущий: табло на ноутбуке или ТВ, вопросы и очки у вас")}
+    ${entryHTML("join", 'data-home="code"', "📱", "Войти по коду", "Код или QR покажет ведущий, телефон станет кнопкой")}
+    ${entryHTML("", 'data-home="rooms"', "🌐", "Открытые игры", "Игры, к которым можно присоединиться")}
+    ${entryHTML("", 'data-home="screen"', "📺", "Большой экран", "Табло для ТВ или проектора, без ответов")}`;
   }
   if (v === "screen")
     b = `<button class="back" data-home="main">← Назад</button><div class="status">Большой экран</div>

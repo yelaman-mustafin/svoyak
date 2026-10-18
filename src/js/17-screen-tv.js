@@ -1,7 +1,7 @@
 /* ======================================================================
    17. ЭКРАН ДЛЯ ЗРИТЕЛЕЙ
-   Телевизор или проектор открывает ссылку ?screen=КОД (или «Показать на
-   большом экране» на главной) и показывает табло, вопрос, очки и итоги.
+   Телевизор или проектор открывает ссылку ?screen=КОД (или «Большой экран»
+   на главной) и показывает табло, вопрос, очки и итоги.
    Он ничего не нажимает и не считается игроком: только читает
    rooms/{код}/state — ту же безопасную часть игры, что видят телефоны,
    поэтому правильный ответ появляется только после того, как его открыли.
@@ -105,7 +105,7 @@ function renderScreen() {
     ids = Object.keys(SCR.players).sort((a, b) => (SCR.players[a].joined || 0) - (SCR.players[b].joined || 0));
   const head = `<div class="tv-head"><span class="tv-title">${st && st.roundName && st.phase !== "end" ? esc(st.roundName) + " · " : ""}комната ${SCR.code}</span><button class="ghost" data-act="screen-leave">Выйти</button></div>`;
   if (SCR.meta && SCR.meta.closed) {
-    tv.innerHTML = head + `<div class="q"><div class="big">Игра окончена</div><div class="sub">Ведущий закрыл комнату. Спасибо за игру!</div></div>`;
+    tv.innerHTML = head + `<div class="q"><div class="big">Игра окончена</div><div class="sub">Ведущий завершил игру. Спасибо, что играли!</div></div>`;
     return;
   }
   if (!st) {

@@ -12,7 +12,7 @@ const CHECKS = {
     /after wrong host: open/,                      // после ошибки кнопки снова открылись
     /final phase: final-bet/,                      // дошли до финала
     /kicked phone: Ведущий удалил вас из комнаты/,  // удаление игрока
-    /closed: Ведущий закрыл комнату/               // закрытие комнаты
+    /closed: Ведущий завершил игру/                 // завершение игры
   ],
   "no-host-and-quiz.test.js": [
     /org mode: player/,                            // организатор играет со своего телефона
@@ -43,6 +43,15 @@ const CHECKS = {
     /media removed: true/,
     /pimg: false/,                                 // «только на экране» — телефоны не грузят
     /"_imgRef":"кот\.jpg"/                         // картинки из .siq находятся
+  ],
+  "player-ui.test.js": [
+    /old cfg migrated: true 5000/,                  // старое «только на экране» сброшено, остальное сохранено
+    /home: Тот самый формат, адаптированный под онлайн-игру \| entries: 4/,
+    /bar players: 2 \| me marked: Аня/,             // все игроки сверху, «я» выделен
+    /answer chip: Аня0отвечает/,                    // кто отвечает
+    /wrong chip: Аня−100−100/,                      // ошибся и сколько потерял
+    /win chip: 👑 Бек100\+100 \| answer card: Правильный ответ/, // кто получил очки, ответ в цветах игры
+    /close label: Завершить игру/
   ],
   "screen-and-timer.test.js": [
     /resume after wrong: open left ok: true bar total = window: true/, // таймер продолжается после ошибки

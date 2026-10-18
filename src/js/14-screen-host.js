@@ -39,7 +39,7 @@ function renderSetup() {
   preserve(
     document.getElementById("tv"),
     `
-    <div class="tv-head"><span class="tv-title">Комната ${HOST.code} · настройка</span><button class="ghost" data-act="close-room">Закрыть комнату</button></div>
+    <div class="tv-head"><span class="tv-title">Комната ${HOST.code} · настройка</span><button class="ghost" data-act="close-room">Завершить игру</button></div>
     <div class="setup">
       <div class="set-col">
         <div class="opt"><div class="pack"><div><b>${esc(PACK.title)}</b><span>${stats(PACK)}</span></div><button class="sb gold" data-act="lib">Сменить вопросы</button></div>${errs ? `<p style="color:#FFB3AE;opacity:1">В паке ${errs} ${plural(errs, "ошибка", "ошибки", "ошибок")}, откройте его в редакторе.</p>` : ""}</div>
@@ -416,9 +416,9 @@ function renderHostGame() {
         ? "Следующий раунд"
         : CFG.final && PACK.final
           ? "К финалу"
-          : "Завершить игру";
+          : "К итогам";
   document.getElementById("tv").innerHTML = `
-    <div class="tv-head"><span class="tv-title">${roundLabel(h)} · комната ${HOST.code}</span><div style="display:flex;gap:8px;flex-wrap:wrap">${skip ? `<button class="ghost" data-act="skip">${skip}</button>` : ""}${PL ? `<button class="ghost" data-act="to-phone">Мой телефон</button>` : ""}<button class="ghost" data-act="lobby">В лобби</button><button class="ghost" data-act="close-room">Закрыть</button></div></div>
+    <div class="tv-head"><span class="tv-title">${roundLabel(h)} · комната ${HOST.code}</span><div style="display:flex;gap:8px;flex-wrap:wrap">${skip ? `<button class="ghost" data-act="skip">${skip}</button>` : ""}${PL ? `<button class="ghost" data-act="to-phone">Мой телефон</button>` : ""}<button class="ghost" data-act="lobby">В лобби</button><button class="ghost" data-act="close-room">Завершить игру</button></div></div>
     <div class="scores" style="grid-template-columns:repeat(${Math.min(Math.max(ids.length, 1), 6)},1fr)">${scores || `<div class="pl">Игроков нет</div>`}</div>${main}<div class="host">${host}</div>${h.phase === "end" ? "" : qtools}${S.menu ? hostMenuHTML() : ""}`;
 }
 
