@@ -143,6 +143,7 @@ function pick(ti, qi) {
     tries: []
   });
   sendMedia(h.cur);
+  h.left = null;
   h.tried = {};
   h.responder = null;
   h.reaction = null;
@@ -210,11 +211,25 @@ function startReading() {
   later(openBuzz, h.readMs);
 }
 
+// Сколько секунд минимум получают остальные игроки после неверного ответа,
+// даже если до нажатия время почти вышло.
+const BUZZ_MIN_LEFT = 2000;
+
+// Запоминает, сколько времени оставалось на кнопку в момент нажатия.
+// После неверного ответа кнопки откроются с этим остатком (0 — без лимита).
+function rememberLeft() {
+  const h = H();
+  h.left = h.dl ? Math.max(BUZZ_MIN_LEFT, h.dl - now()) : 0;
+}
+
 // Открывает кнопки. Каждое открытие получает свой номер qn,
 // нажатия пишутся в rooms/{код}/buzz/{qn}, старые нажатия не мешают.
+// Первое открытие даёт полное время, повторное (после ошибки) — то, что оставалось.
 function openBuzz() {
   const h = H();
   clearTimers();
+  const ms = h.left != null ? h.left : CFG.window;
+  h.left = null;
   h.qn = (h.qn || 0) + 1;
   h.phase = "open";
   h.openAt = now();
@@ -228,7 +243,7 @@ function openBuzz() {
     x.buzzLock = true;
     setTimeout(() => resolveBuzz(qn), 180);
   });
-  setDl(CFG.window);
+  setDl(ms, CFG.window || ms);
   pushState();
 }
 
@@ -246,6 +261,7 @@ async function resolveBuzz(qn) {
     if (h.dl && now() >= h.dl) onExpire();
     return;
   }
+  rememberLeft();
   clearTimers();
   const [id, ts] = cand[0];
   h.responder = id;
@@ -256,14 +272,15 @@ async function resolveBuzz(qn) {
 }
 
 // Ставит дедлайн текущей фазы (кнопка, викторина, ввод ответа). 0 — без лимита.
+// total — полная длина полоски таймера (если время продолжается после паузы, полоска не полная).
 // Старые таймеры не срабатывают благодаря ключу dlKey.
-function setDl(ms) {
+function setDl(ms, total) {
   const h = H();
   h.dlKey = (h.dlKey || 0) + 1;
   const k = h.dlKey;
   if (ms > 0) {
     h.dl = now() + ms;
-    h.dlTotal = ms;
+    h.dlTotal = Math.max(total || ms, ms);
     setTimeout(() => {
       if (HOST && H().dlKey === k) onExpire();
     }, ms);
@@ -720,6 +737,7 @@ function undoQuestion() {
 function giveAnswer(pid) {
   const h = H();
   if (!h.cur || !["reading", "open", "answer"].includes(h.phase) || QUIZ()) return;
+  if (h.phase === "open") rememberLeft();
   clearTimers();
   h.responder = pid;
   h.reaction = null;

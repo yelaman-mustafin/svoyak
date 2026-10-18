@@ -43,6 +43,9 @@ const CHECKS = {
     /media removed: true/,
     /pimg: false/,                                 // «только на экране» — телефоны не грузят
     /"_imgRef":"кот\.jpg"/                         // картинки из .siq находятся
+  ],
+  "screen-and-timer.test.js": [
+    /resume after wrong: open left ok: true bar total = window: true/ // таймер продолжается после ошибки
   ]
 };
 
