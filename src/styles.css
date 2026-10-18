@@ -1931,7 +1931,7 @@ button.opt-b:active {
 .screen.qmode .ph-body {
   min-height: 0;
   overflow: hidden;
-  gap: 10px;
+  gap: 8px;
   padding: 12px 16px 16px;
 }
 .screen.qmode .status {
@@ -1943,7 +1943,7 @@ button.opt-b:active {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   overscroll-behavior: contain;
 }
 .qzone > * {
@@ -1965,7 +1965,7 @@ button.opt-b:active {
 }
 .qzone .pimg:has(~ .opts),
 .qzone .pimg:has(~ .card ~ .opts) {
-  max-height: 18dvh;
+  max-height: 16dvh;
 }
 .screen.qmode .opts {
   grid-template-columns: 1fr 1fr;
@@ -1997,7 +1997,7 @@ button.opt-b:active {
 }
 .screen.qmode .buzz-wrap .buzzer {
   width: 100%;
-  height: min(104px, 15dvh);
+  height: min(96px, 13dvh);
   border-radius: 22px;
   font-size: 30px;
 }
@@ -2009,4 +2009,11 @@ button.opt-b:active {
   #pshell .screen.qmode {
     height: 100dvh;
   }
+}
+.screen.qmode .nolimit,
+.screen.qmode .buzz-wrap .kbd {
+  display: none;
+}
+.status.ok-t {
+  color: var(--ok);
 }

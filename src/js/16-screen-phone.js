@@ -103,7 +103,7 @@ function renderPlayer() {
           body = `<div class="status">Нажато!</div>${qZone(st, c, false, `<div class="hint">Ведущий определяет, кто был первым…</div>`)}<div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#FFD27A 0%,var(--gold) 55%,#A87A00 100%);box-shadow:0 2px 0 #A87A00">✓</button></div>`;
         else {
           const elp = Math.max(0, now() - st.openAt);
-          body = `<div class="status">${st.msg ? esc(st.msg) : "Кнопки открыты"}</div>${qZone(st, c)}<div class="buzz-wrap"><button class="buzzer live" data-act="buzz">Жми!</button>${dlBar(st.dl, st.dlTotal)}</div>`;
+          body = `${st.msg ? `<div class="status">${esc(st.msg)}</div>` : ""}${qZone(st, c)}<div class="buzz-wrap"><button class="buzzer live" data-act="buzz">Жми!</button>${dlBar(st.dl, st.dlTotal)}</div>`;
         }
         break;
       }
@@ -112,7 +112,7 @@ function renderPlayer() {
           const left = Math.max(0, st.ansDeadline - now());
           body = `<div class="status">Ваш ответ!</div>${qZone(st, c, true, `<div class="hint">${c.sp === "norisk" ? "Вопрос без риска: за ошибку очки не снимаются. " : ""}${c.choices ? "Выберите вариант." : "Напишите ответ, небольшие опечатки не страшны."}</div>`)}<div class="qbottom">${c.choices ? (PL.sent.pa === st.qn + ":" + st.ansDeadline ? `<div class="hint">Ответ отправлен</div>` : optsHTML(c.choices, null, null, null, "aopt")) : `<input class="field" id="pa" placeholder="Ваш ответ" autocomplete="off" maxlength="80" enterkeyhint="send"><button class="pbtn hot" data-act="pa" ${PL.sent.pa === st.qn + ":" + st.ansDeadline ? "disabled" : ""}><span>Ответить</span><span></span></button>`}${dlBar(st.dl, st.dlTotal)}</div>`;
         } else if (st.responder === PL.pid)
-          body = `<div class="status">Ваш ответ!</div>${qZone(st, c, false, `<div class="hint">${c.sp === "norisk" ? "Вопрос без риска: за ошибку очки не снимаются. " : ""}Говорите вслух, ведущий засчитает.</div>`)}<div class="buzz-wrap"><button class="buzzer pressed" disabled style="background:radial-gradient(circle at 38% 32%,#5FE0A8 0%,var(--ok) 55%,#0C6B46 100%);box-shadow:0 2px 0 #0C6B46">Вы!</button>${st.reaction != null ? `<div class="kbd">Время реакции ${Number(st.reaction).toFixed(2).replace(".", ",")} с</div>` : ""}</div>`;
+          body = `<div class="status ok-t">Ваш ответ!</div>${qZone(st, c, false, `<div class="hint">${c.sp === "norisk" ? "Вопрос без риска: за ошибку очки не снимаются. " : ""}Говорите вслух, ведущий засчитает.${st.reaction != null ? ` Реакция ${Number(st.reaction).toFixed(2).replace(".", ",")} с.` : ""}</div>`)}`;
         else
           body = `<div class="status">Отвечает ${esc(pn(st.responder))}${st.cfg.host === "auto" ? " (пишет ответ)" : ""}</div>${qZone(st, c, false, st.reaction != null ? `<div class="hint">Нажал за ${Number(st.reaction).toFixed(2).replace(".", ",")} с</div>` : "")}`;
         break;
